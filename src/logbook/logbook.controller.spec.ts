@@ -12,12 +12,16 @@ describe('LogbookController', () => {
   let controller: LogbookController;
   let service: LogbookService;
 
+  const date1: Date = new Date();
+  const date2: Date = new Date(date1.getTime() + 1000);
+  const date3: Date = new Date(date2.getTime() + 1000);
+
   const createLogbookDto: CreateLogbookDto = {
     driver: Driver.Andrea,
     vehicleTyp: VehicleTyp.Ferrari,
     currentMileAge: '123',
     newMileAge: '456',
-    date: new Date(),
+    date: date1,
     driveReason: 'Drive Reason',
     additionalInformationTyp: AdditionalInformationTyp.Getankt,
     additionalInformation: '20',
@@ -29,7 +33,7 @@ describe('LogbookController', () => {
     vehicleTyp: VehicleTyp.Ferrari,
     currentMileAge: '123',
     newMileAge: '456',
-    date: new Date(),
+    date: date1,
     driveReason: 'Drive Reason',
     distance: '333',
     distanceCost: '66,6',
@@ -49,13 +53,13 @@ describe('LogbookController', () => {
         {
           provide: LogbookService,
           useValue: {
-            createLogbook: jest.fn().mockResolvedValue([
+            findAll: jest.fn().mockResolvedValue([
               {
                 driver: Driver.Andrea,
                 vehicleTyp: VehicleTyp.Ferrari,
                 currentMileAge: '123',
                 newMileAge: '456',
-                date: new Date(),
+                date: date1,
                 driveReason: 'Drive Reason #1',
                 additionalInformationTyp: AdditionalInformationTyp.Keine,
                 additionalInformation: '',
@@ -66,7 +70,7 @@ describe('LogbookController', () => {
                 vehicleTyp: VehicleTyp.VW,
                 currentMileAge: '456',
                 newMileAge: '789',
-                date: new Date(),
+                date: date2,
                 driveReason: 'Drive Reason #2',
                 additionalInformationTyp: AdditionalInformationTyp.Getankt,
                 additionalInformation: '20.4',
@@ -77,7 +81,7 @@ describe('LogbookController', () => {
                 vehicleTyp: VehicleTyp.Ferrari,
                 currentMileAge: '101112',
                 newMileAge: '131415',
-                date: new Date(),
+                date: date3,
                 driveReason: 'Drive Reason #3',
                 additionalInformationTyp: AdditionalInformationTyp.Gewartet,
                 additionalInformation: 'Windschutzscheibe ersetzt.',
@@ -117,7 +121,7 @@ describe('LogbookController', () => {
           vehicleTyp: VehicleTyp.Ferrari,
           currentMileAge: '123',
           newMileAge: '456',
-          date: new Date(),
+          date: date1,
           driveReason: 'Drive Reason #1',
           additionalInformationTyp: AdditionalInformationTyp.Keine,
           additionalInformation: '',
@@ -128,7 +132,7 @@ describe('LogbookController', () => {
           vehicleTyp: VehicleTyp.VW,
           currentMileAge: '456',
           newMileAge: '789',
-          date: new Date(),
+          date: date2,
           driveReason: 'Drive Reason #2',
           additionalInformationTyp: AdditionalInformationTyp.Getankt,
           additionalInformation: '20.4',
@@ -139,7 +143,7 @@ describe('LogbookController', () => {
           vehicleTyp: VehicleTyp.Ferrari,
           currentMileAge: '101112',
           newMileAge: '131415',
-          date: new Date(),
+          date: date3,
           driveReason: 'Drive Reason #3',
           additionalInformationTyp: AdditionalInformationTyp.Gewartet,
           additionalInformation: 'Windschutzscheibe ersetzt.',

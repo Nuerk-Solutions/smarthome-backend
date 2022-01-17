@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateLogbookDto } from './dto/create-logbook.dto';
@@ -7,6 +7,8 @@ import { Logbook, LogbookDocument } from './schemas/logbook.schema';
 
 @Injectable()
 export class LogbookService {
+  private readonly logger = new Logger(LogbookService.name);
+
   constructor(
     @InjectModel(Logbook.name)
     private readonly logbookModel: Model<LogbookDocument>,

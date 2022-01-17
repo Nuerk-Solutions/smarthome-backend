@@ -3,41 +3,24 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import {
   AdditionalInformationTyp,
-  CreateLogbookDto,
   Driver,
-  VehicleTyp
+  VehicleTyp,
 } from './dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './schemas/logbook.schema';
 
-const createLogbookDto: CreateLogbookDto = {
-  driver: Driver.Andrea,
-  vehicleTyp: VehicleTyp.Ferrari,
-  currentMileAge: '123',
-  newMileAge: '456',
-  date: new Date(),
-  driveReason: 'Drive Reason',
-  additionalInformationTyp: AdditionalInformationTyp.Getankt,
-  additionalInformation: '20',
-  additionalInformationCost: '40',
-};
+const date: Date = new Date();
 
 const mockLogbook = {
   driver: Driver.Andrea,
   vehicleTyp: VehicleTyp.Ferrari,
   currentMileAge: '123',
   newMileAge: '456',
-  date: new Date(),
+  date: date,
   driveReason: 'Drive Reason',
-  distance: '333',
-  distanceCost: '66,6',
   additionalInformationTyp: AdditionalInformationTyp.Getankt,
   additionalInformation: '20',
   additionalInformationCost: '40',
-  distanceSinceLastAdditionalInformation: '0',
-  _id: 'a id',
-  createdAt: 'a timestemp',
-  updatedAt: 'a timestemp',
 };
 
 describe('LogbookService', () => {
@@ -50,7 +33,7 @@ describe('LogbookService', () => {
       vehicleTyp: VehicleTyp.Ferrari,
       currentMileAge: '123',
       newMileAge: '456',
-      date: new Date(),
+      date: date,
       driveReason: 'Drive Reason #1',
       additionalInformationTyp: AdditionalInformationTyp.Keine,
       additionalInformation: '',
@@ -61,7 +44,7 @@ describe('LogbookService', () => {
       vehicleTyp: VehicleTyp.VW,
       currentMileAge: '456',
       newMileAge: '789',
-      date: new Date(),
+      date: date,
       driveReason: 'Drive Reason #2',
       additionalInformationTyp: AdditionalInformationTyp.Getankt,
       additionalInformation: '20.4',
@@ -76,8 +59,8 @@ describe('LogbookService', () => {
         {
           provide: getModelToken('Logbook'),
           useValue: {
-            new: jest.fn().mockReturnValue(mockLogbook),
-            constructor: jest.fn().mockReturnValue(mockLogbook),
+            new: jest.fn().mockResolvedValue(mockLogbook),
+            constructor: jest.fn().mockResolvedValue(mockLogbook),
             find: jest.fn(),
             create: jest.fn(),
             exec: jest.fn(),
@@ -95,21 +78,21 @@ describe('LogbookService', () => {
   });
 
   it('should return all logbooks', async () => {
-    jest.spyOn(model, 'find').mockResolvedValue({
-      exec: jest.fn().mockResolvedValue(logbookArray),
+    jest.spyOn(model, 'find').mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce(logbookArray),
     } as any);
     const logbooks = await service.findAll();
     expect(logbooks).toEqual(logbookArray);
   });
 
   it('should create a new Logbook', async () => {
-    jest.spyOn(model, 'create').mockImplementationOnce(() => 
+    jest.spyOn(model, 'create').mockImplementationOnce(() =>
       Promise.resolve({
         driver: Driver.Andrea,
         vehicleTyp: VehicleTyp.Ferrari,
         currentMileAge: '123',
         newMileAge: '456',
-        date: new Date(),
+        date: date,
         driveReason: 'Drive Reason',
         additionalInformationTyp: AdditionalInformationTyp.Getankt,
         additionalInformation: '20',
@@ -121,7 +104,7 @@ describe('LogbookService', () => {
       vehicleTyp: VehicleTyp.Ferrari,
       currentMileAge: '123',
       newMileAge: '456',
-      date: new Date(),
+      date: date,
       driveReason: 'Drive Reason',
       additionalInformationTyp: AdditionalInformationTyp.Getankt,
       additionalInformation: '20',
@@ -129,5 +112,5 @@ describe('LogbookService', () => {
     });
 
     expect(newLogbook).toEqual(mockLogbook);
-  }
+  });
 });
