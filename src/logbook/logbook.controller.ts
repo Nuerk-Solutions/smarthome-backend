@@ -10,18 +10,19 @@ import {
 import { CreateLogbookDto } from './dto/create-logbook.dto';
 import { UpdateLogbookDto } from './dto/update-logbook.dto';
 import { LogbookService } from './logbook.service';
+import { Logbook } from './schemas/logbook.schema';
 
 @Controller('logbook')
 export class LogbookController {
   constructor(private readonly logbookService: LogbookService) {}
 
   @Post()
-  create(@Body() createLogbookDto: CreateLogbookDto) {
+  async create(@Body() createLogbookDto: CreateLogbookDto) {
     return this.logbookService.create(createLogbookDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Logbook[]> {
     return this.logbookService.findAll();
   }
 

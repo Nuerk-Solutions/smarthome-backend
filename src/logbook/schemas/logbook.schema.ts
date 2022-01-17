@@ -8,7 +8,7 @@ import {
 
 export type LogbookDocument = Logbook & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Logbook {
   @Prop({ type: String, required: true, enum: Driver })
   driver: Driver;
