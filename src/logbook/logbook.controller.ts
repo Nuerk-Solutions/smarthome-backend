@@ -1,15 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { LogbookService } from './logbook.service';
 import { CreateLogbookDto } from './dto/create-logbook.dto';
 import { UpdateLogbookDto } from './dto/update-logbook.dto';
+import { LogbookService } from './logbook.service';
 
 @Controller('logbook')
 export class LogbookController {

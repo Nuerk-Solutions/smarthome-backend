@@ -5,7 +5,7 @@ import { UpdateLogbookDto } from './dto/update-logbook.dto';
 @Injectable()
 export class LogbookService {
   create(createLogbookDto: CreateLogbookDto) {
-    return 'This action adds a new logbook';
+    return createLogbookDto ?? 'This action adds a new logbook';
   }
 
   findAll() {
