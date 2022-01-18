@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateLogbookDto } from './dto/create-logbook.dto';
-import { UpdateLogbookDto } from './dto/update-logbook.dto';
 import { Logbook, LogbookDocument } from './schemas/logbook.schema';
 
 @Injectable()
@@ -23,15 +22,30 @@ export class LogbookService {
     return this.logbookModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} logbook`;
+  async findOne(id: number): Promise<Logbook> {
+    return this.logbookModel.findOne({ _id: id });
   }
 
-  update(id: number, updateLogbookDto: UpdateLogbookDto) {
-    return `This action updates a #${id} logbook`;
+  async findLatest(): Promise<Logbook[]> {
+    // Find respectively the last added entry of vehicleTyp VW or Ferrari
+    const latestLogbookVw = await this.logbookModel
+      .findOne({ vehicleTyp: 'VW' })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .exec();
+    const latestLogbookFerrari = await this.logbookModel
+      .findOne({ vehicleTyp: 'Ferrari' })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .exec();
+    return [latestLogbookVw, latestLogbookFerrari];
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} logbook`;
+  // async update(id: number, updateLogbookDto: UpdateLogbookDto) {
+  //   return `This action updates a #${id} logbook`;
+  // }
+
+  async remove(id: number): Promise<Logbook> {
+    return this.logbookModel.findOneAndDelete({ _id: id });
   }
 }
