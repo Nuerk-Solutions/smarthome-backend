@@ -23,8 +23,8 @@ export class LogbookController {
   }
 
   @Get('/find/all')
-  async findAll(@Query() query): Promise<Logbook[]> {
-    return this.logbookService.findAll(query.sort);
+  async findAll(@Query('sort') query: string): Promise<Logbook[]> {
+    return this.logbookService.findAll(query);
   }
 
   @Get('find/latest')
