@@ -18,8 +18,8 @@ export class LogbookService {
     return createdLogbook;
   }
 
-  async findAll(): Promise<Logbook[]> {
-    return this.logbookModel.find().exec();
+  async findAll(sort: string): Promise<Logbook[]> {
+    return this.logbookModel.find().sort(sort).exec();
   }
 
   async findOne(id: number): Promise<Logbook> {
