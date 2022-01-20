@@ -25,8 +25,9 @@ export class LogbookService {
         vehicleTyp: createLogbookDto.vehicleTyp,
         additionalInformationTyp: createLogbookDto.additionalInformationTyp,
       }).sort({ date: -1 }).limit(1).exec();
-
-      distanceSinceLastAdditionalInformation = (LastAdditionalInformation && Number(+createLogbookDto.newMileAge - +LastAdditionalInformation.newMileAge).toFixed(2)) || '0';
+      if (LastAdditionalInformation) {
+        distanceSinceLastAdditionalInformation = Number(+createLogbookDto.newMileAge - +LastAdditionalInformation.newMileAge).toFixed(2);
+      }
     } else {
       createLogbookDto.additionalInformation = '';
       createLogbookDto.additionalInformationCost = '';
