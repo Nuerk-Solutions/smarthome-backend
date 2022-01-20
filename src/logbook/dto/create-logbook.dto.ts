@@ -1,14 +1,14 @@
 import { IsDateString, IsEnum, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
 
 export enum VehicleTyp {
-  'Ferrari',
-  'VW',
+  FERRARI = 'Ferrari',
+  VW = 'VW',
 }
 
 export enum AdditionalInformationTyp {
-  'Keine',
-  'Getankt',
-  'Gewartet',
+  KEINE = 'Keine',
+  GETANKT = 'Getankt',
+  GEWARTET = 'Gewartet',
 }
 
 export enum Driver {

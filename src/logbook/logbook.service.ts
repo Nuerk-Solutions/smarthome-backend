@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as XLSX from 'xlsx';
-import { CreateLogbookDto } from './dto/create-logbook.dto';
+import { AdditionalInformationTyp, CreateLogbookDto } from './dto/create-logbook.dto';
 import { Logbook, LogbookDocument } from './schemas/logbook.schema';
 
 @Injectable()
@@ -15,18 +15,34 @@ export class LogbookService {
   ) { }
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
-    const distance = +createLogbookDto.newMileAge - +createLogbookDto.currentMileAge;
+    const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
+    const distanceCost = Number(+distance * 0.2).toFixed(2);
+    let distanceSinceLastAdditionalInformation = '0';
+
+    if (createLogbookDto.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
+      // Calculate the distance since the last additional information from the corrosponding typ and from the same vehicleTyp
+      const LastAdditionalInformation = await this.logbookModel.findOne({
+        vehicleTyp: createLogbookDto.vehicleTyp,
+        additionalInformationTyp: createLogbookDto.additionalInformationTyp,
+      }).sort({ date: -1 }).limit(1).exec();
+
+      distanceSinceLastAdditionalInformation = (LastAdditionalInformation && Number(+createLogbookDto.newMileAge - +LastAdditionalInformation.newMileAge).toFixed(2)) || '0';
+    } else {
+      createLogbookDto.additionalInformation = '';
+      createLogbookDto.additionalInformationCost = '';
+    }
 
     const logbook = {
       ...createLogbookDto,
       distance,
-      distanceCost: distance * 0.2,
+      distanceCost,
+      distanceSinceLastAdditionalInformation,
     };
-    const createdLogbook = await this.logbookModel.create(logbook);
-    return createdLogbook;
+
+    return await this.logbookModel.create(logbook);
   }
 
-  async findAll(sort: string): Promise<Logbook[]> {
+  async findAll(sort?: string): Promise<Logbook[]> {
     return this.logbookModel.find().sort(sort).exec();
   }
 
@@ -38,15 +54,22 @@ export class LogbookService {
     // Find respectively the last added entry of vehicleTyp VW or Ferrari
     const latestLogbookVw = await this.logbookModel.findOne({ vehicleTyp: 'VW' }).sort({ createdAt: -1 }).limit(1).exec();
     const latestLogbookFerrari = await this.logbookModel.findOne({ vehicleTyp: 'Ferrari' }).sort({ createdAt: -1 }).limit(1).exec();
+
+    // Throw error if no logbook was found
+    if (!latestLogbookVw || !latestLogbookFerrari) {
+      throw new NotFoundException('No logbooks found');
+    }
+
     return [latestLogbookVw, latestLogbookFerrari];
   }
 
   async download(): Promise<Buffer> {
     const logbooks = await this.logbookModel.find().sort({ date: 1 }).exec();
 
-    if (!logbooks) {
+    if (!logbooks.length) {
       throw new NotFoundException('No logbooks found');
     }
+
     const data = logbooks.map((logbook) => {
       return {
         Fahrer: logbook.driver,
