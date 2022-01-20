@@ -16,6 +16,7 @@ export class LogbookService {
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = +createLogbookDto.newMileAge - +createLogbookDto.currentMileAge;
+
     const logbook = {
       ...createLogbookDto,
       distance,
