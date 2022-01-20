@@ -12,7 +12,7 @@ export class LogbookService {
   constructor(
     @InjectModel(Logbook.name)
     private readonly logbookModel: Model<LogbookDocument>,
-  ) { }
+  ) {}
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
@@ -21,10 +21,14 @@ export class LogbookService {
 
     if (createLogbookDto.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
       // Calculate the distance since the last additional information from the corrosponding typ and from the same vehicleTyp
-      const LastAdditionalInformation = await this.logbookModel.findOne({
-        vehicleTyp: createLogbookDto.vehicleTyp,
-        additionalInformationTyp: createLogbookDto.additionalInformationTyp,
-      }).sort({ date: -1 }).limit(1).exec();
+      const LastAdditionalInformation = await this.logbookModel
+        .findOne({
+          vehicleTyp: createLogbookDto.vehicleTyp,
+          additionalInformationTyp: createLogbookDto.additionalInformationTyp,
+        })
+        .sort({ date: -1 })
+        .limit(1)
+        .exec();
       if (LastAdditionalInformation) {
         distanceSinceLastAdditionalInformation = Number(+createLogbookDto.newMileAge - +LastAdditionalInformation.newMileAge).toFixed(2);
       }

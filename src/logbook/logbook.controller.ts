@@ -5,7 +5,7 @@ import { Logbook } from './schemas/logbook.schema';
 
 @Controller('logbook')
 export class LogbookController {
-  constructor(private readonly logbookService: LogbookService) { }
+  constructor(private readonly logbookService: LogbookService) {}
   private readonly logger = new Logger(LogbookController.name);
 
   @Post()
