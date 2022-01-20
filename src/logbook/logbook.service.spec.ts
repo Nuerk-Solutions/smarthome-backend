@@ -9,12 +9,12 @@ const date: Date = new Date();
 
 const mockLogbook = {
   driver: Driver.Andrea,
-  vehicleTyp: VehicleTyp.Ferrari,
+  vehicleTyp: VehicleTyp.FERRARI,
   currentMileAge: '123',
   newMileAge: '456',
   date: date,
   driveReason: 'Drive Reason',
-  additionalInformationTyp: AdditionalInformationTyp.Getankt,
+  additionalInformationTyp: AdditionalInformationTyp.GETANKT,
   additionalInformation: '20',
   additionalInformationCost: '40',
 };
@@ -26,12 +26,12 @@ describe('LogbookService', () => {
   const logbookArray = [
     {
       driver: Driver.Andrea,
-      vehicleTyp: VehicleTyp.Ferrari,
+      vehicleTyp: VehicleTyp.FERRARI,
       currentMileAge: '123',
       newMileAge: '456',
       date: date,
       driveReason: 'Drive Reason #1',
-      additionalInformationTyp: AdditionalInformationTyp.Keine,
+      additionalInformationTyp: AdditionalInformationTyp.KEINE,
       additionalInformation: '',
       additionalInformationCost: '',
     },
@@ -42,7 +42,7 @@ describe('LogbookService', () => {
       newMileAge: '789',
       date: date,
       driveReason: 'Drive Reason #2',
-      additionalInformationTyp: AdditionalInformationTyp.Getankt,
+      additionalInformationTyp: AdditionalInformationTyp.GETANKT,
       additionalInformation: '20.4',
       additionalInformationCost: '26,8',
     },
