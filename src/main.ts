@@ -9,7 +9,7 @@ async function bootstrap() {
   const logger = new Logger('Request');
   app.use(helmet());
   app.use(
-    morgan('tiny', {
+    morgan('short', {
       stream: {
         write: (message) => logger.log(message.replace('\n', '')),
       },
