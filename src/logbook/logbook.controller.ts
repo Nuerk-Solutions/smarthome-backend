@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, Logger, Param, Post, Query, StreamableFile } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, HttpCode, Logger, Param, Post, Query, StreamableFile } from '@nestjs/common';
 import { CreateLogbookDto } from './dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './schemas/logbook.schema';
@@ -9,6 +9,7 @@ export class LogbookController {
   private readonly logger = new Logger(LogbookController.name);
 
   @Post()
+  @HttpCode(201)
   async create(@Body() createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     return this.logbookService.create(createLogbookDto);
   }
@@ -18,17 +19,17 @@ export class LogbookController {
     return this.logbookService.findAll(query);
   }
 
-  @Get('find/latest')
+  @Get('/find/latest')
   async findLatest(): Promise<Logbook[]> {
     return this.logbookService.findLatest();
   }
 
-  @Get('find/:id')
+  @Get('/find/:id')
   async findOne(@Param('id') id: string): Promise<Logbook> {
-    return this.logbookService.findOne(+id);
+    return this.logbookService.findOne(id);
   }
 
-  @Get('download')
+  @Get('/download')
   @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   @Header('Content-disposition', 'attachment;filename=LogBook_' + new Date().toISOString() + '_Language_DE.xlsx')
   @Header('Access-Control-Expose-Headers', 'Content-Disposition')

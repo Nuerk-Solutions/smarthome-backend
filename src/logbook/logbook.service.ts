@@ -51,8 +51,8 @@ export class LogbookService {
     return this.logbookModel.find().sort(sort).exec();
   }
 
-  async findOne(id: number): Promise<Logbook> {
-    return this.logbookModel.findOne({ _id: id });
+  async findOne(id: string): Promise<Logbook> {
+    return this.logbookModel.findById(id);
   }
 
   async findLatest(): Promise<Logbook[]> {
@@ -61,7 +61,7 @@ export class LogbookService {
     const latestLogbookFerrari = await this.logbookModel.findOne({ vehicleTyp: 'Ferrari' }).sort({ createdAt: -1 }).limit(1).exec();
 
     // Throw error if no logbook was found
-    if (!latestLogbookVw || !latestLogbookFerrari) {
+    if (!latestLogbookVw && !latestLogbookFerrari) {
       throw new NotFoundException('No logbooks found');
     }
 
