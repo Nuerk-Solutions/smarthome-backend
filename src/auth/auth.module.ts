@@ -7,4 +7,4 @@ import { AuthService } from './auth.service';
   imports: [PassportModule],
   providers: [AuthService, ApiKeyStrategy],
 })
-export class AuthModule { }
+export class AuthModule {}
