@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AdditionalInformationTyp, CreateLogbookDto, Driver, VehicleTyp } from './dto/create-logbook.dto';
+import {
+  AdditionalInformationTyp,
+  CreateLogbookDto,
+  Driver,
+  VehicleTyp,
+} from './dto/create-logbook.dto';
 import { LogbookController } from './logbook.controller';
 import { LogbookService } from './logbook.service';
 
@@ -100,7 +105,9 @@ describe('LogbookController', () => {
 
   describe('create()', () => {
     it('should create a new Logbook', async () => {
-      const createSpy = jest.spyOn(service, 'create').mockResolvedValueOnce(mockLogbook);
+      const createSpy = jest
+        .spyOn(service, 'create')
+        .mockResolvedValueOnce(mockLogbook);
 
       await controller.create(createLogbookDto);
       expect(createSpy).toHaveBeenCalledWith(createLogbookDto);

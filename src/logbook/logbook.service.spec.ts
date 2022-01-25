@@ -1,7 +1,11 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
-import { AdditionalInformationTyp, Driver, VehicleTyp } from './dto/create-logbook.dto';
+import {
+  AdditionalInformationTyp,
+  Driver,
+  VehicleTyp,
+} from './dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './schemas/logbook.schema';
 

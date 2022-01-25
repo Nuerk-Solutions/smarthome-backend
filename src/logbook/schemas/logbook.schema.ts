@@ -1,6 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AdditionalInformationTyp, Driver, VehicleTyp } from '../dto/create-logbook.dto';
+import {
+  AdditionalInformationTyp,
+  Driver,
+  VehicleTyp,
+} from '../dto/create-logbook.dto';
 
 export type LogbookDocument = Logbook & Document;
 

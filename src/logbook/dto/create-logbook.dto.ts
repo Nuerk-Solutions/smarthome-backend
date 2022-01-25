@@ -1,4 +1,10 @@
-import { IsDateString, IsEnum, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+} from 'class-validator';
 
 export enum VehicleTyp {
   FERRARI = 'Ferrari',
