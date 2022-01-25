@@ -25,11 +25,6 @@ jobs:
       - name: NPM Test
         run: npm run test
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
