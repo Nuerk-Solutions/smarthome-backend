@@ -43,7 +43,7 @@ jobs:
         run: rsync -avuz --delete --exclude=".*" dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/lib/pterodactyl/volumes/e59588b7-e937-479a-87e1-f4c54afff821/
 
   stop-server:
-    needs: sync
+    needs: deploy
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
