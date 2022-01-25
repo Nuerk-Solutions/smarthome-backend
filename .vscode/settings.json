@@ -2,5 +2,6 @@
   "npm-scripts.showStartNotification": false,
   "cSpell.words": [
     "apikey"
-  ]
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
