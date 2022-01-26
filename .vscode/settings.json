@@ -1,7 +1,5 @@
 {
   "npm-scripts.showStartNotification": false,
-  "cSpell.words": [
-    "apikey"
-  ],
+  "typescript.preferences.importModuleSpecifier": "relative",
   "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
