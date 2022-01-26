@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import * as XLSX from 'xlsx';
 import {
   AdditionalInformationTyp,
-  CreateLogbookDto,
+  CreateLogbookDto
 } from './dto/create-logbook.dto';
 import { Logbook, LogbookDocument } from './schemas/logbook.schema';
 
@@ -15,7 +15,7 @@ export class LogbookService {
   constructor(
     @InjectModel(Logbook.name)
     private readonly logbookModel: Model<LogbookDocument>,
-  ) {}
+  ) { }
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(
@@ -93,7 +93,13 @@ export class LogbookService {
       throw new NotFoundException('No logbooks found');
     }
 
+
     const data = logbooks.map((logbook) => {
+      // Calculate average consumption per 100km using additionalInformation as fuel and distanceSinceLastAdditionalInformation as distance
+      const fuelConsumption = Number(
+        (+logbook.additionalInformation / +logbook.distanceSinceLastAdditionalInformation) * 100,
+      ).toFixed(2);
+
       return {
         Fahrer: logbook.driver,
         Fahrzeug_Typ: logbook.vehicleTyp,
@@ -108,6 +114,7 @@ export class LogbookService {
         'Zusatzinformationen - Kosten': logbook.additionalInformationCost,
         'Entfernung seit letzter Information':
           logbook.distanceSinceLastAdditionalInformation,
+        'Durchschnittlicher Verbrauch': fuelConsumption,
       };
     });
 
