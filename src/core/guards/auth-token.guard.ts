@@ -15,7 +15,9 @@ export class AuthTokenGuard extends AuthGuard('jwt') {
     // Check if @isPublic guard is decorated
     const isPublic = this.reflector.getAllAndOverride('isPublic', [context.getHandler(), context.getClass()]);
 
-    if (isPublic) return true;
+    if (isPublic) {
+      return true;
+    }
 
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler()]);
     if (!requiredRoles) {
@@ -29,9 +31,11 @@ export class AuthTokenGuard extends AuthGuard('jwt') {
     const user: any = JwtService.prototype.decode(request.headers.authorization.split(' ')[1], {
       complete: true,
     });
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new BadRequestException('Invalid User');
 
-    return requiredRoles.some((role) => user.payload.roles?.includes(role));
+    if (!requiredRoles.some((role) => user.payload.roles?.includes(role))) throw new UnauthorizedException('Wrong role!');
+
+    return super.canActivate(context);
 
     // Default fallback
     //return super.canActivate(context);

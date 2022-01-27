@@ -44,12 +44,14 @@ export class AuthController {
 
   @Post('user')
   @Roles(Role.Admin, Role.User)
+  @HttpCode(HttpStatus.OK)
   //@UseGuards(JwtAuthGuard, RolesGuard)
   async getUser(@GetCurrentUserId() userId: string) {
-    return await this.authService.getUserFromAuth(userId);
+    return this.authService.getUserFromAuth(userId);
   }
 
   @Post('logout')
+  @Public()
   @HttpCode(HttpStatus.OK)
   async logout(@GetCurrentUserId() userId: string): Promise<boolean> {
     return this.authService.logout(userId);

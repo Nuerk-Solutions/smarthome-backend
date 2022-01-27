@@ -37,6 +37,7 @@ export class AuthService {
         name: createUserDto.name,
         roles: createUserDto.roles,
         password: createUserDto.password, // Password is hashed in schema
+        refreshToken: null,
       });
       return await newUser.save().then(async (user) => {
         const newTokenVerifyEmail = new this.tokenVerifyEmailModel({
@@ -46,7 +47,7 @@ export class AuthService {
         await newTokenVerifyEmail.save();
 
         this.sendEmailMiddleware.sendEmail(user.email, newTokenVerifyEmail.tokenVerifyEmail, []);
-        const tokens = await this.getTokens(newUser._id, newUser.email);
+        const tokens = await this.getTokens(newUser._id, newUser.email, newUser.roles);
         await this.updateRefreshTokenHash(user._id, tokens.refresh_token);
         // Todo: Send refresh token
         return user.toObject({ versionKey: false });
@@ -112,7 +113,7 @@ export class AuthService {
         if (isMatch) {
           const user = userToAttempt.toObject({ versionKey: false });
           if (user.emailVerified) {
-            const tokens = await this.getTokens(userToAttempt._id, userToAttempt.email);
+            const tokens = await this.getTokens(userToAttempt._id, userToAttempt.email, userToAttempt.roles);
             await this.updateRefreshTokenHash(userToAttempt._id, tokens.refresh_token);
             // RequestContextMetadataService.setMetadata('AUTH_METADATA', user);
             resolve(tokens);
@@ -179,14 +180,11 @@ export class AuthService {
 
     // Todo: Check why refreshToken is not saved
 
-    const refreshTokenMatches = await bcrypt.compare(user.refreshToken, user.password, (err, res) => {
-      console.log('MATCH!');
-      return res == true;
+    await bcrypt.compare(user.refreshToken, refreshToken, (err) => {
+      if (err) throw new UnauthorizedException('Access Denied');
     });
 
-    if (!refreshTokenMatches) throw new UnauthorizedException('Access Denied');
-
-    const tokens = await this.getTokens(user._id, user.email);
+    const tokens = await this.getTokens(user._id, user.email, user.roles);
     await this.updateRefreshTokenHash(user._id, tokens.refresh_token);
 
     return tokens;
@@ -197,16 +195,17 @@ export class AuthService {
       if (err) return console.log(err);
       bcrypt.hash(refreshToken, salt, async (err, hash) => {
         if (err) return console.log(err);
-        await this.userModel.findByIdAndUpdate({ _id: userId }, { hashedRefreshToken: hash }).then((user) => {
+        await this.userModel.findByIdAndUpdate({ _id: userId }, { refreshToken: hash }).then((user) => {
           console.log('### User Updated HASH ###', user);
         });
       });
     });
   }
 
-  async getTokens(userId: string, email: string): Promise<Tokens> {
+  async getTokens(userId: string, email: string, roles: Role[]): Promise<Tokens> {
     const jwtPayload: JwtPayload = {
       sub: userId,
+      roles: roles,
       email: email,
     };
 
