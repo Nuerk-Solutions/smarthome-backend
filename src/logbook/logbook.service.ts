@@ -26,6 +26,9 @@ export class LogbookService {
       createLogbookDto.additionalInformationTyp !==
       AdditionalInformationTyp.KEINE
     ) {
+
+      createLogbookDto.additionalInformationCost = (createLogbookDto.additionalInformationCost == '0' || createLogbookDto.additionalInformationCost == null) ? '' : createLogbookDto.additionalInformationCost;
+      createLogbookDto.additionalInformation = createLogbookDto.additionalInformation ?? '';
       // Calculate the distance since the last additional information from the corrosponding typ and from the same vehicleTyp
       const LastAdditionalInformation = await this.logbookModel
         .findOne({
