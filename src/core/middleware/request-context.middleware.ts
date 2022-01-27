@@ -1,10 +1,10 @@
-import { NestMiddleware } from '@nestjs/common';
+import {NestMiddleware} from '@nestjs/common';
 import * as requestContext from 'request-context';
 
 export class RequestContextMiddleware implements NestMiddleware {
-  use = requestContext.middleware('request').bind(requestContext);
+    use = requestContext.middleware('request').bind(requestContext);
 
-  public static get rawExpressMiddleware() {
-    return new RequestContextMiddleware().use;
-  }
+    public static get rawExpressMiddleware() {
+        return new RequestContextMiddleware().use;
+    }
 }

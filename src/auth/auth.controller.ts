@@ -3,70 +3,90 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
   UseGuards,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
-import { Roles } from './../core/decorators/role.decorator';
-import { Role } from './../core/enums/role.enum';
-import { JwtAuthGuard } from './../core/guards/jwt-auth.guard';
-import { RolesGuard } from './../core/guards/roles.guards';
-import { AuthService } from './auth.service';
-import {
-  AuthCredentialsDto,
-  AuthEmailDto,
-  CreateUserDto,
-  UpdateUserDto,
-} from './dto/auth-credentials.dto';
+import {Roles} from '../core/decorators/role.decorator';
+import {Role} from '../core/enums/role.enum';
+import {AuthService} from './auth.service';
+import {AuthCredentialsDto, AuthEmailDto, CreateUserDto, UpdateUserDto} from './dto/auth-credentials.dto';
+import {Public} from '../core/decorators/public.decorator';
+import {GetCurrentUserId} from '../core/decorators/get-current-user-id.decorator';
+import {RefreshTokenGuard} from '../core/guards/refresh-token.guard';
+import {GetCurrentUser} from '../core/decorators/get-current-user.decorator';
+import {Tokens} from './types/tokens.type';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) {
+    }
 
-  @Post('/create')
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  async create(@Body() createUserDto: CreateUserDto) {
-    return await this.authService.createUser(createUserDto);
-  }
+    @Public()
+    @Post('local/signup')
+    @HttpCode(HttpStatus.CREATED)
+    //@UseGuards(JwtAuthGuard, RolesGuard)
+    async signupLocal(@Body() createUserDto: CreateUserDto) {
+        return await this.authService.signupLocal(createUserDto);
+    }
 
-  @Get('/verify/:token')
-  async verifyTokenByEmail(@Param('token') token: string) {
-    return await this.authService.verifyTokenByEmail(token);
-  }
+    @Public()
+    @Get('/verify/:token')
+    @HttpCode(HttpStatus.OK)
+    async verifyTokenByEmail(@Param('token') token: string) {
+        return await this.authService.verifyTokenByEmail(token);
+    }
 
-  @Post('/login')
-  async login(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto) {
-    return await this.authService.validateUserByPassword(authCredentialsDto);
-  }
+    @Public()
+    @Post('local/signin')
+    @HttpCode(HttpStatus.OK)
+    async signinLocal(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto) {
+        return await this.authService.signinLocal(authCredentialsDto);
+    }
 
-  @Put('/update')
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  async update(@Body() updateUserDto: UpdateUserDto) {
-    return await this.authService.updateUser(updateUserDto);
-  }
+    @Put('update')
+    @Roles(Role.Admin)
+    //@UseGuards(JwtAuthGuard, RolesGuard)
+    async update(@Body() updateUserDto: UpdateUserDto) {
+        return await this.authService.updateUser(updateUserDto);
+    }
 
-  @Get('/user')
-  @Roles(Role.Admin, Role.User)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  async getUser() {
-    return await this.authService.getUserFromAuth();
-  }
+    @Post('user')
+    @Roles(Role.Admin, Role.User)
+    //@UseGuards(JwtAuthGuard, RolesGuard)
+    async getUser(@GetCurrentUserId() userId: string) {
+        return await this.authService.getUserFromAuth(userId);
+    }
 
-  @Get('/users')
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  async getAllUsers() {
-    return await this.authService.getAllUsers();
-  }
+    @Post('logout')
+    @HttpCode(HttpStatus.OK)
+    async logout(@GetCurrentUserId() userId: string): Promise<boolean> {
+        return this.authService.logout(userId);
+    }
 
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Delete('/delete')
-  async delete(@Body(ValidationPipe) auth: AuthEmailDto) {
-    return await this.authService.deleteUser(auth);
-  }
+    @Public()
+    @UseGuards(RefreshTokenGuard)
+    @Post('refresh')
+    @HttpCode(HttpStatus.OK)
+    refreshTokens(@GetCurrentUserId() userId: string, @GetCurrentUser('refreshToken') refreshToken: string): Promise<Tokens> {
+        return this.authService.refreshTokens(userId, refreshToken);
+    }
+
+    @Get('users')
+    @Roles(Role.Admin)
+    //@UseGuards(JwtAuthGuard, RolesGuard)
+    async getAllUsers() {
+        return await this.authService.getAllUsers();
+    }
+
+    @Roles(Role.Admin)
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    @Delete('delete')
+    async delete(@Body(ValidationPipe) auth: AuthEmailDto) {
+        return await this.authService.deleteUser(auth);
+    }
 }
