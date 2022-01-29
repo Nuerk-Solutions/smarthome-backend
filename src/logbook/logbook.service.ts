@@ -18,9 +18,6 @@ export class LogbookService {
     let distanceSinceLastAdditionalInformation = '0';
 
     if (createLogbookDto.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
-      createLogbookDto.additionalInformationCost =
-        createLogbookDto.additionalInformationCost == '0' || createLogbookDto.additionalInformationCost == null ? '' : createLogbookDto.additionalInformationCost;
-      createLogbookDto.additionalInformation = createLogbookDto.additionalInformation ?? '';
       // Calculate the distance since the last additional information from the corrosponding typ and from the same vehicleTyp
       const LastAdditionalInformation = await this.logbookModel
         .findOne({
@@ -33,9 +30,6 @@ export class LogbookService {
       if (LastAdditionalInformation) {
         distanceSinceLastAdditionalInformation = Number(+createLogbookDto.newMileAge - +LastAdditionalInformation.newMileAge).toFixed(2);
       }
-    } else {
-      createLogbookDto.additionalInformation = '';
-      createLogbookDto.additionalInformationCost = '';
     }
 
     const logbook = {

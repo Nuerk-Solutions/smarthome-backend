@@ -1,4 +1,4 @@
-import { IsDateString, IsEnum, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
+import { IsDateString, IsEnum, IsISO8601, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
 
 export enum VehicleTyp {
   FERRARI = 'Ferrari',
@@ -37,6 +37,7 @@ export class CreateLogbookDto {
   // distanceCost: string;
 
   @IsNotEmpty()
+  @IsISO8601()
   @IsDateString()
   date: Date;
 
@@ -50,10 +51,10 @@ export class CreateLogbookDto {
   additionalInformationTyp: AdditionalInformationTyp;
 
   @IsOptional()
-  additionalInformation: string;
+  additionalInformation = '';
 
   @IsOptional()
-  additionalInformationCost: string;
+  additionalInformationCost = '';
 
   // distanceSinceLastAdditionalInformation: string;
 }

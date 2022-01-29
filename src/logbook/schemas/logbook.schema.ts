@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import { AdditionalInformationTyp, Driver, VehicleTyp } from '../dto/create-logbook.dto';
+import { Document } from 'mongoose';
 
 export type LogbookDocument = Logbook & Document;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: { createdAt: true, updatedAt: true } })
 export class Logbook {
   @Prop({ type: String, required: true, enum: Driver })
   driver: Driver;
