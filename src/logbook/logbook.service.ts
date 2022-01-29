@@ -52,8 +52,8 @@ export class LogbookService {
 
   async findLatest(): Promise<Logbook[]> {
     // Find respectively the last added entry of vehicleTyp VW or Ferrari
-    const latestLogbookVw = await this.logbookModel.findOne({ vehicleTyp: 'VW' }).sort({ createdAt: -1 }).limit(1).exec();
-    const latestLogbookFerrari = await this.logbookModel.findOne({ vehicleTyp: 'Ferrari' }).sort({ createdAt: -1 }).limit(1).exec();
+    const latestLogbookVw = await this.logbookModel.findOne({ vehicleTyp: 'VW' }).sort({ date: -1 }).limit(1).exec();
+    const latestLogbookFerrari = await this.logbookModel.findOne({ vehicleTyp: 'Ferrari' }).sort({ date: -1 }).limit(1).exec();
 
     // Throw error if no logbook was found
     if (!latestLogbookVw && !latestLogbookFerrari) {
