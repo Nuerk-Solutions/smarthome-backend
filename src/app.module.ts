@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { LogbookModule } from './logbook/logbook.module';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { LogbookModule } from './logbook/logbook.module';
       inject: [ConfigService],
     }),
     LogbookModule,
+    AuthenticationModule,
+    UsersModule,
   ],
 })
 export class AppModule {
