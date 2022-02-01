@@ -2,13 +2,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { RequestContextMiddleware } from './core/middleware/request-context.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.enableCors();
-  app.use(RequestContextMiddleware.rawExpressMiddleware);
 
   app.useGlobalPipes(
     new ValidationPipe({
