@@ -25,7 +25,7 @@ model authentications {
     createdAt                   DateTime    @default(now())
     updatedAt                   DateTime    @updatedAt
     role                        Role        @default(USER)
-    emailAddress                 String      @unique
+    emailAddress                String      @unique
     password                    String
     isEmailConfirmed            Boolean     @default(false)
     currentHashedRefreshToken   String?
