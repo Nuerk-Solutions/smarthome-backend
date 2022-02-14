@@ -11,26 +11,26 @@ datasource db {
 }
 
 model users {
-    id                  Int                 @default(autoincrement()) @id
-    uuid                String              @db.Uuid
+    id                  Int                 @id @default(autoincrement())
+    uuid                String              @default(uuid())
     createdAt           DateTime            @default(now())
     updatedAt           DateTime            @updatedAt
     firstName           String
-    authenticationId    Int
-    authentication      authentications     @relation("user", fields: [authenticationId], references: [id], onDelete: Cascade)
+    authentication      authentications?    @relation("Authentication")
 }
 
 model authentications {
     id                          Int         @id @default(autoincrement())
-    uuid                        String      @db.Uuid
+    uuid                        String      @default(uuid())
     createdAt                   DateTime    @default(now())
     updatedAt                   DateTime    @updatedAt
     role                        Role        @default(USER)
-    emailAdress                 String      @unique
+    emailAddress                 String      @unique
     password                    String
     isEmailConfirmed            Boolean     @default(false)
     currentHashedRefreshToken   String?
-    user                        users?      @relation("user")
+    user                        users?      @relation("Authentication", fields: [userId], references: [id], onDelete: Cascade)
+    userId                      Int?
 }
 
 enum Role {

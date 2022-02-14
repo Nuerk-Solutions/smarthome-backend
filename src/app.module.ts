@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { LogbookModule } from './logbook/logbook.module';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './users/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -23,7 +23,7 @@ import { PrismaModule } from './prisma/prisma.module';
     PrismaModule,
     LogbookModule,
     AuthenticationModule,
-    UsersModule,
+    UserModule,
   ],
 })
 export class AppModule {
