@@ -13,7 +13,7 @@ export class EmailConfirmationGuard implements CanActivate {
     this.prismaService.authentications
       .findUnique({
         where: {
-          id: request.user.authenticationId,
+          id: request.user.authentication.id,
         },
       })
       .then((authentication) => {
