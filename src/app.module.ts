@@ -22,8 +22,8 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     PrismaModule,
     LogbookModule,
-    AuthenticationModule,
     UserModule,
+    AuthenticationModule,
   ],
 })
 export class AppModule {

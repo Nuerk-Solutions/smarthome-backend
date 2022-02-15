@@ -1,8 +1,8 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-jwt';
 import { AuthenticationService } from '../../authentication.service';
 import { Injectable } from '@nestjs/common';
 import { users as User } from '@prisma/client';
+import { Strategy } from 'passport-local';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {

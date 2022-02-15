@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { RegistrationDto } from './core/dto/registration.dto';
-import { authentications as Authentication, users as User } from '@prisma/client';
+import { users as User } from '@prisma/client';
 import { RequestWithUser } from './core/interfaces/request-with-user.interface';
 import { LocalAuthenticationGuard } from './core/guards/local-authentication.guard';
 import { JwtRefreshTokenGuard } from './core/guards/jwt-refresh-token.guard';
