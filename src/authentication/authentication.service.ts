@@ -83,7 +83,7 @@ export class AuthenticationService {
     const accessTokenCookie = this._getCookieWithJwtAccessToken(user.uuid);
     const { cookie: refreshTokenCookie, token: refreshToken } = this._getCookieWithJwtRefreshToken(user.uuid);
 
-    await this._setCurrentRefreshToken(user.authentication.id, refreshToken);
+    await this._setCurrentRefreshToken(user.authenticationId, refreshToken);
 
     return [accessTokenCookie, refreshTokenCookie];
   }

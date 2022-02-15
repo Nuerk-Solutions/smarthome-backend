@@ -16,7 +16,8 @@ model users {
     createdAt           DateTime            @default(now())
     updatedAt           DateTime            @updatedAt
     firstName           String
-    authentication      authentications?    @relation("Authentication")
+    authentication      authentications    @relation("Authentication", fields: [authenticationId], references: [id], onDelete: Cascade)
+    authenticationId    Int
 }
 
 model authentications {
@@ -29,8 +30,7 @@ model authentications {
     password                    String
     isEmailConfirmed            Boolean     @default(false)
     currentHashedRefreshToken   String?
-    user                        users?      @relation("Authentication", fields: [userId], references: [id], onDelete: Cascade)
-    userId                      Int?
+    user                        users?      @relation("Authentication")
 }
 
 enum Role {
