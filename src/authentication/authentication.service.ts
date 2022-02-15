@@ -3,13 +3,14 @@ import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
-import { authentications as Authentication, users as User } from '@prisma/client';
+import { authentications as Authentication, Prisma, users as User } from '@prisma/client';
 import { validateHash } from '../utils/hash.util';
 import { RefreshTokenNoMatchingException } from './core/exceptions/refresh-token-no-matching.exception';
 import { WrongCredentialsProvidedException } from './core/exceptions/wrong-credentials-provided.exception';
 import { RegistrationDto } from './core/dto/registration.dto';
 import { CreateAuthenticationDto } from './core/dto/create-authentication.dto';
 import { TokenPayload } from './core/interfaces/token-payload.interface';
+import { CreateUserDto } from '../users/dtos/create-user.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -20,7 +21,7 @@ export class AuthenticationService {
    * Authenticates a user by email by searching for it in the authentication database
    * @param emailAddress
    */
-  public async getAuthentication(emailAddress: string) /* : Promise<Authentication> */ {
+  public async getAuthentication(emailAddress: string): Promise<Authentication & { user: User }> /* : Promise<Authentication> */ {
     return this._prismaService.authentications.findFirst({
       where: {
         emailAddress: emailAddress,
@@ -64,15 +65,17 @@ export class AuthenticationService {
 
   public async registration({ firstName, ...rest }: RegistrationDto): Promise<User> {
     try {
-      const authentication = await this._createAuthentication(rest);
-      const user = await this._userService.createUser({ firstName }, authentication);
-      return user;
+      const authentication = await this._createAuthentication(rest, { firstName });
+      // const user = await this._userService.createUser({ firstName }, authentication);
+      return authentication.user;
     } catch (error) {
-      // Unique violation error code for Postgres
-      if (error?.code === 23505) {
-        throw new BadRequestException('User with that email already exists');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // Unique violation error code for Postgres
+        if (error?.code === 'P2002') {
+          throw new BadRequestException('User with that email already exists');
+        }
+        throw new InternalServerErrorException();
       }
-      throw new InternalServerErrorException();
     }
   }
 
@@ -108,10 +111,18 @@ export class AuthenticationService {
     // Todo: Send email with confirmation link
   }
 
-  private async _createAuthentication(createAuthenticationDto: CreateAuthenticationDto): Promise<Authentication> {
+  private async _createAuthentication(createAuthenticationDto: CreateAuthenticationDto, createUserDto: CreateUserDto): Promise<Authentication & { user: User }> {
     return this._prismaService.authentications.create({
       data: {
         ...createAuthenticationDto,
+        user: {
+          create: {
+            ...createUserDto,
+          },
+        },
+      },
+      include: {
+        user: true,
       },
     });
   }

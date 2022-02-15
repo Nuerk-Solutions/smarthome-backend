@@ -1,14 +1,17 @@
-import * as cookieParser from 'cookie-parser';
-import * as compression from 'compression';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import bodyParser from 'body-parser';
+import { PrismaService } from './prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const reflector = app.get(Reflector);
+  const prismaService: PrismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
 
   app.use(cookieParser());
   app.use(helmet());

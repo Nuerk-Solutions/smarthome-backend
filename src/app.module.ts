@@ -6,6 +6,7 @@ import { LogbookModule } from './logbook/logbook.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './users/user.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { PrismaService } from './prisma/prisma.service';
 
 @Module({
   imports: [
@@ -20,11 +21,12 @@ import { PrismaModule } from './prisma/prisma.module';
       }),
       inject: [ConfigService],
     }),
-    PrismaModule,
     LogbookModule,
     UserModule,
+    PrismaModule,
     AuthenticationModule,
   ],
+  providers: [PrismaService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

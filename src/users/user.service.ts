@@ -7,7 +7,11 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UserService {
   constructor(private readonly _prismaService: PrismaService) {}
 
-  // Todo - check if this method works
+  /**
+   * @deprecated Use {@link _createAuthentication}. instead. Because of the relations between the two models, this method results nothing.
+   * @param createUserDto - The user to create.
+   * @param authentication - The authentication to create.
+   */
   public async createUser(createUserDto: CreateUserDto, authentication?: Prisma.authenticationsCreateInput): Promise<User> {
     return this._prismaService.users.create({
       data: {
