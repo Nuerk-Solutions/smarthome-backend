@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { TokenPayload } from '../interfaces/token-payload.interface';
 import { User } from '@prisma/client';
-import { encodeString } from '../../../utils/hash.util';
+import { encodeString } from '../../../core/utils/hash.util';
 import { WrongCredentialsProvidedException } from '../exceptions/wrong-credentials-provided.exception';
 
 @Injectable()

@@ -5,7 +5,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import bodyParser from 'body-parser';
-import { PrismaService } from './prisma/prisma.service';
+import { PrismaService } from './core/prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

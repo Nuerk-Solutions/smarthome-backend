@@ -2,9 +2,9 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../core/prisma/prisma.service';
 import { Authentication, Prisma, User } from '@prisma/client';
-import { validateHash } from '../utils/hash.util';
+import { validateHash } from '../core/utils/hash.util';
 import { RefreshTokenNoMatchingException } from './core/exceptions/refresh-token-no-matching.exception';
 import { WrongCredentialsProvidedException } from './core/exceptions/wrong-credentials-provided.exception';
 import { RegistrationDto } from './core/dto/registration.dto';

@@ -5,8 +5,8 @@ import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { LogbookModule } from './logbook/logbook.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './users/user.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { PrismaService } from './prisma/prisma.service';
+import { PrismaModule } from './core/prisma/prisma.module';
+import { PrismaService } from './core/prisma/prisma.service';
 
 @Module({
   imports: [

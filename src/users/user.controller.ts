@@ -5,7 +5,7 @@ import { Role, User } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
-  @Authorization(Role.USER)
+  @Authorization(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Get()
   public async getUser(@Req() { user }: RequestWithUser): Promise<User> {
