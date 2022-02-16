@@ -1,5 +1,0 @@
-{
-  "npm-scripts.showStartNotification": false,
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
-}

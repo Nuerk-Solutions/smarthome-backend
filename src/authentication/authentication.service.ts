@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -10,10 +10,19 @@ import { WrongCredentialsProvidedException } from './core/exceptions/wrong-crede
 import { RegistrationDto } from './core/dto/registration.dto';
 import { TokenPayload } from './core/interfaces/token-payload.interface';
 import { CreateAuthenticationDto } from './core/dto/create-authentication.dto';
+import { VerificationTokenPayload } from './core/interfaces/verification-token-payload.interface';
+import { MailService } from '../core/mail/mail.service';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private readonly _userService: UserService, private readonly _jwtService: JwtService, private readonly _configService: ConfigService, private readonly _prismaService: PrismaService) {}
+  constructor(
+    private readonly _userService: UserService,
+    @Inject(forwardRef(() => MailService))
+    private readonly _mailService: MailService,
+    private readonly _jwtService: JwtService,
+    private readonly _configService: ConfigService,
+    private readonly _prismaService: PrismaService,
+  ) {}
 
   /**
    * Authenticates a user by email by searching for it in the authentication database
@@ -60,11 +69,11 @@ export class AuthenticationService {
     return authentication.user;
   }
 
-  public async registration({ firstName, ...rest }: RegistrationDto): Promise<User> {
+  public async registration({ firstName, ...rest }: RegistrationDto): Promise<{ user: User; authentication: Authentication }> {
     try {
       const authentication = await this._createAuthentication(rest);
       const user = await this._userService.createUser({ firstName }, authentication);
-      return user;
+      return { user, authentication };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // Unique violation error code for Postgres
@@ -105,15 +114,24 @@ export class AuthenticationService {
     if (authentication.isEmailConfirmed) {
       throw new BadRequestException('Email is already confirmed');
     }
-    // Todo: Send email with confirmation link
+    await this._mailService.sendConfirmationEmail(authentication);
+  }
+
+  public getJwtConfirmToken(emailAddress: string): string {
+    const payload: VerificationTokenPayload = { emailAddress };
+    const token = this._jwtService.sign(payload, {
+      secret: this._configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
+      expiresIn: `${this._configService.get('JWT_VERIFICATION_TOKEN_EXPIRATION_TIME')}s`
+    });
+    return token;
   }
 
   private async _createAuthentication(createAuthenticationDto: CreateAuthenticationDto): Promise<Authentication> {
     return this._prismaService.authentication.create({
       data: {
         roles: ['USER'],
-        ...createAuthenticationDto,
-      },
+        ...createAuthenticationDto
+      }
     });
   }
 

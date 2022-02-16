@@ -7,18 +7,19 @@ import { LocalAuthenticationGuard } from './core/guards/local-authentication.gua
 import { JwtRefreshTokenGuard } from './core/guards/jwt-refresh-token.guard';
 import { JwtConfirmTokenGuard } from './core/guards/jwt-confirm-token.guard';
 import { JwtAccessTokenGuard } from './core/guards/jwt-access-token.guard';
+import { MailService } from '../core/mail/mail.service';
 
 @Controller('Authentication')
 export class AuthenticationController {
-  // Todo integrate mail service
-  constructor(private readonly _authenticationService: AuthenticationService) {}
+  constructor(private readonly _authenticationService: AuthenticationService, private readonly _mailService: MailService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('registration')
   async registration(@Body() registrationDto: RegistrationDto): Promise<User> {
-    const user = await this._authenticationService.registration(registrationDto);
+    const { user, authentication } = await this._authenticationService.registration(registrationDto);
 
-    // Todo send Mail
+    await this._mailService.sendConfirmationEmail(authentication);
+
     return user;
   }
 

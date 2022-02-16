@@ -25,7 +25,7 @@ export class UserService {
   }
 
   public async getUser(uuid: string): Promise<User & { authentication: Authentication }> /* : Promise<User | undefined> */ {
-    return await this._prismaService.user.findFirst({
+    return this._prismaService.user.findFirst({
       where: {
         uuid: uuid,
       },

@@ -7,12 +7,25 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './users/user.module';
 import { PrismaModule } from './core/prisma/prisma.module';
 import { PrismaService } from './core/prisma/prisma.service';
+import { MailModule } from './core/mail/mail.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.development'],
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: +configService.get<number>('REDIS_PORT'),
+          password: configService.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -25,6 +38,7 @@ import { PrismaService } from './core/prisma/prisma.service';
     UserModule,
     PrismaModule,
     AuthenticationModule,
+    MailModule,
   ],
   providers: [PrismaService],
 })

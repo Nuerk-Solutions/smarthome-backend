@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { UserModule } from '../users/user.module';
 import { PassportModule } from '@nestjs/passport';
@@ -10,16 +10,11 @@ import { JwtRefreshTokenStrategy } from './core/strategies/jwt-refresh-token.str
 import { JwtConfirmTokenStrategy } from './core/strategies/jwt-confirm-token.strategy';
 import { AuthenticationController } from './authentication.controller';
 import { UserService } from '../users/user.service';
+import { MailModule } from '../core/mail/mail.module';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [
-    UserModule,
-    PassportModule,
-    ConfigModule,
-    // Todo register Mail Service
-    // forwardRef(() => MailModule),
-    JwtModule.register({}),
-  ],
+  imports: [UserModule, PassportModule, ConfigModule, forwardRef(() => MailModule), JwtModule.register({})],
   providers: [
     AuthenticationService,
     UserService,
@@ -27,7 +22,13 @@ import { UserService } from '../users/user.service';
     JwtAccessTokenStrategy,
     JwtRefreshTokenStrategy,
     JwtConfirmTokenStrategy,
-    // Todo register Mail Service
+    {
+      provide: 'MAIL_SERVICE',
+      useFactory: () =>
+        ClientProxyFactory.create({
+          transport: Transport.TCP,
+        }),
+    },
   ],
   exports: [AuthenticationService],
   controllers: [AuthenticationController],
