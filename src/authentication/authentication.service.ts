@@ -3,26 +3,24 @@ import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
-import { authentications as Authentication, Prisma, users as User } from '@prisma/client';
+import { Authentication, Prisma, User } from '@prisma/client';
 import { validateHash } from '../utils/hash.util';
 import { RefreshTokenNoMatchingException } from './core/exceptions/refresh-token-no-matching.exception';
 import { WrongCredentialsProvidedException } from './core/exceptions/wrong-credentials-provided.exception';
 import { RegistrationDto } from './core/dto/registration.dto';
-import { CreateAuthenticationDto } from './core/dto/create-authentication.dto';
 import { TokenPayload } from './core/interfaces/token-payload.interface';
-import { CreateUserDto } from '../users/dtos/create-user.dto';
+import { CreateAuthenticationDto } from './core/dto/create-authentication.dto';
 
 @Injectable()
 export class AuthenticationService {
   constructor(private readonly _userService: UserService, private readonly _jwtService: JwtService, private readonly _configService: ConfigService, private readonly _prismaService: PrismaService) {}
 
-  // Todo: Check if it returns actually the user
   /**
    * Authenticates a user by email by searching for it in the authentication database
    * @param emailAddress
    */
   public async getAuthentication(emailAddress: string): Promise<Authentication & { user: User }> /* : Promise<Authentication> */ {
-    return this._prismaService.authentications.findFirst({
+    return this._prismaService.authentication.findFirst({
       where: {
         emailAddress: emailAddress,
       },
@@ -30,7 +28,6 @@ export class AuthenticationService {
         user: true,
       },
     });
-    // .user().authentication()
   }
 
   /**
@@ -65,9 +62,9 @@ export class AuthenticationService {
 
   public async registration({ firstName, ...rest }: RegistrationDto): Promise<User> {
     try {
-      const authentication = await this._createAuthentication(rest, { firstName });
-      // const user = await this._userService.createUser({ firstName }, authentication);
-      return authentication.user;
+      const authentication = await this._createAuthentication(rest);
+      const user = await this._userService.createUser({ firstName }, authentication);
+      return user;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // Unique violation error code for Postgres
@@ -111,18 +108,11 @@ export class AuthenticationService {
     // Todo: Send email with confirmation link
   }
 
-  private async _createAuthentication(createAuthenticationDto: CreateAuthenticationDto, createUserDto: CreateUserDto): Promise<Authentication & { user: User }> {
-    return this._prismaService.authentications.create({
+  private async _createAuthentication(createAuthenticationDto: CreateAuthenticationDto): Promise<Authentication> {
+    return this._prismaService.authentication.create({
       data: {
+        roles: ['USER'],
         ...createAuthenticationDto,
-        user: {
-          create: {
-            ...createUserDto,
-          },
-        },
-      },
-      include: {
-        user: true,
       },
     });
   }
@@ -152,7 +142,7 @@ export class AuthenticationService {
   }
 
   private async _setCurrentRefreshToken(authenticationId: number, currentHashedRefreshToken: string) {
-    return this._prismaService.authentications.update({
+    return this._prismaService.authentication.update({
       where: {
         id: authenticationId,
       },
@@ -163,7 +153,7 @@ export class AuthenticationService {
   }
 
   private async _removeRefreshToken(authenticationId: number) {
-    return this._prismaService.authentications.update({
+    return this._prismaService.authentication.update({
       where: {
         id: authenticationId,
       },
@@ -174,7 +164,7 @@ export class AuthenticationService {
   }
 
   private async _markEmailAsConfirmed(emailAddress: string) {
-    return this._prismaService.authentications.update({
+    return this._prismaService.authentication.update({
       where: {
         emailAddress,
       },
