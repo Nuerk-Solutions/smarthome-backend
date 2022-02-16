@@ -10,47 +10,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
+model User {
     id                  Int                 @id @default(autoincrement())
     uuid                String              @default(uuid())
     createdAt           DateTime            @default(now())
     updatedAt           DateTime            @updatedAt
     firstName           String
-    authentication      authentications    @relation("Authentication", fields: [authenticationId], references: [id], onDelete: Cascade)
+    authentication      Authentication    @relation("Auth", fields: [authenticationId], references: [id], onDelete: Cascade)
     authenticationId    Int
 }
 
-model authentications {
+model Authentication {
     id                          Int         @id @default(autoincrement())
     uuid                        String      @default(uuid())
     createdAt                   DateTime    @default(now())
     updatedAt                   DateTime    @updatedAt
-    role                        Role        @default(USER)
+    roles                       Role[]
     emailAddress                String      @unique
     password                    String
     isEmailConfirmed            Boolean     @default(false)
     currentHashedRefreshToken   String?
-    user                        users?      @relation("Authentication")
+    user                        User?      @relation("Auth")
 }
 
 enum Role {
-  SUSPENSION    @map("SUSPENSION_ROLE")
-  USER          @map("USER_ROLE")
-  ADMIN         @map("ADMIN_ROLE")
+  SUSPENSION
+  USER
+  ADMIN
 }
-
-//model User {
-//  id    Int     @default(autoincrement()) @id
-//  email String  @unique
-//  name  String?
-//  posts Post[]
-//}
-//
-//model Post {
-//  id        Int      @default(autoincrement()) @id
-//  title     String
-//  content   String?
-//  published Boolean? @default(false)
-//  author    User?    @relation(fields: [authorId], references: [id])
-//  authorId  Int?
-//}

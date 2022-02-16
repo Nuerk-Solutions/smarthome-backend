@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthenticationService } from '../../authentication.service';
 import { VerificationTokenPayload } from '../interfaces/verification-token-payload.interface';
-import { users as User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { WrongCredentialsProvidedException } from '../exceptions/wrong-credentials-provided.exception';
 
 @Injectable()

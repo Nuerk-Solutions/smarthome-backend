@@ -9,6 +9,7 @@ import { JwtAccessTokenStrategy } from './core/strategies/jwt-access-token.strat
 import { JwtRefreshTokenStrategy } from './core/strategies/jwt-refresh-token.strategy';
 import { JwtConfirmTokenStrategy } from './core/strategies/jwt-confirm-token.strategy';
 import { AuthenticationController } from './authentication.controller';
+import { UserService } from '../users/user.service';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthenticationController } from './authentication.controller';
   ],
   providers: [
     AuthenticationService,
+    UserService,
     LocalStrategy,
     JwtAccessTokenStrategy,
     JwtRefreshTokenStrategy,

@@ -6,7 +6,7 @@ import { AuthenticationService } from '../../authentication.service';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { TokenPayload } from '../interfaces/token-payload.interface';
-import { users as User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { encodeString } from '../../../utils/hash.util';
 import { WrongCredentialsProvidedException } from '../exceptions/wrong-credentials-provided.exception';
 

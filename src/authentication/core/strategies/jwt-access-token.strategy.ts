@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { TokenPayload } from '../interfaces/token-payload.interface';
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../../../users/user.service';
-import { users as User } from '@prisma/client';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class JwtAccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access-token') {

@@ -1,6 +1,6 @@
 import { PrismaClient } from '.prisma/client';
 import { INestApplication, Injectable } from '@nestjs/common';
-import { authentications as Authentication } from '@prisma/client';
+import { Authentication } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { encodeString, generateHash } from '../utils/hash.util';
 
@@ -26,7 +26,7 @@ export class PrismaService extends PrismaClient {
 
     // Middleware for hash the password
     this.$use(async (params, next) => {
-      if (params.model == 'authentications') {
+      if (params.model == 'Authentication') {
         // Create Action
         if (params.action == 'create') {
           const authentication: Authentication = params.args.data;
@@ -45,21 +45,20 @@ export class PrismaService extends PrismaClient {
           if (authentication.password) {
             const password = await generateHash(authentication.password);
             // Todo: Check if this method works
-            this.authentications.findUnique({ where: { id: authentication.id } }).then((currentAuthentication) => {
+            this.authentication.findUnique({ where: { id: authentication.id } }).then((currentAuthentication) => {
               if (password !== currentAuthentication.password) {
                 authentication.password = password;
               }
             });
-
-            if (authentication.currentHashedRefreshToken) {
-              // the token is longer than 72 characters, so it needs to be encoded first with sha256
-              const currentHashedRefreshToken = encodeString(authentication.currentHashedRefreshToken);
-              authentication.currentHashedRefreshToken = await generateHash(currentHashedRefreshToken);
-            }
+          }
+          if (authentication.currentHashedRefreshToken) {
+            // the token is longer than 72 characters, so it needs to be encoded first with sha256
+            const currentHashedRefreshToken = encodeString(authentication.currentHashedRefreshToken);
+            authentication.currentHashedRefreshToken = await generateHash(currentHashedRefreshToken);
           }
         }
-        return next(params);
       }
+      return next(params);
     });
   }
 
@@ -77,6 +76,6 @@ export class PrismaService extends PrismaClient {
     if (process.env.NODE_ENV === 'production') return;
 
     // teardown logic
-    return Promise.all([this.users.deleteMany(), this.authentications.deleteMany()]);
+    return Promise.all([this.user.deleteMany(), this.authentication.deleteMany()]);
   }
 }
