@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthenticationService } from '../../authentication.service';
 import { VerificationTokenPayload } from '../interfaces/verification-token-payload.interface';
-import { User } from '@prisma/client';
+import { Authentication, User } from '@prisma/client';
 import { WrongCredentialsProvidedException } from '../exceptions/wrong-credentials-provided.exception';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class JwtConfirmTokenStrategy extends PassportStrategy(Strategy, 'jwt-con
     });
   }
 
-  async validate({ emailAddress }: VerificationTokenPayload): Promise<User> {
+  async validate({ emailAddress }: VerificationTokenPayload): Promise<User & { authentication: Authentication }> {
     const authentication = await this._authenticationService.getAuthentication(emailAddress);
 
     if (!authentication) {
@@ -27,6 +27,7 @@ export class JwtConfirmTokenStrategy extends PassportStrategy(Strategy, 'jwt-con
     if (authentication.isEmailConfirmed) {
       throw new BadRequestException('Email address is already confirmed');
     }
-    return authentication.user;
+
+    return { ...authentication.user, authentication };
   }
 }
