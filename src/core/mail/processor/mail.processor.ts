@@ -37,7 +37,7 @@ export class MailProcessor {
         to: job.data.authentication.emailAddress,
         from: this._configService.get('EMAIL_ADDRESS'),
         subject: 'Confirm registration',
-        template: './registration',
+        template: 'registration',
         context: {
           confirmUrl: job.data.confirmUrl,
         },
