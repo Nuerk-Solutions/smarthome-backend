@@ -5,8 +5,6 @@ import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { LogbookModule } from './logbook/logbook.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './users/user.module';
-import { PrismaModule } from './core/prisma/prisma.module';
-import { PrismaService } from './core/prisma/prisma.service';
 import { MailModule } from './core/mail/mail.module';
 import { BullModule } from '@nestjs/bull';
 
@@ -36,11 +34,9 @@ import { BullModule } from '@nestjs/bull';
     }),
     LogbookModule,
     UserModule,
-    PrismaModule,
     AuthenticationModule,
     MailModule,
   ],
-  providers: [PrismaService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

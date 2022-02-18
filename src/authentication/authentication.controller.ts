@@ -1,13 +1,13 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { RegistrationDto } from './core/dto/registration.dto';
-import { User } from '@prisma/client';
 import { RequestWithUserPayload } from './core/interfaces/request-with-user-payload.interface';
 import { LocalAuthenticationGuard } from './core/guards/local-authentication.guard';
 import { JwtRefreshTokenGuard } from './core/guards/jwt-refresh-token.guard';
 import { JwtConfirmTokenGuard } from './core/guards/jwt-confirm-token.guard';
 import { JwtAccessTokenGuard } from './core/guards/jwt-access-token.guard';
 import { MailService } from '../core/mail/mail.service';
+import { User } from '../users/core/schemas/user.schema';
 
 @Controller('Authentication')
 export class AuthenticationController {
@@ -16,9 +16,9 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   @Post('registration')
   async registration(@Body() registrationDto: RegistrationDto): Promise<User> {
-    const { user, authentication } = await this._authenticationService.registration(registrationDto);
+    const user: User = await this._authenticationService.registration(registrationDto);
 
-    await this._mailService.sendConfirmationEmail(authentication);
+    await this._mailService.sendConfirmationEmail(user);
 
     return user;
   }
@@ -56,13 +56,13 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('confirm')
   async confirm(@Req() { user }: RequestWithUserPayload): Promise<void> {
-    await this._authenticationService.confirm(user.authentication);
+    await this._authenticationService.confirm(user);
   }
 
   @UseGuards(JwtAccessTokenGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('confirm/resend')
   async resendConfirmationLink(@Req() { user }: RequestWithUserPayload): Promise<void> {
-    await this._authenticationService.resendConfirmationLink(user.authentication);
+    await this._authenticationService.resendConfirmationLink(user);
   }
 }

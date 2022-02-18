@@ -1,37 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { Authentication, User } from '@prisma/client';
-import { PrismaService } from '../core/prisma/prisma.service';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto } from './core/dtos/create-user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User, UserDocument } from './core/schemas/user.schema';
+import { CreateAuthenticationDto } from '../authentication/core/dto/create-authentication.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly _prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(User.name)
+    private readonly _userModel: Model<UserDocument>,
+  ) {}
 
   /**
    * @param createUserDto - The user to create.
    * @param authentication - The authentication to create.
    */
-  public async createUser(createUserDto: CreateUserDto, authentication?: Authentication): Promise<User> {
-    return this._prismaService.user.create({
-      data: {
-        ...createUserDto,
-        authentication: {
-          connect: {
-            id: authentication.id,
-          },
-        },
+  public async createUser(createUserDto: CreateUserDto, authentication?: CreateAuthenticationDto): Promise<User> {
+    return await this._userModel.create({
+      ...createUserDto,
+      authentication: {
+        ...authentication,
       },
     });
   }
 
-  public async getUser(uuid: string): Promise<User & { authentication: Authentication }> /* : Promise<User | undefined> */ {
-    return this._prismaService.user.findFirst({
-      where: {
-        uuid: uuid,
-      },
-      include: {
-        authentication: true,
-      },
-    });
+  public async getUser(uuid: string): Promise<User> /* : Promise<User | undefined> */ {
+    return await this._userModel.findOne({ uuid: uuid }).exec();
   }
 }

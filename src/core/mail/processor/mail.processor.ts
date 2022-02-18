@@ -3,8 +3,8 @@ import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } fr
 import { CONFIRM_REGISTRATION, MAIL_QUEUE } from '../constants/mail.constant';
 import { ConfigService } from '@nestjs/config';
 import { Job } from 'bull';
-import { Authentication } from '@prisma/client';
 import { MailerService } from '@nestjs-modules/mailer';
+import { User } from '../../../users/core/schemas/user.schema';
 
 @Injectable()
 @Processor(MAIL_QUEUE)
@@ -29,12 +29,12 @@ export class MailProcessor {
   }
 
   @Process(CONFIRM_REGISTRATION)
-  public async confirmRegistration(job: Job<{ authentication: Authentication; confirmUrl: string }>) {
-    this._logger.log(`Sending confirm registration email to '${job.data.authentication.emailAddress}'`);
+  public async confirmRegistration(job: Job<{ user: User; confirmUrl: string }>) {
+    this._logger.log(`Sending confirm registration email to '${job.data.user.authentication.emailAddress}'`);
 
     try {
       return this._mailerService.sendMail({
-        to: job.data.authentication.emailAddress,
+        to: job.data.user.authentication.emailAddress,
         from: this._configService.get('EMAIL_ADDRESS'),
         subject: 'Confirm registration',
         template: 'registration',
@@ -43,7 +43,7 @@ export class MailProcessor {
         },
       });
     } catch (error) {
-      this._logger.error(`Failed to send confirmation email to '${job.data.authentication.emailAddress}'`);
+      this._logger.error(`Failed to send confirmation email to '${job.data.user.authentication.emailAddress}'`);
     }
   }
 }

@@ -4,7 +4,7 @@ import { Queue } from 'bull';
 import { CONFIRM_REGISTRATION, MAIL_QUEUE } from './constants/mail.constant';
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { ConfigService } from '@nestjs/config';
-import { Authentication } from '@prisma/client';
+import { User } from '../../users/core/schemas/user.schema';
 
 @Injectable()
 export class MailService {
@@ -17,16 +17,16 @@ export class MailService {
     private readonly _authenticationService: AuthenticationService,
   ) {}
 
-  public async sendConfirmationEmail(authentication: Authentication): Promise<void> {
-    const confirmUrl = this.getConfirmUrl(authentication.emailAddress);
+  public async sendConfirmationEmail(user: User): Promise<void> {
+    const confirmUrl = this.getConfirmUrl(user.authentication.emailAddress);
 
     try {
       await this._mailQueue.add(CONFIRM_REGISTRATION, {
-        authentication,
+        user,
         confirmUrl,
       });
     } catch (error) {
-      this._logger.error(`Error queueing registration email to user ${authentication.emailAddress}`);
+      this._logger.error(`Error queueing registration email to user ${user.authentication.emailAddress}`);
       throw error;
     }
   }

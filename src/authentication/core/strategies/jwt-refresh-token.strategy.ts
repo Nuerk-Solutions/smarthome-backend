@@ -6,13 +6,17 @@ import { AuthenticationService } from '../../authentication.service';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { TokenPayload } from '../interfaces/token-payload.interface';
-import { User } from '@prisma/client';
 import { encodeString } from '../../../core/utils/hash.util';
 import { WrongCredentialsProvidedException } from '../exceptions/wrong-credentials-provided.exception';
+import { User } from '../../../users/core/schemas/user.schema';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
-  constructor(private readonly _configService: ConfigService, private readonly _userService: UserService, private readonly _authenticationService: AuthenticationService) {
+  constructor(
+    private readonly _configService: ConfigService,
+    private readonly _userService: UserService,
+    private readonly _authenticationService: AuthenticationService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => {

@@ -1,7 +1,8 @@
 import { Controller, Get, HttpCode, HttpStatus, Req } from '@nestjs/common';
 import { Authorization } from '../authentication/core/decorators/authorization.decorator';
 import { RequestWithUserPayload } from '../authentication/core/interfaces/request-with-user-payload.interface';
-import { Role, User } from '@prisma/client';
+import { User } from './core/schemas/user.schema';
+import { Role } from '../authentication/core/enums/role.enum';
 
 @Controller('user')
 export class UserController {

@@ -2,16 +2,16 @@ import { BadRequestException, forwardRef, Inject, Injectable, InternalServerErro
 import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../core/prisma/prisma.service';
-import { Authentication, Prisma, User } from '@prisma/client';
 import { validateHash } from '../core/utils/hash.util';
 import { RefreshTokenNoMatchingException } from './core/exceptions/refresh-token-no-matching.exception';
 import { WrongCredentialsProvidedException } from './core/exceptions/wrong-credentials-provided.exception';
 import { RegistrationDto } from './core/dto/registration.dto';
 import { TokenPayload } from './core/interfaces/token-payload.interface';
-import { CreateAuthenticationDto } from './core/dto/create-authentication.dto';
 import { VerificationTokenPayload } from './core/interfaces/verification-token-payload.interface';
 import { MailService } from '../core/mail/mail.service';
+import { User, UserDocument } from '../users/core/schemas/user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class AuthenticationService {
@@ -21,22 +21,17 @@ export class AuthenticationService {
     private readonly _mailService: MailService,
     private readonly _jwtService: JwtService,
     private readonly _configService: ConfigService,
-    private readonly _prismaService: PrismaService,
+    @InjectModel(User.name)
+    private readonly _userModel: Model<UserDocument>,
   ) {}
 
   /**
    * Authenticates a user by email by searching for it in the authentication database
    * @param emailAddress
    */
-  public async getAuthentication(emailAddress: string): Promise<Authentication & { user: User }> /* : Promise<Authentication> */ {
-    return this._prismaService.authentication.findFirst({
-      where: {
-        emailAddress: emailAddress,
-      },
-      include: {
-        user: true,
-      },
-    });
+  public async getUserByEmail(emailAddress: string): Promise<User> /* : Promise<Authentication> */ {
+    // Return the user with the given email address from authentication
+    return this._userModel.findOne({ 'authentication.emailAddress': emailAddress });
   }
 
   /**
@@ -44,7 +39,7 @@ export class AuthenticationService {
    * @param user The user to check the refresh token against
    * @returns The user if the refresh token is valid
    */
-  public async getUserIfRefreshTokenMatches(encodedRefreshToken: string, user: User & { authentication: Authentication }) {
+  public async getUserIfRefreshTokenMatches(encodedRefreshToken: string, user: User) {
     const isRefreshTokenMatching = await validateHash(encodedRefreshToken, user.authentication.currentHashedRefreshToken);
 
     if (!isRefreshTokenMatching) {
@@ -54,30 +49,30 @@ export class AuthenticationService {
   }
 
   public async getAuthenticatedUser(emailAddress: string, plainTextPassword: string): Promise<User> {
-    const authentication = await this.getAuthentication(emailAddress);
+    const user = await this.getUserByEmail(emailAddress);
 
-    if (!authentication) {
+    if (!user) {
       // The same Exception is given to prevent the controller from API attacks
       throw new WrongCredentialsProvidedException();
     }
 
-    const isPasswordMatching = await validateHash(plainTextPassword, authentication.password);
+    const isPasswordMatching = await validateHash(plainTextPassword, user.authentication.password);
 
     if (!isPasswordMatching) {
       throw new WrongCredentialsProvidedException();
     }
-    return authentication.user;
+    return user;
   }
 
-  public async registration({ firstName, ...rest }: RegistrationDto): Promise<{ user: User; authentication: Authentication }> {
+  public async registration({ firstName, ...rest }: RegistrationDto): Promise<User> {
     try {
-      const authentication = await this._createAuthentication(rest);
-      const user = await this._userService.createUser({ firstName }, authentication);
-      return { user, authentication };
+      // const authentication = new Authentication();
+      const user = await this._userService.createUser({ firstName }, { ...rest });
+      return user;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.name === 'MongoServerError') {
         // Unique violation error code for Postgres
-        if (error?.code === 'P2002') {
+        if (error.code === 11000) {
           throw new BadRequestException('User with that email already exists');
         }
         throw new InternalServerErrorException();
@@ -85,54 +80,45 @@ export class AuthenticationService {
     }
   }
 
-  public async login(user: User & { authentication: Authentication }): Promise<string[]> {
+  public async login(user: User): Promise<string[]> {
     const accessTokenCookie = this._getCookieWithJwtAccessToken(user.uuid);
     const { cookie: refreshTokenCookie, token: refreshToken } = this._getCookieWithJwtRefreshToken(user.uuid);
 
-    await this._setCurrentRefreshToken(user.authenticationId, refreshToken);
+    await this._setCurrentRefreshToken(user.authentication._id, refreshToken);
 
     return [accessTokenCookie, refreshTokenCookie];
   }
 
-  async logout(user: User & { authentication: Authentication }): Promise<void> {
-    await this._removeRefreshToken(user.authentication.id);
+  async logout(user: User): Promise<void> {
+    await this._removeRefreshToken(user.authentication._id);
   }
 
   public getCookiesForLogout(): string[] {
     return ['Authentication=; HttpOnly; Path=/; Max-Age=0', 'Refresh=; HttpOnly; Path=/; Max-Age=0'];
   }
 
-  public refreshToken(user: User & { authentication: Authentication }): string {
+  public refreshToken(user: User): string {
     return this._getCookieWithJwtAccessToken(user.uuid);
   }
 
-  public async confirm(authentication: Authentication) {
-    return this._markEmailAsConfirmed(authentication.emailAddress);
+  public async confirm(user: User) {
+    return this._markEmailAsConfirmed(user.authentication.emailAddress);
   }
 
-  public async resendConfirmationLink(authentication: Authentication): Promise<void> {
-    if (authentication.isEmailConfirmed) {
+  public async resendConfirmationLink(user: User): Promise<void> {
+    if (user.authentication.isEmailConfirmed) {
       throw new BadRequestException('Email is already confirmed');
     }
-    await this._mailService.sendConfirmationEmail(authentication);
+    await this._mailService.sendConfirmationEmail(user);
   }
 
   public getJwtConfirmToken(emailAddress: string): string {
     const payload: VerificationTokenPayload = { emailAddress };
     const token = this._jwtService.sign(payload, {
       secret: this._configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
-      expiresIn: `${this._configService.get('JWT_VERIFICATION_TOKEN_EXPIRATION_TIME')}s`
+      expiresIn: `${this._configService.get('JWT_VERIFICATION_TOKEN_EXPIRATION_TIME')}s`,
     });
     return token;
-  }
-
-  private async _createAuthentication(createAuthenticationDto: CreateAuthenticationDto): Promise<Authentication> {
-    return this._prismaService.authentication.create({
-      data: {
-        roles: ['USER'],
-        ...createAuthenticationDto
-      }
-    });
   }
 
   /**
@@ -159,36 +145,32 @@ export class AuthenticationService {
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
   }
 
-  private async _setCurrentRefreshToken(authenticationId: number, currentHashedRefreshToken: string) {
-    return this._prismaService.authentication.update({
-      where: {
-        id: authenticationId,
+  private async _setCurrentRefreshToken(authenticationId: mongoose.Schema.Types.ObjectId, currentHashedRefreshToken: string) {
+    this._userModel.updateOne(
+      { 'authentication._id': authenticationId },
+      {
+        $set: {
+          'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
+        },
       },
-      data: {
-        currentHashedRefreshToken,
-      },
-    });
+    );
   }
 
-  private async _removeRefreshToken(authenticationId: number) {
-    return this._prismaService.authentication.update({
-      where: {
-        id: authenticationId,
+  private async _removeRefreshToken(authenticationId: mongoose.Schema.Types.ObjectId) {
+    return this._userModel.updateOne(
+      { 'authentication._id': authenticationId },
+      {
+        $set: { 'authentication.currentHashedRefreshToken': null },
       },
-      data: {
-        currentHashedRefreshToken: null,
-      },
-    });
+    );
   }
 
   private async _markEmailAsConfirmed(emailAddress: string) {
-    return this._prismaService.authentication.update({
-      where: {
-        emailAddress,
+    return this._userModel.updateOne(
+      { 'authentication.emailAddress': emailAddress },
+      {
+        $set: { 'authentication.isEmailConfirmed': true },
       },
-      data: {
-        isEmailConfirmed: true,
-      },
-    });
+    );
   }
 }

@@ -5,13 +5,10 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import bodyParser from 'body-parser';
-import { PrismaService } from './core/prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const reflector = app.get(Reflector);
-  const prismaService: PrismaService = app.get(PrismaService);
-  await prismaService.enableShutdownHooks(app);
 
   app.use(cookieParser());
   app.use(helmet());
