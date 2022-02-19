@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { Authentication, AuthenticationSchema } from '../../../authentication/core/schemas/authentication.schema';
-import { Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -9,9 +8,6 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: { createdAt: true, updatedAt: true } })
 export class User {
-  @Prop({ type: Types.ObjectId })
-  _id: Types.ObjectId;
-
   @Prop({
     type: String,
     required: false,

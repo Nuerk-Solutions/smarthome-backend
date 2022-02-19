@@ -9,9 +9,8 @@ import { RegistrationDto } from './core/dto/registration.dto';
 import { TokenPayload } from './core/interfaces/token-payload.interface';
 import { VerificationTokenPayload } from './core/interfaces/verification-token-payload.interface';
 import { MailService } from '../core/mail/mail.service';
-import { User, UserDocument } from '../users/core/schemas/user.schema';
-import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { User } from '../users/core/schemas/user.schema';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class AuthenticationService {
@@ -21,18 +20,7 @@ export class AuthenticationService {
     private readonly _mailService: MailService,
     private readonly _jwtService: JwtService,
     private readonly _configService: ConfigService,
-    @InjectModel(User.name)
-    private readonly _userModel: Model<UserDocument>,
   ) {}
-
-  /**
-   * Authenticates a user by email by searching for it in the authentication database
-   * @param emailAddress
-   */
-  public async getUserByEmail(emailAddress: string): Promise<User> /* : Promise<Authentication> */ {
-    // Return the user with the given email address from authentication
-    return this._userModel.findOne({ 'authentication.emailAddress': emailAddress });
-  }
 
   /**
    * @param encodedRefreshToken The encoded refresh token
@@ -49,7 +37,7 @@ export class AuthenticationService {
   }
 
   public async getAuthenticatedUser(emailAddress: string, plainTextPassword: string): Promise<User> {
-    const user = await this.getUserByEmail(emailAddress);
+    const user = await this._userService.getUserByEmail(emailAddress);
 
     if (!user) {
       // The same Exception is given to prevent the controller from API attacks
@@ -146,31 +134,40 @@ export class AuthenticationService {
   }
 
   private async _setCurrentRefreshToken(authenticationId: mongoose.Types.ObjectId, currentHashedRefreshToken: string) {
-    this._userModel.updateOne(
-      { 'authentication._id': authenticationId },
-      {
-        $set: {
-          'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
-        },
-      },
-    );
+    return await this._userService.updateUserByAuthenticationId(authenticationId, {
+      'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
+    });
+    // this._userModel.updateOne(
+    //   { 'authentication._id': authenticationId },
+    //   {
+    //     $set: {
+    //       'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
+    //     },
+    //   },
+    // );
   }
 
   private async _removeRefreshToken(authenticationId: mongoose.Types.ObjectId) {
-    return this._userModel.updateOne(
-      { 'authentication._id': authenticationId },
-      {
-        $set: { 'authentication.currentHashedRefreshToken': null },
-      },
-    );
+    return await this._userService.updateUserByAuthenticationId(authenticationId, {
+      'authentication.currentHashedRefreshToken': null,
+    });
+    // return this._userModel.updateOne(
+    //   { 'authentication._id': authenticationId },
+    //   {
+    //     $set: { 'authentication.currentHashedRefreshToken': null },
+    //   },
+    // );
   }
 
   private async _markEmailAsConfirmed(emailAddress: string) {
-    return this._userModel.updateOne(
-      { 'authentication.emailAddress': emailAddress },
-      {
-        $set: { 'authentication.isEmailConfirmed': true },
-      },
-    );
+    return await this._userService.updateUserByEmailAddress(emailAddress, {
+      'authentication.isEmailConfirmed': true,
+    });
+    // return this._userModel.updateOne(
+    //   { 'authentication.emailAddress': emailAddress },
+    //   {
+    //     $set: { 'authentication.isEmailConfirmed': true },
+    //   },
+    // );
   }
 }

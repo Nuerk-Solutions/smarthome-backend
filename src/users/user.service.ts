@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './core/dtos/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User, UserDocument } from './core/schemas/user.schema';
 import { CreateAuthenticationDto } from '../authentication/core/dto/create-authentication.dto';
 
@@ -25,7 +25,38 @@ export class UserService {
     });
   }
 
-  public async getUser(uuid: string): Promise<User> /* : Promise<User | undefined> */ {
+  public async getUserByUuid(uuid: string): Promise<User> /* : Promise<User | undefined> */ {
     return await this._userModel.findOne({ uuid: uuid }).exec();
+  }
+
+  /**
+   * Authenticates a user by email by searching for it in the authentication database
+   * @param emailAddress
+   */
+  public async getUserByEmail(emailAddress: string): Promise<User> /* : Promise<Authentication> */ {
+    // Return the user with the given email address from authentication
+    return await this._userModel.findOne({ 'authentication.emailAddress': emailAddress }).exec();
+  }
+
+  public async updateUserByAuthenticationId(authenticationId: mongoose.Types.ObjectId, value: object) {
+    return await this._userModel
+      .updateOne(
+        { 'authentication._id': authenticationId },
+        {
+          $set: value,
+        },
+      )
+      .exec();
+  }
+
+  public async updateUserByEmailAddress(emailAddress: string, value: object) {
+    return await this._userModel
+      .updateOne(
+        { 'authentication.emailAddress': emailAddress },
+        {
+          $set: value,
+        },
+      )
+      .exec();
   }
 }

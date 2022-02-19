@@ -32,7 +32,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
   async validate(request: Request, { uuid }: TokenPayload): Promise<User> {
     const refreshToken = request.cookies.Refresh;
     const encodedRefreshToken = encodeString(refreshToken);
-    const user = await this._userService.getUser(uuid);
+    const user = await this._userService.getUserByUuid(uuid);
 
     if (!user) {
       // The same Exception is given to prevent the controller from API attacks
