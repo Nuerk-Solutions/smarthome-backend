@@ -7,7 +7,17 @@ import { JwtRefreshTokenGuard } from './core/guards/jwt-refresh-token.guard';
 import { JwtConfirmTokenGuard } from './core/guards/jwt-confirm-token.guard';
 import { JwtAccessTokenGuard } from './core/guards/jwt-access-token.guard';
 import { MailService } from '../core/mail/mail.service';
-import { User } from '../users/core/schemas/user.schema';
+import { UserReturnPayload } from './core/interfaces/user-return.payload.interface';
+
+/**
+ * <h1>Todo</h1>
+ * Check if there is a better redundant way to return the user payload with mongoose.
+ * Probably also refers to {@link main.ts} bug with class serialization.
+ * More investigation needed.
+ * Naming not quite correctly: Payload -> Response
+ *
+ * <h3>Reminder: Disable async/await for debugging purposes.</h3>
+ */
 
 @Controller('Authentication')
 export class AuthenticationController {
@@ -15,23 +25,33 @@ export class AuthenticationController {
 
   @HttpCode(HttpStatus.OK)
   @Post('registration')
-  async registration(@Body() registrationDto: RegistrationDto): Promise<User> {
+  async registration(@Body() registrationDto: RegistrationDto): Promise<UserReturnPayload> {
     const user = await this._authenticationService.registration(registrationDto);
 
     await this._mailService.sendConfirmationEmail(user);
+    const payload: UserReturnPayload = {
+      _id: user._id,
+      firstName: user.firstName,
+      uuid: user.uuid,
+    };
 
-    return user;
+    return user as UserReturnPayload;
   }
 
   @UseGuards(LocalAuthenticationGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Req() request: RequestWithUserPayload): Promise<User> {
+  async login(@Req() request: RequestWithUserPayload): Promise<UserReturnPayload> {
     const [accessTokenCookie, refreshTokenCookie] = await this._authenticationService.login(request.user);
 
     request.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
 
-    return request.user;
+    const payload: UserReturnPayload = {
+      _id: request.user._id,
+      firstName: request.user.firstName,
+      uuid: request.user.uuid,
+    };
+    return request.user as UserReturnPayload;
   }
 
   @UseGuards(JwtRefreshTokenGuard)

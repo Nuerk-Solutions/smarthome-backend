@@ -25,6 +25,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  // Todo: Check error
   // app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
   await app.listen(3000);
 }
