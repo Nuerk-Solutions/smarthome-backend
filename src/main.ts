@@ -2,7 +2,7 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import helmet from 'helmet';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -25,7 +25,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+  // app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
   await app.listen(3000);
 }
 

@@ -160,7 +160,7 @@ export class AuthenticationService {
     return this._userModel.updateOne(
       { 'authentication._id': authenticationId },
       {
-        $set: { 'authentication.currentHashedRefreshToken': nu },
+        $set: { 'authentication.currentHashedRefreshToken': null },
       },
     );
   }
