@@ -145,7 +145,7 @@ export class AuthenticationService {
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
   }
 
-  private async _setCurrentRefreshToken(authenticationId: mongoose.Schema.Types.ObjectId, currentHashedRefreshToken: string) {
+  private async _setCurrentRefreshToken(authenticationId: mongoose.Types.ObjectId, currentHashedRefreshToken: string) {
     this._userModel.updateOne(
       { 'authentication._id': authenticationId },
       {
@@ -156,11 +156,11 @@ export class AuthenticationService {
     );
   }
 
-  private async _removeRefreshToken(authenticationId: mongoose.Schema.Types.ObjectId) {
+  private async _removeRefreshToken(authenticationId: mongoose.Types.ObjectId) {
     return this._userModel.updateOne(
       { 'authentication._id': authenticationId },
       {
-        $set: { 'authentication.currentHashedRefreshToken': null },
+        $set: { 'authentication.currentHashedRefreshToken': nu },
       },
     );
   }

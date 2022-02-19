@@ -16,7 +16,7 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   @Post('registration')
   async registration(@Body() registrationDto: RegistrationDto): Promise<User> {
-    const user: User = await this._authenticationService.registration(registrationDto);
+    const user = await this._authenticationService.registration(registrationDto);
 
     await this._mailService.sendConfirmationEmail(user);
 

@@ -1,17 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import mongoose from 'mongoose';
 import { Role } from '../enums/role.enum';
+import { Types } from 'mongoose';
 
 export type AuthenticationDocument = Authentication & Document;
 
-@Schema({ timestamps: { createdAt: true, updatedAt: true } })
+@Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: false })
 export class Authentication {
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    unique: true,
-  })
-  _id: mongoose.Schema.Types.ObjectId;
+  @Prop({ type: Types.ObjectId })
+  _id: Types.ObjectId;
 
   @Prop({
     type: String,
