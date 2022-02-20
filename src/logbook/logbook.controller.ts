@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Header, HttpCode, Param, Post, Query, St
 import { CreateLogbookDto } from './dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './schemas/logbook.schema';
+import { ApiKey } from '../authentication/core/decorators/apikey.decorator';
 
+@ApiKey()
 @Controller('logbook')
 export class LogbookController {
   constructor(private readonly logbookService: LogbookService) {}
@@ -18,6 +20,7 @@ export class LogbookController {
     return this.logbookService.findAll(query);
   }
 
+  @ApiKey()
   @Get('/find/latest')
   async findLatest(): Promise<Logbook[]> {
     return this.logbookService.findLatest();

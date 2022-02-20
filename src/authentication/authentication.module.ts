@@ -12,6 +12,7 @@ import { AuthenticationController } from './authentication.controller';
 import { UserService } from '../users/user.service';
 import { MailModule } from '../core/mail/mail.module';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { ApiKeyStrategy } from './core/strategies/api-key.strategy';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
     JwtAccessTokenStrategy,
     JwtRefreshTokenStrategy,
     JwtConfirmTokenStrategy,
+    ApiKeyStrategy,
     {
       provide: 'MAIL_SERVICE',
       useFactory: () =>
