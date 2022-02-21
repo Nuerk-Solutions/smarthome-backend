@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile } from '@nestjs/common';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './core/schemas/logbook.schema';
@@ -48,9 +48,9 @@ export class LogbookController {
   //   return this.logbookService.update(+id, updateLogbookDto);
   // }
 
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.logbookService.remove(+id);
-  }
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // @Delete(':id')
+  // async remove(@Param('id') id: string): Promise<void> {
+  //   await this.logbookService.remove(+id);
+  // }
 }
