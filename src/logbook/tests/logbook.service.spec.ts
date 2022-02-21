@@ -1,9 +1,11 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
-import { AdditionalInformationTyp, Driver, VehicleTyp } from '../core/dto/create-logbook.dto';
 import { LogbookService } from '../logbook.service';
 import { Logbook } from '../core/schemas/logbook.schema';
+import { Driver } from '../core/enums/driver.enum';
+import { VehicleTyp } from '../core/enums/vehicle-typ.enum';
+import { AdditionalInformationTyp } from '../core/enums/additional-information-typ.enum';
 
 const date: Date = new Date();
 
