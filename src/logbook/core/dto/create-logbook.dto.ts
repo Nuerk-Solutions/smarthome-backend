@@ -1,14 +1,13 @@
-import { IsDateString, IsEnum, IsISO8601, IsNotEmpty, IsNumberString, IsOptional } from "class-validator";
-import { Driver } from "../enums/driver.enum";
-import { VehicleTyp } from "../enums/vehicle-typ.enum";
-import { AdditionalInformationTyp } from "../enums/additional-information-typ.enum";
-
+import { IsDateString, IsEnum, IsISO8601, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
+import { Driver } from '../enums/driver.enum';
+import { VehicleTyp } from '../enums/vehicle-typ.enum';
+import { AdditionalInformationTyp } from '../enums/additional-information-typ.enum';
 
 export class CreateLogbookDto {
-  @IsEnum(Driver, { each: true, message: "Driver is not valid" })
+  @IsEnum(Driver, { each: true, message: 'Driver is not valid' })
   driver: Driver;
 
-  @IsEnum(VehicleTyp, { each: true, message: "VehicleTyp is not valid" })
+  @IsEnum(VehicleTyp, { each: true, message: 'VehicleTyp is not valid' })
   vehicleTyp: VehicleTyp;
 
   @IsNotEmpty()
@@ -18,9 +17,6 @@ export class CreateLogbookDto {
   @IsNotEmpty()
   @IsNumberString()
   newMileAge: string;
-
-  // distance: string;
-  // distanceCost: string;
 
   @IsNotEmpty()
   @IsISO8601()
@@ -32,15 +28,13 @@ export class CreateLogbookDto {
 
   @IsEnum(AdditionalInformationTyp, {
     each: true,
-    message: "AdditionalInformationTyp is not valid"
+    message: 'AdditionalInformationTyp is not valid',
   })
   additionalInformationTyp: AdditionalInformationTyp;
 
   @IsOptional()
-  additionalInformation = "";
+  additionalInformation = '';
 
   @IsOptional()
-  additionalInformationCost = "";
-
-  // distanceSinceLastAdditionalInformation: string;
+  additionalInformationCost = '';
 }

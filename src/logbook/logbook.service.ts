@@ -2,8 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as XLSX from 'xlsx';
-import { AdditionalInformationTyp, CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
+import { CreateLogbookDto } from './core/dto/create-logbook.dto';
+import { AdditionalInformationTyp } from './core/enums/additional-information-typ.enum';
 
 @Injectable()
 export class LogbookService {
@@ -15,7 +16,7 @@ export class LogbookService {
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
     const distanceCost = Number(+distance * 0.2).toFixed(2);
-    let distanceSinceLastAdditionalInformation = '0';
+    let distanceSinceLastAdditionalInformation = '';
 
     if (createLogbookDto.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
       // Calculate the distance since the last additional information from the corrosponding typ and from the same vehicleTyp
@@ -72,14 +73,16 @@ export class LogbookService {
 
     const data = logbooks.map((logbook) => {
       // Calculate average consumption per 100km using additionalInformation as fuel and distanceSinceLastAdditionalInformation as distance
-      const fuelConsumption = Number((+logbook.additionalInformation / +logbook.distanceSinceLastAdditionalInformation) * 100).toFixed(2);
-
+      let fuelConsumption;
+      if (logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT && +logbook.distanceSinceLastAdditionalInformation !== 0) {
+        fuelConsumption = Number((+logbook.additionalInformation / +logbook.distanceSinceLastAdditionalInformation) * 100).toFixed(2);
+      }
       return {
         Fahrer: logbook.driver,
         Fahrzeug_Typ: logbook.vehicleTyp,
-        'Aktueller Kilometerstand': logbook.currentMileAge,
-        'Neuer Kilometerstand': logbook.newMileAge,
-        Entfernung: logbook.distance,
+        'Aktueller Kilometerstand': +logbook.currentMileAge,
+        'Neuer Kilometerstand': +logbook.newMileAge,
+        Entfernung: +logbook.distance,
         Kosten: logbook.distanceCost,
         Datum: logbook.date,
         Grund: logbook.driveReason,
@@ -87,7 +90,7 @@ export class LogbookService {
         'Zusatzinformationen - Inhalt': logbook.additionalInformation,
         'Zusatzinformationen - Kosten': logbook.additionalInformationCost,
         'Entfernung seit letzter Information': logbook.distanceSinceLastAdditionalInformation,
-        'Durchschnittlicher Verbrauch': fuelConsumption,
+        'Durchschnittlicher Verbrauch': fuelConsumption || '',
       };
     });
 
