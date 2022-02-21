@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogbookController } from './logbook.controller';
 import { LogbookService } from './logbook.service';
-import { Logbook, LogbookSchema } from './schemas/logbook.schema';
+import { Logbook, LogbookSchema } from './core/schemas/logbook.schema';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Logbook.name, schema: LogbookSchema }])],

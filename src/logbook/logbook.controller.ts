@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Header, HttpCode, Param, Post, Query, StreamableFile } from '@nestjs/common';
-import { CreateLogbookDto } from './dto/create-logbook.dto';
+import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
-import { Logbook } from './schemas/logbook.schema';
+import { Logbook } from './core/schemas/logbook.schema';
 import { ApiKey } from '../authentication/core/decorators/apikey.decorator';
 
 @ApiKey()
