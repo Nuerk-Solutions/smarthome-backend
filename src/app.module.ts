@@ -12,7 +12,7 @@ import { BullModule } from '@nestjs/bull';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.development'],
+      envFilePath: ['.env'],
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],

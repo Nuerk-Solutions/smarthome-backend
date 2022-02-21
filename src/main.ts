@@ -5,10 +5,15 @@ import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
+  console.log('Server Ready!');
+
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
   const reflector = app.get(Reflector);
+  const port = +configService.get<number>('PORT');
 
   app.use(cookieParser());
   app.use(helmet());
@@ -27,7 +32,7 @@ async function bootstrap() {
   );
   // Todo: Check error
   // app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
-  await app.listen(3000);
+  await app.listen(port);
 }
 
 bootstrap();
