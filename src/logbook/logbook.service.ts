@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as XLSX from 'xlsx';
-import { AdditionalInformationTyp, CreateLogbookDto } from './dto/create-logbook.dto';
-import { Logbook, LogbookDocument } from './schemas/logbook.schema';
+import { AdditionalInformationTyp, CreateLogbookDto } from './core/dto/create-logbook.dto';
+import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
 
 @Injectable()
 export class LogbookService {
