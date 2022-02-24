@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './core/schemas/logbook.schema';
 import { ApiKey } from '../authentication/core/decorators/apikey.decorator';
+import { DownloadQueryDto } from './core/dto/download-query.dto';
 
 @ApiKey()
 @Controller('logbook')
@@ -34,12 +35,13 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   @Header('Content-disposition', 'attachment;filename=LogBook_' + new Date().toISOString() + '_Language_DE.xlsx')
   @Header('Access-Control-Expose-Headers', 'Content-Disposition')
   @Get('/download')
-  async download(): Promise<StreamableFile> {
-    const xlsx = await this.logbookService.download();
+  async download(@Query() query?: DownloadQueryDto): Promise<StreamableFile> {
+    const xlsx = await this.logbookService.download(query);
     return new StreamableFile(xlsx);
   }
 
