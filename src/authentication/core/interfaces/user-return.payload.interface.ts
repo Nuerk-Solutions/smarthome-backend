@@ -4,4 +4,5 @@ export interface UserReturnPayload {
   _id: mongoose.Types.ObjectId;
   firstName: string;
   uuid: string;
+  success: boolean;
 }

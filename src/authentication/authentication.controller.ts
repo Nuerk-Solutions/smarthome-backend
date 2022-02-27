@@ -34,9 +34,10 @@ export class AuthenticationController {
       _id: user._id,
       firstName: user.firstName,
       uuid: user.uuid,
+      success: true,
     };
 
-    return user as UserReturnPayload;
+    return payload;
   }
 
   @UseGuards(LocalAuthenticationGuard, EmailConfirmationGuard)
@@ -51,8 +52,9 @@ export class AuthenticationController {
       _id: request.user._id,
       firstName: request.user.firstName,
       uuid: request.user.uuid,
+      success: true,
     };
-    return request.user as UserReturnPayload;
+    return payload;
   }
 
   @UseGuards(JwtRefreshTokenGuard)
