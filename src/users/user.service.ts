@@ -35,7 +35,7 @@ export class UserService {
    */
   public async getUserByEmail(emailAddress: string): Promise<User> /* : Promise<Authentication> */ {
     // Return the user with the given email address from authentication
-    return await this._userModel.findOne({ 'authentication.emailAddress': emailAddress }).exec();
+    return await this._userModel.findOne({ 'authentication.emailAddress': emailAddress.toLowerCase() }).exec();
   }
 
   public async updateUserByAuthenticationId(authenticationId: mongoose.Types.ObjectId, value: object) {
