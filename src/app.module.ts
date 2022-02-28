@@ -7,6 +7,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './users/user.module';
 import { MailModule } from './core/mail/mail.module';
 import { BullModule } from '@nestjs/bull';
+import { RecipeModule } from './recipe/recipe.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { BullModule } from '@nestjs/bull';
     UserModule,
     AuthenticationModule,
     MailModule,
+    RecipeModule,
   ],
 })
 export class AppModule {
