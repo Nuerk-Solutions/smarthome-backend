@@ -4,8 +4,6 @@ import { Role } from '../enums/role.enum';
 import { Types } from 'mongoose';
 import { ObjectID } from 'bson';
 
-export type AuthenticationDocument = Authentication & Document;
-
 @Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: false })
 export class Authentication {
   @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectID() })

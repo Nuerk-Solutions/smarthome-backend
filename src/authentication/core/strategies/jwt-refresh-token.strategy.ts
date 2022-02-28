@@ -29,7 +29,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
     });
   }
 
-  async validate(request: Request, { uuid }: TokenPayload): Promise<User> {
+  public async validate(request: Request, { uuid }: TokenPayload): Promise<User> {
     const refreshToken = request.cookies.Refresh;
     const encodedRefreshToken = encodeString(refreshToken);
     const user = await this._userService.getUserByUuid(uuid);
@@ -39,6 +39,6 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
       throw new WrongCredentialsProvidedException();
     }
 
-    return this._authenticationService.getUserIfRefreshTokenMatches(encodedRefreshToken, user);
+    return await this._authenticationService.getUserIfRefreshTokenMatches(encodedRefreshToken, user);
   }
 }

@@ -10,7 +10,7 @@ import { TokenPayload } from './core/interfaces/token-payload.interface';
 import { VerificationTokenPayload } from './core/interfaces/verification-token-payload.interface';
 import { MailService } from '../core/mail/mail.service';
 import { User } from '../users/core/schemas/user.schema';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthenticationService {
@@ -27,7 +27,7 @@ export class AuthenticationService {
    * @param user The user to check the refresh token against
    * @returns The user if the refresh token is valid
    */
-  public async getUserIfRefreshTokenMatches(encodedRefreshToken: string, user: User) {
+  public async getUserIfRefreshTokenMatches(encodedRefreshToken: string, user: User): Promise<User> {
     const isRefreshTokenMatching = await validateHash(encodedRefreshToken, user.authentication.currentHashedRefreshToken);
 
     if (!isRefreshTokenMatching) {
@@ -139,7 +139,7 @@ export class AuthenticationService {
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
   }
 
-  private async _setCurrentRefreshToken(authenticationId: mongoose.Types.ObjectId, currentHashedRefreshToken: string) {
+  private async _setCurrentRefreshToken(authenticationId: Types.ObjectId, currentHashedRefreshToken: string) {
     return await this._userService.updateUserByAuthenticationId(authenticationId, {
       'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
     });
@@ -153,9 +153,9 @@ export class AuthenticationService {
     // );
   }
 
-  private async _removeRefreshToken(authenticationId: mongoose.Types.ObjectId) {
+  private async _removeRefreshToken(authenticationId: Types.ObjectId) {
     return await this._userService.updateUserByAuthenticationId(authenticationId, {
-      'authentication.currentHashedRefreshToken': null,
+      'authentication.currentHashedRefreshToken': nul,
     });
     // return this._userModel.updateOne(
     //   { 'authentication._id': authenticationId },
