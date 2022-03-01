@@ -1,9 +1,13 @@
-import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile } from '@nestjs/common';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './core/schemas/logbook.schema';
 import { ApiKey } from '../authentication/core/decorators/apikey.decorator';
-import { DownloadQueryDto } from './core/dto/download-query.dto';
+import { DriverParameter } from './core/dto/parameters/driver.parameter';
+import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
+import { Driver } from './core/enums/driver.enum';
+import { ParseArray } from './core/pipes/ParseEnumArray.pipe';
+import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 
 @ApiKey()
 @Controller('logbook')
@@ -35,13 +39,36 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new ValidationPipe({ transform: true }))
   @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   @Header('Content-disposition', 'attachment;filename=LogBook_' + new Date().toISOString() + '_Language_DE.xlsx')
   @Header('Access-Control-Expose-Headers', 'Content-Disposition')
   @Get('/download')
-  async download(@Query() query?: DownloadQueryDto): Promise<StreamableFile> {
-    const xlsx = await this.logbookService.download(query);
+  // TODO: validate enum array
+  async download(
+    @Query(
+      'drivers',
+      new ParseArray({
+        items: DriverParameter,
+        type: Driver,
+        separator: ',',
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    drivers?: DriverParameter[],
+    @Query(
+      'vehicles',
+      new ParseArray({
+        items: VehicleParameter,
+        type: VehicleTyp,
+        separator: ',',
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    vehicles?: VehicleParameter[],
+  ): Promise<StreamableFile> {
+    console.log(drivers, vehicles);
+
+    const xlsx = await this.logbookService.download(drivers, vehicles);
     return new StreamableFile(xlsx);
   }
 

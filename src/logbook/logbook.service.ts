@@ -5,7 +5,6 @@ import * as XLSX from 'xlsx';
 import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { AdditionalInformationTyp } from './core/enums/additional-information-typ.enum';
-import { DownloadQueryDto } from './core/dto/download-query.dto';
 
 @Injectable()
 export class LogbookService {
@@ -65,13 +64,13 @@ export class LogbookService {
     return [latestLogbookVw, latestLogbookFerrari];
   }
 
-  async download(query?: DownloadQueryDto): Promise<Buffer> {
+  async download(drivers, vehicles): Promise<Buffer> {
     const filterObject = {};
-    if (query.vehicleTyp) {
-      filterObject['vehicleTyp'] = query.vehicleTyp;
+    if (vehicles) {
+      filterObject['vehicleTyp'] = vehicles;
     }
-    if (query.driver) {
-      filterObject['driver'] = query.driver;
+    if (drivers) {
+      filterObject['driver'] = drivers;
     }
     const logbooks = await this.logbookModel.find(filterObject).sort({ date: 1 }).exec();
 

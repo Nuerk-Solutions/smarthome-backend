@@ -1,6 +1,6 @@
 export enum Driver {
-  'Andrea',
-  'Claudia',
-  'Oliver',
-  'Thomas',
+  ANDREA = 'Andrea',
+  CLAUDIA = 'Claudia',
+  OLIVER = 'Oliver',
+  THOMAS = 'Thomas',
 }

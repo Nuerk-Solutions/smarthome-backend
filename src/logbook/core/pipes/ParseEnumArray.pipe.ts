@@ -29,7 +29,7 @@ export class ParseArray implements PipeTransform<string> {
     try {
       items = value.split(this.separator);
     } catch (error) {
-      throw new Error('Given input is not parsable.');
+      throw this.exceptionFactory(`Given input is not parsable.`);
     }
 
     return items.map((item) => {
