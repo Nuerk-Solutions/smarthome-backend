@@ -1,31 +1,30 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MongoGridFS } from 'mongo-gridfs';
-import { Connection } from 'mongoose';
 import { GridFSBucketReadStream } from 'mongodb';
-import { FileInfo } from './core/interfaces/file-info.interface';
+import { FileInfo } from './core/dto/file-info.dto';
+import { FileNotFoundException } from './core/exceptions/file-not-found.exception';
+import { Connection } from 'mongoose';
 
 @Injectable()
 export class FileService {
-  private readonly fileModel: MongoGridFS;
+  private readonly _fileModel: MongoGridFS;
 
-  constructor(@InjectConnection() private readonly connection: Connection) {
-    this.fileModel = new MongoGridFS(this.connection.db, 'fs');
+  constructor(@InjectConnection('files') private readonly _connection: Connection) {
+    this._fileModel = new MongoGridFS(this._connection.db, 'fs');
   }
 
   async readStream(id: string): Promise<GridFSBucketReadStream> {
-    return await this.fileModel.readFileStream(id);
+    return await this._fileModel.readFileStream(id);
   }
 
   async findInfo(id: string): Promise<FileInfo> {
-    console.log(id);
-
-    const result = await this.fileModel
+    const result = await this._fileModel
       .findById(id)
-      .catch((err) => {
-        throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+      .catch((error) => {
+        throw new FileNotFoundException(error);
       })
-      .then((result) => result);
+      .then((file) => file);
     return {
       filename: result.filename,
       length: result.length,
@@ -36,6 +35,6 @@ export class FileService {
   }
 
   async deleteFile(id: string): Promise<boolean> {
-    return await this.fileModel.delete(id);
+    return await this._fileModel.delete(id);
   }
 }

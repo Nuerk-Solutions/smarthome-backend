@@ -29,8 +29,17 @@ import { FileModule } from './file/file.module';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
+      connectionName: 'logbook',
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      connectionName: 'files',
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MULTER_MONGO_DB'),
       }),
       inject: [ConfigService],
     }),

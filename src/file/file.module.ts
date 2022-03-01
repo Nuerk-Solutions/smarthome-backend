@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { FileService } from './file.service';
 import { FileController } from './file.controller';
 import { MulterModule } from '@nestjs/platform-express';
-import { GridFsMulterConfigService } from './multer-config.service';
+import { GridFsMulterConfig } from './core/config/multer.config';
 
 @Module({
-  imports: [MulterModule.registerAsync({ useClass: GridFsMulterConfigService })],
+  imports: [MulterModule.registerAsync({ useClass: GridFsMulterConfig })],
   controllers: [FileController],
-  providers: [FileService, GridFsMulterConfigService],
+  providers: [FileService, GridFsMulterConfig],
 })
 export class FileModule {}

@@ -33,6 +33,7 @@ async function bootstrap() {
   // Todo: Check error
   // app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
   await app.listen(port);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 
 bootstrap();

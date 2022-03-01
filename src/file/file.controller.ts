@@ -1,22 +1,23 @@
-import { Controller, Get, HttpException, HttpStatus, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Post, Res, StreamableFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { FileResponse } from './core/interfaces/file-response.interface';
 import { FileService } from './file.service';
+import { FileResponse } from './core/dto/file-response.dto';
+import { RetrieveFileException } from './core/exceptions/retrieve-file.exception';
 
 @Controller('file')
 export class FileController {
-  constructor(private readonly filesService: FileService) {}
+  constructor(private readonly _filesService: FileService) {}
 
-  @Post('')
   @UseInterceptors(FilesInterceptor('file'))
+  @Post()
   upload(@UploadedFiles() files) {
     const response = [];
     files.forEach((file) => {
-      const fileReponse = {
+      const fileResponse = {
+        id: file.id,
         originalname: file.originalname,
         encoding: file.encoding,
         mimetype: file.mimetype,
-        id: file.id,
         filename: file.filename,
         metadata: file.metadata,
         bucketName: file.bucketName,
@@ -26,30 +27,35 @@ export class FileController {
         uploadDate: file.uploadDate,
         contentType: file.contentType,
       };
-      response.push(fileReponse);
+      response.push(fileResponse);
     });
     return response;
   }
 
   @Get('info/:id')
   async getFileInfo(@Param('id') id: string): Promise<FileResponse> {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.readStream(id);
+    const file = await this._filesService.findInfo(id);
+    const filestream = await this._filesService.readStream(id);
     if (!filestream) {
-      throw new HttpException('An error occurred while retrieving file info', HttpStatus.EXPECTATION_FAILED);
+      throw new RetrieveFileException();
     }
     return {
       message: 'File has been detected',
-      file: file,
+      file: file
     };
   }
 
+  /* Music streaming see
+   * https://medium.com/@richard534/uploading-streaming-audio-using-nodejs-express-mongodb-gridfs-b031a0bcb20f
+   * use
+   * res.header('accept-ranges', 'bytes');
+   */
   @Get(':id')
-  async getFile(@Param('id') id: string, @Res() res) {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.readStream(id);
+  async getFile(@Param('id') id: string, @Res() res): Promise<StreamableFile> {
+    const file = await this._filesService.findInfo(id);
+    const filestream = await this._filesService.readStream(id);
     if (!filestream) {
-      throw new HttpException('An error occurred while retrieving file', HttpStatus.EXPECTATION_FAILED);
+      throw new RetrieveFileException();
     }
     res.header('Content-Type', file.contentType);
     return filestream.pipe(res);
@@ -57,22 +63,23 @@ export class FileController {
 
   @Get('download/:id')
   async downloadFile(@Param('id') id: string, @Res() res) {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.readStream(id);
+    const file = await this._filesService.findInfo(id);
+    const filestream = await this._filesService.readStream(id);
     if (!filestream) {
-      throw new HttpException('An error occurred while retrieving file', HttpStatus.EXPECTATION_FAILED);
+      throw new RetrieveFileException();
     }
     res.header('Content-Type', file.contentType);
     res.header('Content-Disposition', 'attachment; filename=' + file.filename);
+    res.header('Content-Length', file.length);
     return filestream.pipe(res);
   }
 
   @Get('delete/:id')
   async deleteFile(@Param('id') id: string): Promise<FileResponse> {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.deleteFile(id);
+    const file = await this._filesService.findInfo(id);
+    const filestream = await this._filesService.deleteFile(id);
     if (!filestream) {
-      throw new HttpException('An error occurred during file deletion', HttpStatus.EXPECTATION_FAILED);
+      throw new RetrieveFileException();
     }
     return {
       message: 'File has been deleted',
