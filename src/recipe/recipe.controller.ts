@@ -6,39 +6,48 @@ import { Authorization } from '../authentication/core/decorators/authorization.d
 import { Role } from '../authentication/core/enums/role.enum';
 import { Recipe } from './schemas/recipe.schema';
 import { RequestWithUserPayload } from '../authentication/core/interfaces/request-with-user-payload.interface';
+import { Types } from 'mongoose';
+import { NoRecipeFoundException } from './exceptions/no-recipe-found.exception';
+import { IdRecipeDto } from './dto/id-recipe.dto';
 
 @Authorization(Role.USER)
 @Controller('recipe')
 export class RecipeController {
-  constructor(private readonly recipeService: RecipeService) {}
+  constructor(private readonly _recipeService: RecipeService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post()
   async create(@Req() { user }: RequestWithUserPayload, @Body() createRecipeDto: CreateRecipeDto): Promise<Recipe> {
-    return await this.recipeService.create(createRecipeDto, user._id);
+    return await this._recipeService.create(createRecipeDto, user._id);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll() {
-    return this.recipeService.findAll();
+  async findAll(@Req() { user }: RequestWithUserPayload): Promise<Recipe[]> {
+    return await this._recipeService.findAll(user._id);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.recipeService.findOne(+id);
+  async findOne(@Req() { user }: RequestWithUserPayload, @Param() idRecipeDto: IdRecipeDto): Promise<Recipe> {
+    const objectId = new Types.ObjectId(idRecipeDto.id);
+    const recipe = await this._recipeService.findOne(user._id, objectId);
+
+    if (!recipe) {
+      throw new NoRecipeFoundException();
+    }
+    return recipe;
   }
 
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRecipeDto: UpdateRecipeDto) {
-    return this.recipeService.update(+id, updateRecipeDto);
+  async update(@Req() { user }: RequestWithUserPayload, @Param('id') id: string, @Body() updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
+    return await this._recipeService.update(user._id, id, updateRecipeDto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.recipeService.remove(+id);
+  async remove(@Req() { user }: RequestWithUserPayload, @Param('id') id: string): Promise<Recipe> {
+    return await this._recipeService.remove(user._id, id);
   }
 }

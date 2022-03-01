@@ -13,26 +13,43 @@ export class RecipeService {
   ) {}
 
   async create(createRecipeDto: CreateRecipeDto, userId: Types.ObjectId): Promise<Recipe> {
-    const recipe = this._recipeModel.create({
+    return await this._recipeModel.create({
       ...createRecipeDto,
       userId: userId,
     });
-    return recipe;
   }
 
-  findAll() {
-    return `This action returns all recipe`;
+  async findAll(userId: Types.ObjectId): Promise<Recipe[]> {
+    return await this._recipeModel.find({ userId: userId }).exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} recipe`;
+  async findOne(userId: Types.ObjectId, id: Types.ObjectId): Promise<Recipe> {
+    return await this._recipeModel
+      .findOne({
+        _id: id,
+        userId: userId,
+      })
+      .exec();
   }
 
-  update(id: number, updateRecipeDto: UpdateRecipeDto) {
-    return `This action updates a #${id} recipe`;
+  async update(userId: Types.ObjectId, id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
+    return await this._recipeModel
+      .findOneAndUpdate(
+        {
+          _id: id,
+        },
+        updateRecipeDto,
+        { new: true },
+      )
+      .exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} recipe`;
+  async remove(userId: Types.ObjectId, id: string): Promise<Recipe> {
+    return await this._recipeModel
+      .findOneAndRemove({
+        userId: userId,
+        _id: id,
+      })
+      .exec();
   }
 }
