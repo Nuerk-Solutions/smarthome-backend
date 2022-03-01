@@ -32,7 +32,7 @@ export class RecipeService {
       .exec();
   }
 
-  async update(userId: Types.ObjectId, id: string, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
+  async update(userId: Types.ObjectId, id: Types.ObjectId, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
     return await this._recipeModel
       .findOneAndUpdate(
         {
@@ -44,11 +44,11 @@ export class RecipeService {
       .exec();
   }
 
-  async remove(userId: Types.ObjectId, id: string): Promise<Recipe> {
+  async remove(userId: Types.ObjectId, id: Types.ObjectId): Promise<Recipe> {
     return await this._recipeModel
       .findOneAndRemove({
         userId: userId,
-        _id: id,
+        _id: d,
       })
       .exec();
   }

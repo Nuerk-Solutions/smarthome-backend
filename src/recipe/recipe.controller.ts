@@ -41,13 +41,19 @@ export class RecipeController {
 
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  async update(@Req() { user }: RequestWithUserPayload, @Param('id') id: string, @Body() updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
-    return await this._recipeService.update(user._id, id, updateRecipeDto);
+  async update(
+    @Req() { user }: RequestWithUserPayload,
+    @Param() idRecipeDto: IdRecipeDto,
+    @Body() updateRecipeDto: UpdateRecipeDto,
+  ): Promise<Recipe> {
+    const objectId = new Types.ObjectId(idRecipeDto.id);
+    return await this._recipeService.update(user._id, objectId, updateRecipeDto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  async remove(@Req() { user }: RequestWithUserPayload, @Param('id') id: string): Promise<Recipe> {
-    return await this._recipeService.remove(user._id, id);
+  async remove(@Req() { user }: RequestWithUserPayload, @Param() idRecipeDto: IdRecipeDto): Promise<Recipe> {
+    const objectId = new Types.ObjectId(idRecipeDto.id);
+    return await this._recipeService.remove(user._id, objectId);
   }
 }
