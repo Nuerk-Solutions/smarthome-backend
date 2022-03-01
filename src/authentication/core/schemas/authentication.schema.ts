@@ -1,13 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { Role } from '../enums/role.enum';
-import { Types } from 'mongoose';
-import { ObjectID } from 'bson';
 
 @Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: false })
 export class Authentication {
-  @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectID() })
-  _id: Types.ObjectId;
+  // @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectID() })
+  // _id: Types.ObjectId;
 
   @Prop({
     type: String,

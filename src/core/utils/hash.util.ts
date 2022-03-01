@@ -21,7 +21,6 @@ export async function validateHash(data: string, hash: string): Promise<boolean>
   if (!data || !hash) {
     return Promise.resolve(false);
   }
-  console.log(await generateHash(data));
   return await compare(data, hash);
 }
 

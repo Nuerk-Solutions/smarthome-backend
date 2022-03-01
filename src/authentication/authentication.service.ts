@@ -10,7 +10,6 @@ import { TokenPayload } from './core/interfaces/token-payload.interface';
 import { VerificationTokenPayload } from './core/interfaces/verification-token-payload.interface';
 import { MailService } from '../core/mail/mail.service';
 import { User } from '../users/core/schemas/user.schema';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthenticationService {
@@ -54,9 +53,7 @@ export class AuthenticationService {
 
   public async registration({ firstName, ...rest }: RegistrationDto): Promise<User> {
     try {
-      // const authentication = new Authentication();
-      const user = await this._userService.createUser({ firstName }, { ...rest });
-      return user;
+      return await this._userService.createUser({ firstName }, { ...rest });
     } catch (error) {
       if (error.name === 'MongoServerError') {
         // Unique violation error code for Postgres
@@ -72,13 +69,13 @@ export class AuthenticationService {
     const accessTokenCookie = this._getCookieWithJwtAccessToken(user.uuid);
     const { cookie: refreshTokenCookie, token: refreshToken } = this._getCookieWithJwtRefreshToken(user.uuid);
 
-    await this._setCurrentRefreshToken(user.authentication._id, refreshToken);
+    await this._setCurrentRefreshToken(user.authentication.uuid, refreshToken);
 
     return [accessTokenCookie, refreshTokenCookie];
   }
 
   async logout(user: User): Promise<void> {
-    await this._removeRefreshToken(user.authentication._id);
+    await this._removeRefreshToken(user.authentication.uuid);
   }
 
   public getCookiesForLogout(): string[] {
@@ -139,8 +136,8 @@ export class AuthenticationService {
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
   }
 
-  private async _setCurrentRefreshToken(authenticationId: Types.ObjectId, currentHashedRefreshToken: string) {
-    return await this._userService.updateUserByAuthenticationId(authenticationId, {
+  private async _setCurrentRefreshToken(authenticationUuid: string, currentHashedRefreshToken: string) {
+    return await this._userService.updateUserByAuthenticationId(authenticationUuid, {
       'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
     });
     // this._userModel.updateOne(
@@ -153,9 +150,9 @@ export class AuthenticationService {
     // );
   }
 
-  private async _removeRefreshToken(authenticationId: Types.ObjectId) {
-    return await this._userService.updateUserByAuthenticationId(authenticationId, {
-      'authentication.currentHashedRefreshToken': nul,
+  private async _removeRefreshToken(authenticationUuid: string) {
+    return await this._userService.updateUserByAuthenticationId(authenticationUuid, {
+      'authentication.currentHashedRefreshToken': null,
     });
     // return this._userModel.updateOne(
     //   { 'authentication._id': authenticationId },
