@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
@@ -9,6 +9,7 @@ import { RequestWithUserPayload } from '../authentication/core/interfaces/reques
 import { Types } from 'mongoose';
 import { NoRecipeFoundException } from './exceptions/no-recipe-found.exception';
 import { IdRecipeDto } from './dto/id-recipe.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Authorization(Role.USER)
 @Controller('recipe')
@@ -19,6 +20,13 @@ export class RecipeController {
   @Post()
   async create(@Req() { user }: RequestWithUserPayload, @Body() createRecipeDto: CreateRecipeDto): Promise<Recipe> {
     return await this._recipeService.create(createRecipeDto, user._id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('/image/upload')
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return file.buffer.toString();
   }
 
   @HttpCode(HttpStatus.OK)
