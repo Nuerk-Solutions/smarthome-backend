@@ -1,6 +1,5 @@
 import { FileInfo } from './file-info.dto';
 
-export interface FileResponse {
+export class FileResponse {
   readonly file: FileInfo;
-  readonly message: string;
 }

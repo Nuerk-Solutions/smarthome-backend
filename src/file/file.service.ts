@@ -21,10 +21,10 @@ export class FileService {
   async findInfo(id: string): Promise<FileInfo> {
     const result = await this._fileModel
       .findById(id)
+      .then((file) => file)
       .catch((error) => {
         throw new FileNotFoundException(error);
-      })
-      .then((file) => file);
+      });
     return {
       filename: result.filename,
       length: result.length,

@@ -1,4 +1,4 @@
-export interface FileInfo {
+export class FileInfo {
   readonly length: number;
   readonly chunkSize: number;
   readonly filename: string;

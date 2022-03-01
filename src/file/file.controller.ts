@@ -40,8 +40,7 @@ export class FileController {
       throw new RetrieveFileException();
     }
     return {
-      message: 'File has been detected',
-      file: file
+      file: file,
     };
   }
 
@@ -70,6 +69,7 @@ export class FileController {
     }
     res.header('Content-Type', file.contentType);
     res.header('Content-Disposition', 'attachment; filename=' + file.filename);
+    // This header sends the file size to the browser. Based on that the browser calculate the progress.
     res.header('Content-Length', file.length);
     return filestream.pipe(res);
   }
@@ -82,7 +82,6 @@ export class FileController {
       throw new RetrieveFileException();
     }
     return {
-      message: 'File has been deleted',
       file: file,
     };
   }
