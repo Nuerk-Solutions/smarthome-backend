@@ -48,7 +48,7 @@ export class RecipeService {
     return await this._recipeModel
       .findOneAndRemove({
         userId: userId,
-        _id: d,
+        _id: id,
       })
       .exec();
   }
