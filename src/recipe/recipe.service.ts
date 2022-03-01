@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { CreateRecipeDto } from './core/dto/create-recipe.dto';
+import { UpdateRecipeDto } from './core/dto/update-recipe.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Recipe, RecipeDocument } from './schemas/recipe.schema';
+import { Recipe, RecipeDocument } from './core/schemas/recipe.schema';
 
 @Injectable()
 export class RecipeService {

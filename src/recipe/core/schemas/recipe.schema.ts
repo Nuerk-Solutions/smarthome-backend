@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { ObjectID } from 'bson';
-import { Category } from '../core/enums/category.enum';
+import { Category } from '../enums/category.enum';
 import { Direction } from './direction.schema';
 import { Time } from './time.schema';
 import { Ingredient } from './ingredient.schema';

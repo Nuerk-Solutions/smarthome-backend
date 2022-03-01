@@ -1,7 +1,7 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { ObjectID } from 'bson';
-import { TimeUnit } from '../core/enums/time-unit.enum';
+import { TimeUnit } from '../enums/time-unit.enum';
 
 @Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: false })
 export class Time {

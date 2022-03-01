@@ -2,7 +2,7 @@ import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsString, MaxLength } from 'cl
 import { Time } from '../schemas/time.schema';
 import { Ingredient } from '../schemas/ingredient.schema';
 import { Direction } from '../schemas/direction.schema';
-import { Category } from '../core/enums/category.enum';
+import { Category } from '../enums/category.enum';
 import { Type } from 'class-transformer';
 
 export class CreateRecipeDto {

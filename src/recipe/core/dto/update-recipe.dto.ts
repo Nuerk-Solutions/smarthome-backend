@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { Time } from '../schemas/time.schema';
 import { Ingredient } from '../schemas/ingredient.schema';
 import { Direction } from '../schemas/direction.schema';
-import { Category } from '../core/enums/category.enum';
+import { Category } from '../enums/category.enum';
 
 export class UpdateRecipeDto {
   @IsNotEmpty()

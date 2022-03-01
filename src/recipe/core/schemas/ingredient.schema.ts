@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { ObjectID } from 'bson';
-import { MeasureUnit } from '../core/enums/measure-unit.enum';
+import { MeasureUnit } from '../enums/measure-unit.enum';
 
 @Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: false })
 export class Ingredient {
