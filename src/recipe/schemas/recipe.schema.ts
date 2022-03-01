@@ -8,7 +8,7 @@ import { Ingredient } from './ingredient.schema';
 
 export type RecipeDocument = Recipe & Document;
 
-@Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: false })
+@Schema({ timestamps: { createdAt: true, updatedAt: true } })
 export class Recipe {
   @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectID() })
   _id: Types.ObjectId;

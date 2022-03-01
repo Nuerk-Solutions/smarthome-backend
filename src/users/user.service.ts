@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './core/dtos/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './core/schemas/user.schema';
 import { CreateAuthenticationDto } from '../authentication/core/dto/create-authentication.dto';
 
@@ -38,10 +38,10 @@ export class UserService {
     return await this._userModel.findOne({ 'authentication.emailAddress': emailAddress.toLowerCase() }).exec();
   }
 
-  public async updateUserByAuthenticationId(authenticationUuid: string, value: object) {
+  public async updateUserByAuthenticationId(authenticationId: Types.ObjectId, value: object) {
     return await this._userModel
       .updateOne(
-        { 'authentication.uuid': authenticationUuid },
+        { 'authentication._id': authenticationId },
         {
           $set: value,
         },

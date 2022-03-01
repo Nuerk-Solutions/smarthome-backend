@@ -8,7 +8,6 @@ import { JwtConfirmTokenGuard } from './core/guards/jwt-confirm-token.guard';
 import { JwtAccessTokenGuard } from './core/guards/jwt-access-token.guard';
 import { MailService } from '../core/mail/mail.service';
 import { UserReturnPayload } from './core/interfaces/user-return.payload.interface';
-import { EmailConfirmationGuard } from './core/guards/email-confirmation.guard';
 
 /**
  * <h1>Todo</h1>
@@ -40,7 +39,7 @@ export class AuthenticationController {
     return payload;
   }
 
-  @UseGuards(LocalAuthenticationGuard, EmailConfirmationGuard)
+  @UseGuards(LocalAuthenticationGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Req() request: RequestWithUserPayload): Promise<UserReturnPayload> {

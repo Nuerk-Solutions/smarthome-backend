@@ -10,6 +10,7 @@ import { TokenPayload } from './core/interfaces/token-payload.interface';
 import { VerificationTokenPayload } from './core/interfaces/verification-token-payload.interface';
 import { MailService } from '../core/mail/mail.service';
 import { User } from '../users/core/schemas/user.schema';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthenticationService {
@@ -69,13 +70,13 @@ export class AuthenticationService {
     const accessTokenCookie = this._getCookieWithJwtAccessToken(user.uuid);
     const { cookie: refreshTokenCookie, token: refreshToken } = this._getCookieWithJwtRefreshToken(user.uuid);
 
-    await this._setCurrentRefreshToken(user.authentication.uuid, refreshToken);
+    await this._setCurrentRefreshToken(user.authentication._id, refreshToken);
 
     return [accessTokenCookie, refreshTokenCookie];
   }
 
   async logout(user: User): Promise<void> {
-    await this._removeRefreshToken(user.authentication.uuid);
+    await this._removeRefreshToken(user.authentication._id);
   }
 
   public getCookiesForLogout(): string[] {
@@ -136,8 +137,8 @@ export class AuthenticationService {
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
   }
 
-  private async _setCurrentRefreshToken(authenticationUuid: string, currentHashedRefreshToken: string) {
-    return await this._userService.updateUserByAuthenticationId(authenticationUuid, {
+  private async _setCurrentRefreshToken(authenticationId: Types.ObjectId, currentHashedRefreshToken: string) {
+    return await this._userService.updateUserByAuthenticationId(authenticationId, {
       'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
     });
     // this._userModel.updateOne(
@@ -150,8 +151,8 @@ export class AuthenticationService {
     // );
   }
 
-  private async _removeRefreshToken(authenticationUuid: string) {
-    return await this._userService.updateUserByAuthenticationId(authenticationUuid, {
+  private async _removeRefreshToken(authenticationId: Types.ObjectId) {
+    return await this._userService.updateUserByAuthenticationId(authenticationId, {
       'authentication.currentHashedRefreshToken': null,
     });
     // return this._userModel.updateOne(
