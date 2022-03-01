@@ -10,14 +10,28 @@ import { Connection } from 'mongoose';
 export class FileService {
   private readonly _fileModel: MongoGridFS;
 
-  constructor(@InjectConnection('files') private readonly _connection: Connection) {
+  // Inject the connection to the right database
+  constructor(
+    @InjectConnection('files')
+    private readonly _connection: Connection,
+  ) {
     this._fileModel = new MongoGridFS(this._connection.db, 'fs');
   }
 
+  /**
+   * Get a {@link GridFSBucketReadStream} by open a {@link openDownloadStream}.
+   * @param id The id of the file to get.
+   * @returns {@link GridFSBucketReadStream}
+   */
   async readStream(id: string): Promise<GridFSBucketReadStream> {
     return await this._fileModel.readFileStream(id);
   }
 
+  /**
+   * Get the {@link FileInfo}
+   * @param id The id of the file to get.
+   * @returns The {@link FileInfo}
+   */
   async findInfo(id: string): Promise<FileInfo> {
     const result = await this._fileModel
       .findById(id)
@@ -34,6 +48,11 @@ export class FileService {
     };
   }
 
+  /**
+   * Delete a file by id.
+   * @param id The id of the file to delete.
+   * @returns The success of the deletion.
+   */
   async deleteFile(id: string): Promise<boolean> {
     return await this._fileModel.delete(id);
   }

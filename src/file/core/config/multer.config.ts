@@ -11,6 +11,7 @@ export class GridFsMulterConfig implements MulterOptionsFactory {
     this.gridFsStorage = new GridFsStorage({
       url: configService.get<string>('MULTER_MONGO_DB'),
       file: (req, file) => {
+        // Trim the file name to avoid path traversal
         return new Promise((resolve, reject) => {
           const filename = file.originalname.trim();
           const fileInfo = {
