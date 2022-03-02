@@ -55,7 +55,7 @@ export class UserService {
       .findOneAndUpdate(
         { 'authentication.emailAddress': emailAddress },
         {
-          $set: vale,
+          $set: value,
         },
         { new: true },
       )

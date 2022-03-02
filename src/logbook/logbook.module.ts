@@ -10,3 +10,4 @@ import { Logbook, LogbookSchema } from './core/schemas/logbook.schema';
   providers: [LogbookService],
 })
 export class LogbookModule {}
+// scaninfo@paloaltonetworks.com

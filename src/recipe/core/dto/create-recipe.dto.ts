@@ -1,4 +1,4 @@
-import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsString, IsUrl, MaxLength } from 'class-validator';
 import { Time } from '../schemas/time.schema';
 import { Ingredient } from '../schemas/ingredient.schema';
 import { Direction } from '../schemas/direction.schema';
@@ -12,6 +12,7 @@ export class CreateRecipeDto {
   name: string;
 
   @IsString()
+  @IsUrl()
   image: string;
 
   @IsNotEmpty()
