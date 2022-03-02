@@ -15,6 +15,7 @@ export class FileService {
     @InjectConnection('files')
     private readonly _connection: Connection,
   ) {
+    // @ts-ignore
     this._fileModel = new MongoGridFS(this._connection.db, 'fs');
   }
 

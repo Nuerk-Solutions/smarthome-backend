@@ -38,24 +38,26 @@ export class UserService {
     return await this._userModel.findOne({ 'authentication.emailAddress': emailAddress.toLowerCase() }).exec();
   }
 
-  public async updateUserByAuthenticationId(authenticationId: Types.ObjectId, value: object) {
+  public async updateUserByAuthenticationId(authenticationId: Types.ObjectId, value: object): Promise<User> {
     return await this._userModel
-      .updateOne(
+      .findOneAndUpdate(
         { 'authentication._id': authenticationId },
         {
           $set: value,
         },
+        { new: true },
       )
       .exec();
   }
 
-  public async updateUserByEmailAddress(emailAddress: string, value: object) {
+  public async updateUserByEmailAddress(emailAddress: string, value: object): Promise<User> {
     return await this._userModel
-      .updateOne(
+      .findOneAndUpdate(
         { 'authentication.emailAddress': emailAddress },
         {
-          $set: value,
+          $set: vale,
         },
+        { new: true },
       )
       .exec();
   }

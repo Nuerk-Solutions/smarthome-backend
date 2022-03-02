@@ -87,8 +87,8 @@ export class AuthenticationService {
     return this._getCookieWithJwtAccessToken(user.uuid);
   }
 
-  public async confirm(user: User) {
-    return this._markEmailAsConfirmed(user.authentication.emailAddress);
+  public async confirm(user: User): Promise<User> {
+    return await this._markEmailAsConfirmed(user.authentication.emailAddress);
   }
 
   public async resendConfirmationLink(user: User): Promise<void> {
@@ -163,7 +163,7 @@ export class AuthenticationService {
     // );
   }
 
-  private async _markEmailAsConfirmed(emailAddress: string) {
+  private async _markEmailAsConfirmed(emailAddress: string): Promise<User> {
     return await this._userService.updateUserByEmailAddress(emailAddress, {
       'authentication.isEmailConfirmed': true,
     });

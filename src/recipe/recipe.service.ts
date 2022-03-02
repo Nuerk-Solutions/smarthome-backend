@@ -32,6 +32,7 @@ export class RecipeService {
       .exec();
   }
 
+  // https://docs.mongodb.com/manual/reference/operator/update-array/
   async update(userId: Types.ObjectId, id: Types.ObjectId, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
     return await this._recipeModel
       .findOneAndUpdate(

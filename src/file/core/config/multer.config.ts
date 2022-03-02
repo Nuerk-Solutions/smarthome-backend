@@ -3,9 +3,11 @@ import { MulterModuleOptions, MulterOptionsFactory } from '@nestjs/platform-expr
 import { GridFsStorage } from 'multer-gridfs-storage';
 import { ConfigService } from '@nestjs/config';
 
+type GridFsStorage = InstanceType<typeof GridFsStorage>;
+
 @Injectable()
 export class GridFsMulterConfig implements MulterOptionsFactory {
-  gridFsStorage;
+  gridFsStorage: GridFsStorage;
 
   constructor(private readonly configService: ConfigService) {
     this.gridFsStorage = new GridFsStorage({
