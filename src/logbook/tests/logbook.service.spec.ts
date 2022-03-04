@@ -35,7 +35,7 @@ describe('LogbookService', () => {
       driveReason: 'Drive Reason #1',
       additionalInformationTyp: AdditionalInformationTyp.KEINE,
       additionalInformation: '',
-      additionalInformationCost: ',
+      additionalInformationCost: '',
     },
     {
       driver: Driver.CLAUDIA,
@@ -46,8 +46,8 @@ describe('LogbookService', () => {
       driveReason: 'Drive Reason #2',
       additionalInformationTyp: AdditionalInformationTyp.GETANKT,
       additionalInformation: '20.4',
-      additionalInformationCost: '26,8'
-    }
+      additionalInformationCost: '26,8',
+    },
   ];
 
   beforeEach(async () => {
