@@ -15,7 +15,7 @@ describe('LogbookController', () => {
   const date3: Date = new Date(date2.getTime() + 1000);
 
   const createLogbookDto: CreateLogbookDto = {
-    driver: Driver.Andrea,
+    driver: Driver.ANDREA,
     vehicleTyp: VehicleTyp.FERRARI,
     currentMileAge: '123',
     newMileAge: '456',
@@ -27,7 +27,7 @@ describe('LogbookController', () => {
   };
 
   const mockLogbook = {
-    driver: Driver.Andrea,
+    driver: Driver.ANDREA,
     vehicleTyp: VehicleTyp.FERRARI,
     currentMileAge: '123',
     newMileAge: '456',
@@ -53,7 +53,7 @@ describe('LogbookController', () => {
           useValue: {
             findAll: jest.fn().mockResolvedValue([
               {
-                driver: Driver.Andrea,
+                driver: Driver.ANDREA,
                 vehicleTyp: VehicleTyp.FERRARI,
                 currentMileAge: '123',
                 newMileAge: '456',
@@ -64,7 +64,7 @@ describe('LogbookController', () => {
                 additionalInformationCost: '',
               },
               {
-                driver: Driver.Claudia,
+                driver: Driver.CLAUDIA,
                 vehicleTyp: VehicleTyp.VW,
                 currentMileAge: '456',
                 newMileAge: '789',
@@ -72,10 +72,10 @@ describe('LogbookController', () => {
                 driveReason: 'Drive Reason #2',
                 additionalInformationTyp: AdditionalInformationTyp.GETANKT,
                 additionalInformation: '20.4',
-                additionalInformationCost: '26,8',
+                additionalInformationCost: '26,8,
               },
               {
-                driver: Driver.Thomas,
+                driver: Driver.THOMAS,
                 vehicleTyp: VehicleTyp.FERRARI,
                 currentMileAge: '101112',
                 newMileAge: '131415',
@@ -83,8 +83,8 @@ describe('LogbookController', () => {
                 driveReason: 'Drive Reason #3',
                 additionalInformationTyp: AdditionalInformationTyp.GEWARTET,
                 additionalInformation: 'Windschutzscheibe ersetzt.',
-                additionalInformationCost: '300',
-              },
+                additionalInformationCost: '300'
+              }
             ]),
             create: jest.fn().mockResolvedValue(createLogbookDto),
           },
@@ -114,7 +114,7 @@ describe('LogbookController', () => {
     it('should return all Logbook', async () => {
       expect(controller.findAll()).resolves.toEqual([
         {
-          driver: Driver.Andrea,
+          driver: Driver.ANDREA,
           vehicleTyp: VehicleTyp.FERRARI,
           currentMileAge: '123',
           newMileAge: '456',
@@ -122,10 +122,10 @@ describe('LogbookController', () => {
           driveReason: 'Drive Reason #1',
           additionalInformationTyp: AdditionalInformationTyp.KEINE,
           additionalInformation: '',
-          additionalInformationCost: '',
+          additionalInformationCost: ''
         },
         {
-          driver: Driver.Claudia,
+          driver: Driver.CLAUDIA,
           vehicleTyp: VehicleTyp.VW,
           currentMileAge: '456',
           newMileAge: '789',
@@ -133,10 +133,10 @@ describe('LogbookController', () => {
           driveReason: 'Drive Reason #2',
           additionalInformationTyp: AdditionalInformationTyp.GETANKT,
           additionalInformation: '20.4',
-          additionalInformationCost: '26,8',
+          additionalInformationCost: '26,8'
         },
         {
-          driver: Driver.Thomas,
+          driver: Driver.THOMAS,
           vehicleTyp: VehicleTyp.FERRARI,
           currentMileAge: '101112',
           newMileAge: '131415',
@@ -144,8 +144,8 @@ describe('LogbookController', () => {
           driveReason: 'Drive Reason #3',
           additionalInformationTyp: AdditionalInformationTyp.GEWARTET,
           additionalInformation: 'Windschutzscheibe ersetzt.',
-          additionalInformationCost: '300',
-        },
+          additionalInformationCost: '300'
+        }
       ]);
       expect(service.findAll).toHaveBeenCalled();
     });

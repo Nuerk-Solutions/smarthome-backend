@@ -10,7 +10,7 @@ import { AdditionalInformationTyp } from '../core/enums/additional-information-t
 const date: Date = new Date();
 
 const mockLogbook = {
-  driver: Driver.Andrea,
+  driver: Driver.ANDREA,
   vehicleTyp: VehicleTyp.FERRARI,
   currentMileAge: '123',
   newMileAge: '456',
@@ -27,7 +27,7 @@ describe('LogbookService', () => {
 
   const logbookArray = [
     {
-      driver: Driver.Andrea,
+      driver: Driver.ANDREA,
       vehicleTyp: VehicleTyp.FERRARI,
       currentMileAge: '123',
       newMileAge: '456',
@@ -35,10 +35,10 @@ describe('LogbookService', () => {
       driveReason: 'Drive Reason #1',
       additionalInformationTyp: AdditionalInformationTyp.KEINE,
       additionalInformation: '',
-      additionalInformationCost: '',
+      additionalInformationCost: ',
     },
     {
-      driver: Driver.Claudia,
+      driver: Driver.CLAUDIA,
       vehicleTyp: VehicleTyp.VW,
       currentMileAge: '456',
       newMileAge: '789',
@@ -46,8 +46,8 @@ describe('LogbookService', () => {
       driveReason: 'Drive Reason #2',
       additionalInformationTyp: AdditionalInformationTyp.GETANKT,
       additionalInformation: '20.4',
-      additionalInformationCost: '26,8',
-    },
+      additionalInformationCost: '26,8'
+    }
   ];
 
   beforeEach(async () => {
