@@ -72,7 +72,7 @@ describe('LogbookController', () => {
                 driveReason: 'Drive Reason #2',
                 additionalInformationTyp: AdditionalInformationTyp.GETANKT,
                 additionalInformation: '20.4',
-                additionalInformationCost: '26,8,
+                additionalInformationCost: '26,8',
               },
               {
                 driver: Driver.THOMAS,
@@ -83,8 +83,8 @@ describe('LogbookController', () => {
                 driveReason: 'Drive Reason #3',
                 additionalInformationTyp: AdditionalInformationTyp.GEWARTET,
                 additionalInformation: 'Windschutzscheibe ersetzt.',
-                additionalInformationCost: '300'
-              }
+                additionalInformationCost: '300',
+              },
             ]),
             create: jest.fn().mockResolvedValue(createLogbookDto),
           },
@@ -122,7 +122,7 @@ describe('LogbookController', () => {
           driveReason: 'Drive Reason #1',
           additionalInformationTyp: AdditionalInformationTyp.KEINE,
           additionalInformation: '',
-          additionalInformationCost: ''
+          additionalInformationCost: '',
         },
         {
           driver: Driver.CLAUDIA,
@@ -133,7 +133,7 @@ describe('LogbookController', () => {
           driveReason: 'Drive Reason #2',
           additionalInformationTyp: AdditionalInformationTyp.GETANKT,
           additionalInformation: '20.4',
-          additionalInformationCost: '26,8'
+          additionalInformationCost: '26,8',
         },
         {
           driver: Driver.THOMAS,
@@ -144,8 +144,8 @@ describe('LogbookController', () => {
           driveReason: 'Drive Reason #3',
           additionalInformationTyp: AdditionalInformationTyp.GEWARTET,
           additionalInformation: 'Windschutzscheibe ersetzt.',
-          additionalInformationCost: '300'
-        }
+          additionalInformationCost: '300',
+        },
       ]);
       expect(service.findAll).toHaveBeenCalled();
     });
