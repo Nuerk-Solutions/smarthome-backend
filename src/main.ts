@@ -3,7 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 
@@ -12,8 +12,8 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const reflector = app.get(Reflector);
-  const port = +configService.get<number>('PORT');
+  // const reflector = app.get(Reflector);
+  const port = +configService.get<number>('WEB_PORT');
 
   app.use(cookieParser());
   app.use(helmet());
