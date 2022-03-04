@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MongoGridFS } from 'mongo-gridfs';
-import { GridFSBucketReadStream } from 'mongodb';
+import { Db, GridFSBucketReadStream } from 'mongodb';
 import { FileInfo } from './core/dto/file-info.dto';
 import { FileNotFoundException } from './core/exceptions/file-not-found.exception';
 import { Connection } from 'mongoose';
+
+export interface MongooseConnectionInstance {
+  db: Db;
+}
 
 @Injectable()
 export class FileService {
@@ -13,10 +17,9 @@ export class FileService {
   // Inject the connection to the right database
   constructor(
     @InjectConnection('files')
-    private readonly _connection: Connection,
+    private readonly _connection: MongooseConnectionInstance & Connection,
   ) {
-    // @ts-ignore
-    this._fileModel = new MongoGridFS(this._connection.db, 'fs');
+    this._fileModel = new MongoGridFS(this._connection.db, "fs");
   }
 
   /**
@@ -45,7 +48,7 @@ export class FileService {
       length: result.length,
       chunkSize: result.chunkSize,
       md5: result.md5,
-      contentType: result.contentType,
+      contentType: result.contentType
     };
   }
 

@@ -4,6 +4,6 @@ export enum TimeUnit {
   HOUR = 'h',
   DAY = 'd',
   WEEK = 'w',
-  MONTH = 'm',
+  MONTH = 'M',
   YEAR = 'y',
 }
