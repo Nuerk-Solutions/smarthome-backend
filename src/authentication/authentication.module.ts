@@ -20,7 +20,9 @@ import { ApiKeyStrategy } from './core/strategies/api-key.strategy';
     PassportModule,
     ConfigModule,
     forwardRef(() => MailModule),
-    JwtModule.register({}),
+    JwtModule.registerAsync({
+      useFactory: () => ({}),
+    }),
     // MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   providers: [

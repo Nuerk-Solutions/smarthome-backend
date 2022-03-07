@@ -5,7 +5,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Recipe, RecipeSchema } from './core/schemas/recipe.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Recipe.name, schema: RecipeSchema }], 'logbook')],
+  imports: [
+    MongooseModule.forFeatureAsync(
+      [
+        {
+          name: Recipe.name,
+          useFactory: () => RecipeSchema,
+        },
+      ],
+      'logbook',
+    ),
+  ],
   controllers: [RecipeController],
   providers: [RecipeService],
 })
