@@ -153,7 +153,7 @@ export class AuthenticationService {
 
   private async _removeRefreshToken(authenticationId: Types.ObjectId) {
     return this._userService.updateUserByAuthenticationId(authenticationId, {
-      'authentication.currentHashedRefreshToken': n,
+      'authentication.currentHashedRefreshToken': '',
     });
     // return this._userModel.updateOne(
     //   { 'authentication._id': authenticationId },

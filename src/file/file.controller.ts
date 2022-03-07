@@ -123,7 +123,7 @@ export class FileController {
       throw new RetrieveFileException();
     }
     return {
-      f,
+      file,
     };
   }
 }

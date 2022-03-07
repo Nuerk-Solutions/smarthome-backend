@@ -9,14 +9,13 @@ import { Recipe, RecipeDocument } from './core/schemas/recipe.schema';
 export class RecipeService {
   constructor(
     @InjectModel(Recipe.name)
-    private readonly _recipeModel: Model<RecipeDocument>
-  ) {
-  }
+    private readonly _recipeModel: Model<RecipeDocument>,
+  ) {}
 
   async create(createRecipeDto: CreateRecipeDto, userId: Types.ObjectId): Promise<Recipe> {
     return await this._recipeModel.create({
       ...createRecipeDto,
-      userId
+      userId,
     });
   }
 
@@ -28,7 +27,7 @@ export class RecipeService {
     return await this._recipeModel
       .findOne({
         _id: id,
-        userId
+        userId,
       })
       .exec();
   }
@@ -50,7 +49,7 @@ export class RecipeService {
     return await this._recipeModel
       .findOneAndRemove({
         userId,
-        _id:
+        _id: id,
       })
       .exec();
   }
