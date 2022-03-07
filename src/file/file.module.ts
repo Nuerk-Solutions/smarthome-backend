@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
 import { FileService } from './file.service';
 import { FileController } from './file.controller';
-import { MulterModule } from '@nestjs/platform-express';
 import { GridFsMulterConfig } from './core/config/multer.config';
 
 @Module({

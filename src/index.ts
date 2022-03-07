@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
 import * as express from 'express';
 import * as functions from 'firebase-functions';
+import { AppModule } from './app.module';
 
 const server = express();
 

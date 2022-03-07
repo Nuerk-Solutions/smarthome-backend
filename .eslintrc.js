@@ -5,7 +5,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint', 'prettier'],
-  extends: ['airbnb', 'airbnb-typescript', 'plugin:import/typescript', 'plugin:prettier/recommended'],
+  extends: ['plugin:prettier/recommended'],
   root: true,
   env: {
     node: true,
@@ -20,7 +20,7 @@ module.exports = {
     'max-len': ['error', { code: 150, ignoreUrls: true }],
     'prettier/prettier': ['error', { printWidth: 150 }],
     'no-shadow': 'off',
-    quotes: ['error', 'double', { avoidEscape: true }],
-    '@typescript-eslint/quotes': ['error', 'double', { avoidEscape: true }],
+    quotes: ['error', 'single', { avoidEscape: true }],
+    '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
   },
 };

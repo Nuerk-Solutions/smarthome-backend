@@ -14,7 +14,7 @@ const mockLogbook = {
   vehicleTyp: VehicleTyp.FERRARI,
   currentMileAge: '123',
   newMileAge: '456',
-  date: date,
+  date,
   driveReason: 'Drive Reason',
   additionalInformationTyp: AdditionalInformationTyp.GETANKT,
   additionalInformation: '20',
@@ -31,23 +31,23 @@ describe('LogbookService', () => {
       vehicleTyp: VehicleTyp.FERRARI,
       currentMileAge: '123',
       newMileAge: '456',
-      date: date,
+      date,
       driveReason: 'Drive Reason #1',
       additionalInformationTyp: AdditionalInformationTyp.KEINE,
       additionalInformation: '',
-      additionalInformationCost: '',
+      additionalInformationCost: ',
     },
     {
       driver: Driver.CLAUDIA,
       vehicleTyp: VehicleTyp.VW,
       currentMileAge: '456',
       newMileAge: '789',
-      date: date,
+      date,
       driveReason: 'Drive Reason #2',
       additionalInformationTyp: AdditionalInformationTyp.GETANKT,
       additionalInformation: '20.4',
-      additionalInformationCost: '26,8',
-    },
+      additionalInformationCost: '26,8'
+    }
   ];
 
   beforeEach(async () => {

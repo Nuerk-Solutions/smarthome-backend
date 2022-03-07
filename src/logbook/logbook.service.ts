@@ -65,12 +65,12 @@ export class LogbookService {
   }
 
   async download(drivers, vehicles): Promise<Buffer> {
-    const filterObject = {};
+    const filterObject: any = {};
     if (vehicles) {
-      filterObject['vehicleTyp'] = vehicles;
+      filterObject.vehicleTyp = vehicles;
     }
     if (drivers) {
-      filterObject['driver'] = drivers;
+      filterObject.driver = drivers;
     }
     const logbooks = await this.logbookModel.find(filterObject).sort({ date: 1 }).exec();
 

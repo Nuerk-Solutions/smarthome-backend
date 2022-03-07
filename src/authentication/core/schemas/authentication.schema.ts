@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Role } from '../enums/role.enum';
 import { Types } from 'mongoose';
 import { ObjectID } from 'bson';
+import { Role } from '../enums/role.enum';
 
 @Schema({ timestamps: { createdAt: true, updatedAt: true } })
 export class Authentication {

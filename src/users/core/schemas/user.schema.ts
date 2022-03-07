@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import { Authentication, AuthenticationSchema } from '../../../authentication/core/schemas/authentication.schema';
 import { Types } from 'mongoose';
 import { ObjectID } from 'bson';
+import { Authentication, AuthenticationSchema } from '../../../authentication/core/schemas/authentication.schema';
 
 export type UserDocument = User & Document;
 

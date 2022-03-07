@@ -1,10 +1,10 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { MailService } from './mail.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthenticationModule } from '../../authentication/authentication.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { BullModule } from '@nestjs/bull';
+import { AuthenticationModule } from '../../authentication/authentication.module';
+import { MailService } from './mail.service';
 import { MAIL_QUEUE } from './constants/mail.constant';
 import { MailProcessor } from './processor/mail.processor';
 
@@ -32,7 +32,7 @@ import { MailProcessor } from './processor/mail.processor';
           from: '"Nuerk-Solutions" <info@nuerk-solutions.de',
         },
         template: {
-          dir: __dirname + '/templates',
+          dir: `${__dirname}/templates`,
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,

@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { HeaderAPIKeyStrategy } from 'passport-headerapikey';
-import { AuthenticationService } from '../../authentication.service';
 import { Injectable } from '@nestjs/common';
+import { AuthenticationService } from '../../authentication.service';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(HeaderAPIKeyStrategy, 'api-key') {
@@ -10,6 +10,6 @@ export class ApiKeyStrategy extends PassportStrategy(HeaderAPIKeyStrategy, 'api-
   }
 
   async validate(apiKey: string): Promise<boolean> {
-    return await this._authenticationService.validateApiKey(apiKey);
+    return this._authenticationService.validateApiKey(apiKey);
   }
 }

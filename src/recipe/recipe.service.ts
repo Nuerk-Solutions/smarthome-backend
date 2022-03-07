@@ -1,33 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRecipeDto } from './core/dto/create-recipe.dto';
-import { UpdateRecipeDto } from './core/dto/update-recipe.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { CreateRecipeDto } from './core/dto/create-recipe.dto';
+import { UpdateRecipeDto } from './core/dto/update-recipe.dto';
 import { Recipe, RecipeDocument } from './core/schemas/recipe.schema';
 
 @Injectable()
 export class RecipeService {
   constructor(
     @InjectModel(Recipe.name)
-    private readonly _recipeModel: Model<RecipeDocument>,
-  ) {}
+    private readonly _recipeModel: Model<RecipeDocument>
+  ) {
+  }
 
   async create(createRecipeDto: CreateRecipeDto, userId: Types.ObjectId): Promise<Recipe> {
     return await this._recipeModel.create({
       ...createRecipeDto,
-      userId: userId,
+      userId
     });
   }
 
   async findAll(userId: Types.ObjectId): Promise<Recipe[]> {
-    return await this._recipeModel.find({ userId: userId }).exec();
+    return await this._recipeModel.find({ userId }).exec();
   }
 
   async findOne(userId: Types.ObjectId, id: Types.ObjectId): Promise<Recipe> {
     return await this._recipeModel
       .findOne({
         _id: id,
-        userId: userId,
+        userId
       })
       .exec();
   }
@@ -48,8 +49,8 @@ export class RecipeService {
   async remove(userId: Types.ObjectId, id: Types.ObjectId): Promise<Recipe> {
     return await this._recipeModel
       .findOneAndRemove({
-        userId: userId,
-        _id: id,
+        userId,
+        _id:
       })
       .exec();
   }

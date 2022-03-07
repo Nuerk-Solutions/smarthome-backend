@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MongoGridFS } from 'mongo-gridfs';
 import { Db, GridFSBucketReadStream } from 'mongodb';
+import { Connection } from 'mongoose';
 import { FileInfo } from './core/dto/file-info.dto';
 import { FileNotFoundException } from './core/exceptions/file-not-found.exception';
-import { Connection } from 'mongoose';
 
 export interface MongooseConnectionInstance {
   db: Db;

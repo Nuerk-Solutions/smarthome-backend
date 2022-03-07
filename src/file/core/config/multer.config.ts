@@ -17,7 +17,7 @@ export class GridFsMulterConfig implements MulterOptionsFactory {
         return new Promise((resolve, reject) => {
           const filename = file.originalname.trim();
           const fileInfo = {
-            filename: filename,
+            filename,
           };
           resolve(fileInfo);
         });

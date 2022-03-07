@@ -1,7 +1,8 @@
 import { BadRequestException, forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Types } from 'mongoose';
+import { UserService } from '../users/user.service';
 import { validateHash } from '../core/utils/hash.util';
 import { RefreshTokenNoMatchingException } from './core/exceptions/refresh-token-no-matching.exception';
 import { WrongCredentialsProvidedException } from './core/exceptions/wrong-credentials-provided.exception';
@@ -10,7 +11,6 @@ import { TokenPayload } from './core/interfaces/token-payload.interface';
 import { VerificationTokenPayload } from './core/interfaces/verification-token-payload.interface';
 import { MailService } from '../core/mail/mail.service';
 import { User } from '../users/core/schemas/user.schema';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthenticationService {
@@ -88,7 +88,7 @@ export class AuthenticationService {
   }
 
   public async confirm(user: User): Promise<User> {
-    return await this._markEmailAsConfirmed(user.authentication.emailAddress);
+    return this._markEmailAsConfirmed(user.authentication.emailAddress);
   }
 
   public async resendConfirmationLink(user: User): Promise<void> {
@@ -107,7 +107,7 @@ export class AuthenticationService {
     return token;
   }
 
-  public async validateApiKey(apiKey: string): Promise<boolean> {
+  public validateApiKey(apiKey: string) {
     const apiKeys: string[] = ['ca03na188ame03u1d78620de67282882a84', 'd2e621a6646a4211768cd68e26f21228a81'];
 
     return apiKeys.includes(apiKey);
@@ -138,7 +138,7 @@ export class AuthenticationService {
   }
 
   private async _setCurrentRefreshToken(authenticationId: Types.ObjectId, currentHashedRefreshToken: string) {
-    return await this._userService.updateUserByAuthenticationId(authenticationId, {
+    return this._userService.updateUserByAuthenticationId(authenticationId, {
       'authentication.currentHashedRefreshToken': currentHashedRefreshToken,
     });
     // this._userModel.updateOne(
@@ -152,8 +152,8 @@ export class AuthenticationService {
   }
 
   private async _removeRefreshToken(authenticationId: Types.ObjectId) {
-    return await this._userService.updateUserByAuthenticationId(authenticationId, {
-      'authentication.currentHashedRefreshToken': null,
+    return this._userService.updateUserByAuthenticationId(authenticationId, {
+      'authentication.currentHashedRefreshToken': n,
     });
     // return this._userModel.updateOne(
     //   { 'authentication._id': authenticationId },
@@ -164,7 +164,7 @@ export class AuthenticationService {
   }
 
   private async _markEmailAsConfirmed(emailAddress: string): Promise<User> {
-    return await this._userService.updateUserByEmailAddress(emailAddress, {
+    return this._userService.updateUserByEmailAddress(emailAddress, {
       'authentication.isEmailConfirmed': true,
     });
     // return this._userModel.updateOne(

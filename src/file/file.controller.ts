@@ -61,7 +61,7 @@ export class FileController {
       throw new RetrieveFileException();
     }
     return {
-      file: file,
+      file,
     };
   }
 
@@ -123,7 +123,7 @@ export class FileController {
       throw new RetrieveFileException();
     }
     return {
-      file: file,
+      f,
     };
   }
 }

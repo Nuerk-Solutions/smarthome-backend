@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
-import { CONFIRM_REGISTRATION, MAIL_QUEUE } from '../constants/mail.constant';
 import { ConfigService } from '@nestjs/config';
 import { Job } from 'bull';
 import { MailerService } from '@nestjs-modules/mailer';
+import { CONFIRM_REGISTRATION, MAIL_QUEUE } from '../constants/mail.constant';
 import { User } from '../../../users/core/schemas/user.schema';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class MailProcessor {
     this._logger.log(`Sending confirm registration email to '${job.data.user.authentication.emailAddress}'`);
 
     try {
-      return this._mailerService.sendMail({
+      return await this._mailerService.sendMail({
         to: job.data.user.authentication.emailAddress,
         from: this._configService.get('EMAIL_ADDRESS'),
         subject: 'Confirm registration',

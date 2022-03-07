@@ -6,7 +6,9 @@ import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 @Injectable()
 export class ParseArray implements PipeTransform<string> {
   protected exceptionFactory: (error: string) => any;
+
   private readonly type: Type<unknown>;
+
   private readonly separator: string;
 
   constructor(options: any) {
@@ -29,7 +31,7 @@ export class ParseArray implements PipeTransform<string> {
     try {
       items = value.split(this.separator);
     } catch (error) {
-      throw this.exceptionFactory(`Given input is not parsable.`);
+      throw this.exceptionFactory('Given input is not parsable.');
     }
 
     return items.map((item) => {
