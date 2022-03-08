@@ -10,6 +10,7 @@ import { MailModule } from './core/mail/mail.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { FileModule } from './file/file.module';
 import { YoutubeModule } from './youtube/youtube.module';
+import { FoodModule } from './food/food.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { YoutubeModule } from './youtube/youtube.module';
     RecipeModule,
     FileModule,
     YoutubeModule,
+    FoodModule,
   ],
 })
 export class AppModule {
