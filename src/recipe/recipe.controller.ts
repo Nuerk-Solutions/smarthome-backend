@@ -23,13 +23,6 @@ export class RecipeController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(FileInterceptor('file'))
-  @Post('/image/upload')
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return file.buffer.toString();
-  }
-
-  @HttpCode(HttpStatus.OK)
   @Get()
   async findAll(@Req() { user }: RequestWithUserPayload): Promise<Recipe[]> {
     return await this._recipeService.findAll(user._id);
