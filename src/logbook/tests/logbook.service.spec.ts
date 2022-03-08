@@ -35,7 +35,7 @@ describe('LogbookService', () => {
       driveReason: 'Drive Reason #1',
       additionalInformationTyp: AdditionalInformationTyp.KEINE,
       additionalInformation: '',
-      additionalInformationCost: ',
+      additionalInformationCost: '',
     },
     {
       driver: Driver.CLAUDIA,
