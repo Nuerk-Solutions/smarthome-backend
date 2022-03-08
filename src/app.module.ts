@@ -9,6 +9,7 @@ import { UserModule } from './users/user.module';
 import { MailModule } from './core/mail/mail.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { FileModule } from './file/file.module';
+import { YoutubeModule } from './youtube/youtube.module';
 
 @Module({
   imports: [
@@ -43,12 +44,21 @@ import { FileModule } from './file/file.module';
       }),
       inject: [ConfigService],
     }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      connectionName: 'youtube',
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI_YOUTUBE'),
+      }),
+      inject: [ConfigService],
+    }),
     LogbookModule,
     UserModule,
     AuthenticationModule,
     MailModule,
     RecipeModule,
     FileModule,
+    YoutubeModule,
   ],
 })
 export class AppModule {
