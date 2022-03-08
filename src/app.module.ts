@@ -11,6 +11,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { FileModule } from './file/file.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { FoodModule } from './food/food.module';
+import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { FoodModule } from './food/food.module';
     FileModule,
     YoutubeModule,
     FoodModule,
+    TeamModule,
   ],
 })
 export class AppModule {
