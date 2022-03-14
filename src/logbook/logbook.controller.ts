@@ -35,7 +35,7 @@ export class LogbookController {
   @HttpCode(HttpStatus.OK)
   @Get('/find/:id')
   async findOne(@Param('id') id: string): Promise<Logbook> {
-    return this.logbookService.findOne(id);
+    return await this.logbookService.findOne(id);
   }
 
   @HttpCode(HttpStatus.OK)

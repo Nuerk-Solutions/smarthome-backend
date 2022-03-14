@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import * as XLSX from 'xlsx';
 import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
@@ -48,7 +48,7 @@ export class LogbookService {
   }
 
   async findOne(id: string): Promise<Logbook> {
-    return this.logbookModel.findById(id);
+    return await this.logbookModel.findById(new Types.ObjectId(id)).exec();
   }
 
   async findLatest(): Promise<Logbook[]> {

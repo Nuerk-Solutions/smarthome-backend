@@ -7,9 +7,8 @@ import { ObjectID } from 'bson';
 
 export type LogbookDocument = Logbook & Document;
 
-@Schema({ timestamps: { createdAt: true, updatedAt: true } })
+@Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: true })
 export class Logbook {
-
   @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectID() })
   _id: Types.ObjectId;
 
