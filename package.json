@@ -22,7 +22,7 @@
     "db:seed": "ts-node ./src/cli.ts create:user"
   },
   "dependencies": {
-    "@nestjs-modules/mailer": "^1.6.1",
+    "@derech1e/mailer": "^1.6.2",
     "@nestjs/bull": "^0.5.4",
     "@nestjs/common": "^8.4.3",
     "@nestjs/config": "^2.0.0",
@@ -57,7 +57,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.5",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "yarn": "^1.22.18"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.4",
