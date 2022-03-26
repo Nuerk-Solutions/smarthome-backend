@@ -41,7 +41,7 @@ describe('LogbookController', () => {
     additionalInformation: '20',
     additionalInformationCost: '40',
     distanceSinceLastAdditionalInformation: '0',
-    _id: new Types.ObjectId('a id'),
+    _id: new Types.ObjectId(),
     createdAt: 'a timestemp',
     updatedAt: 'a timestemp',
   };
