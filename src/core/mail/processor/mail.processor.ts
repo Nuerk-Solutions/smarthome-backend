@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { ConfigService } from '@nestjs/config';
 import { Job } from 'bull';
-import { MailerService } from '@nestjs-modules/mailer';
 import { CONFIRM_REGISTRATION, MAIL_QUEUE } from '../constants/mail.constant';
 import { User } from '../../../users/core/schemas/user.schema';
+import { MailerService } from '@derech1e/mailer';
 
 @Injectable()
 @Processor(MAIL_QUEUE)

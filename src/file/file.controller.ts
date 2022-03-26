@@ -30,18 +30,14 @@ export class FileController {
     // Return all infos we can get from the file
     files.forEach((file) => {
       const fileResponse = {
-        id: file.id,
         originalname: file.originalname,
         encoding: file.encoding, // Deprecated but anyway it's useful
         mimetype: file.mimetype,
         filename: file.filename,
-        metadata: file.metadata,
-        bucketName: file.bucketName,
-        chunkSize: file.chunkSize,
         size: file.size,
-        md5: file.md5,
-        uploadDate: file.uploadDate,
-        contentType: file.contentType,
+        destination: file.destination,
+        path: file.path,
+        fieldname: file.fieldname,
       };
       response.push(fileResponse);
     });

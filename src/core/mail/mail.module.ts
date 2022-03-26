@@ -1,12 +1,12 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { MailerModule } from '@derech1e/mailer';
 import { BullModule } from '@nestjs/bull';
 import { AuthenticationModule } from '../../authentication/authentication.module';
 import { MailService } from './mail.service';
 import { MAIL_QUEUE } from './constants/mail.constant';
 import { MailProcessor } from './processor/mail.processor';
+import { HandlebarsAdapter } from '@derech1e/mailer/dist/adapters/handlebars.adapter';
 
 @Module({
   imports: [
