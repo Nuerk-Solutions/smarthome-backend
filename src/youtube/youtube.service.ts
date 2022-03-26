@@ -34,15 +34,21 @@ export class YoutubeService {
         message: 'Token is disabled',
       });
 
-    if (youtube.expiryDate || new Date() < new Date()) {
-      throw new ForbiddenException({
-        statusCode: 403,
-        youtubeCode: 2,
-        error: 'Forbidden',
-        message: 'Token is expired',
-      });
+    if (youtube.expiryDate) {
+      if (youtube.expiryDate < new Date()) {
+        throw new ForbiddenException({
+          statusCode: 403,
+          youtubeCode: 2,
+          error: 'Forbidden',
+          message: 'Token is expired',
+        });
+      }
     }
     if (youtube.systemBind) {
+      if (!youtube.hwid) {
+        await this._youtubeModel.updateOne({ token }, { hwid: updateYoutubeDto.hwid }).exec();
+        return true;
+      }
       if (youtube.hwid !== updateYoutubeDto.hwid) {
         throw new ForbiddenException({
           statusCode: 403,

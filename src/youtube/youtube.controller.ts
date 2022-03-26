@@ -17,8 +17,8 @@ export class YoutubeController {
     return await this.youtubeService.create(createYoutubeDto);
   }
 
-  @Get(':token')
-  async verify(@Param('token') token: string, updateYoutubeDto: UpdateYoutubeDto): Promise<Boolean> {
+  @Post(':token')
+  async verify(@Param('token') token: string, @Body() updateYoutubeDto: UpdateYoutubeDto): Promise<Boolean> {
     return await this.youtubeService.verify(token, updateYoutubeDto);
   }
 
