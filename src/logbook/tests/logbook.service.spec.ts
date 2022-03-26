@@ -46,8 +46,8 @@ describe('LogbookService', () => {
       driveReason: 'Drive Reason #2',
       additionalInformationTyp: AdditionalInformationTyp.GETANKT,
       additionalInformation: '20.4',
-      additionalInformationCost: '26,8'
-    }
+      additionalInformationCost: '26,8',
+    },
   ];
 
   beforeEach(async () => {
