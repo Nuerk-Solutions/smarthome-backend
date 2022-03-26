@@ -30,7 +30,6 @@ export const createNestServer = async (expressInstance) => {
     }),
   );
 
-
   return app.init();
 };
 

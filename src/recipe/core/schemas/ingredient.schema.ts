@@ -14,13 +14,13 @@ export class Ingredient {
     type: Number,
     required: false,
   })
-  amount: number;
+  quantity: number;
 
   @Prop({
     type: Number,
     required: false,
   })
-  measure: number;
+  amount: number;
 
   @Prop({
     type: String,

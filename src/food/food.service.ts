@@ -9,18 +9,18 @@ export class FoodService {
   }
 
   findAll() {
-    return `This action returns all food`;
+    return 'This action returns all food';
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} food`;
+    return 'This action returns a #${id} food';
   }
 
   update(id: number, updateFoodDto: UpdateFoodDto) {
-    return `This action updates a #${id} food`;
+    return 'This action updates a #${id} food';
   }
 
   remove(id: number) {
-    return `This action removes a #${id} food`;
+    return 'This action removes a #${id} food';
   }
 }
