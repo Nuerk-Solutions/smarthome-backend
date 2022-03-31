@@ -1,10 +1,14 @@
-import { Controller, Get, Param, Post, Res, StreamableFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { BadRequestException, Body, Controller, Get, Param, Post, Res, StreamableFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileService } from './file.service';
 import { FileResponse } from './core/dto/file-response.dto';
 import { RetrieveFileException } from './core/exceptions/retrieve-file.exception';
-import { Authorization } from '../authentication/core/decorators/authorization.decorator';
-import { Role } from '../authentication/core/enums/role.enum';
+import { FileSystemStoredFile, FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
+import { FileUploadDto } from './core/dto/file-upload.dto';
+import { getStorage } from 'firebase-admin/storage';
+import { Bucket } from "@google-cloud/storage"
+import { v4 as uuidv4 } from 'uuid';
+import { UploadOptions, UploadResponse } from '@google-cloud/storage/build/src/bucket';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 /**
  * <h1>File Controller</h1>
@@ -12,8 +16,6 @@ import { Role } from '../authentication/core/enums/role.enum';
  *
  * @class FileController
  */
-
-@Authorization(Role.USER)
 @Controller('file')
 export class FileController {
   constructor(private readonly _filesService: FileService) {}
@@ -42,6 +44,32 @@ export class FileController {
       response.push(fileResponse);
     });
     return response;
+  }
+
+
+  @Post('firebase')
+  @FormDataRequest()
+  async uploadFirebase(@Body() file: FileUploadDto): Promise<void | UploadResponse> {
+    // TODO:
+    //  Return download url
+    //  Separate into service
+
+    const storageRef: Bucket = getStorage().bucket(`gs://logbookbackend.appspot.com`);
+    const options: UploadOptions = {
+      public: true,
+      destination: `/upload/${file.file.originalName}`,
+      metadata: {
+        firebaseStorageDownloadTokens: uuidv4(),
+      },
+    }
+
+    if (file.file instanceof FileSystemStoredFile) {
+      return await storageRef.upload(file.file.path, options);
+    } else if(file.file instanceof MemoryStoredFile) {
+      return await storageRef.file(file.file.originalName).save(file.file.buffer, options);
+    } else {
+      throw new BadRequestException("Wrong stored file type provided", file.file);
+    }
   }
 
   /**
