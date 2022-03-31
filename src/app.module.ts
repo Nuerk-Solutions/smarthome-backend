@@ -12,12 +12,13 @@ import { FileModule } from './file/file.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { FoodModule } from './food/food.module';
 import { TeamModule } from './team/team.module';
+import { VplanModule } from './vplan/vplan.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      envFilePath: ['.env.development'],
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -63,6 +64,7 @@ import { TeamModule } from './team/team.module';
     YoutubeModule,
     FoodModule,
     TeamModule,
+    VplanModule,
   ],
 })
 export class AppModule {

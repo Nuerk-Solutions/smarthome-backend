@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Header } from '@nestjs/common';
 import { VplanService } from './vplan.service';
 
 @Controller('vplan')
@@ -6,7 +6,8 @@ export class VplanController {
   constructor(private readonly vplanService: VplanService) {}
 
   @Get()
-  async get() {
+  @Header('Content-Type', 'application/pdf')
+  get() {
     return this.vplanService.get();
   }
 }
