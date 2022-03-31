@@ -88,6 +88,10 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+.env.development
+
+# firebase files
+logbookbackend-firebase-adminsdk-r4je1-9b3004b91b.json
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
