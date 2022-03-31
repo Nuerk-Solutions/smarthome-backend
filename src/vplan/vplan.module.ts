@@ -4,6 +4,6 @@ import { VplanController } from './vplan.controller';
 
 @Module({
   controllers: [VplanController],
-  providers: [VplanService]
+  providers: [VplanService],
 })
 export class VplanModule {}

@@ -5,7 +5,7 @@ import { RetrieveFileException } from './core/exceptions/retrieve-file.exception
 import { FileSystemStoredFile, FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { FileUploadDto } from './core/dto/file-upload.dto';
 import { getStorage } from 'firebase-admin/storage';
-import { Bucket } from "@google-cloud/storage"
+import { Bucket } from '@google-cloud/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { UploadOptions, UploadResponse } from '@google-cloud/storage/build/src/bucket';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -46,7 +46,6 @@ export class FileController {
     return response;
   }
 
-
   @Post('firebase')
   @FormDataRequest()
   async uploadFirebase(@Body() file: FileUploadDto): Promise<void | UploadResponse> {
@@ -54,21 +53,21 @@ export class FileController {
     //  Return download url
     //  Separate into service
 
-    const storageRef: Bucket = getStorage().bucket(`gs://logbookbackend.appspot.com`);
+    const storageRef: Bucket = getStorage().bucket('gs://logbookbackend.appspot.com');
     const options: UploadOptions = {
       public: true,
       destination: `/upload/${file.file.originalName}`,
       metadata: {
         firebaseStorageDownloadTokens: uuidv4(),
       },
-    }
+    };
 
     if (file.file instanceof FileSystemStoredFile) {
       return await storageRef.upload(file.file.path, options);
-    } else if(file.file instanceof MemoryStoredFile) {
+    } else if (file.file instanceof MemoryStoredFile) {
       return await storageRef.file(file.file.originalName).save(file.file.buffer, options);
     } else {
-      throw new BadRequestException("Wrong stored file type provided", file.file);
+      throw new BadRequestException('Wrong stored file type provided', file.file);
     }
   }
 

@@ -22,7 +22,7 @@ async function bootstrap() {
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as ServiceAccount),
-    storageBucket: `gs://logbookbackend.appspot.com`
+    storageBucket: 'gs://logbookbackend.appspot.com',
   });
 
   app.use(cookieParser());
