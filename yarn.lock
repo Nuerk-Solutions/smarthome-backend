@@ -902,7 +902,7 @@
     multer "1.4.4"
     tslib "2.3.1"
 
-"@nestjs/schematics@^8.0.3":
+"@nestjs/schematics@^8.0.3", "@nestjs/schematics@^8.0.8":
   version "8.0.8"
   resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-8.0.8.tgz#b1612b535c1007d1503b7e624795708055460432"
   integrity sha512-xIIb5YnMQN/OJQ68+MCapy2bXvTxSWgINoqQbyZWkLL/yTIuROvZCdtV850NPGyr7f7l93VBP0ZPitbFIexy3Q==
