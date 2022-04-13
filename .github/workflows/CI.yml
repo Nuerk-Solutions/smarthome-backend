@@ -13,16 +13,14 @@ jobs:
         with:
           node-version: '16'
 
-      - name: NPM Ci
-        run: npm ci
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install
 
-      - name: NPM EsLint check
-        run: 
-          npm run lint
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: build
 
-      - name: NPM Build
-        run: 
-          npm run build
-
-      - name: NPM Test
-        run: npm run test
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: test # will run `yarn test` command
