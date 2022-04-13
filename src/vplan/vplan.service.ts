@@ -4,7 +4,6 @@ import { Readable } from 'stream';
 
 @Injectable()
 export class VplanService {
-
   async get(@Res() response) {
     await axios
       .get('http://geschuetzt.bszet.de/s-lk-vw/Vertretungsplaene/vertretungsplan-bgy.pdf', {
@@ -24,6 +23,6 @@ export class VplanService {
         });
         stream.pipe(response.req.res);
       })
-      .catch((err) => err)
+      .catch((err) => err);
   }
 }

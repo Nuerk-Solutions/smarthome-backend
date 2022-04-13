@@ -67,7 +67,7 @@ import { AppController } from './app.controller';
     TeamModule,
     VplanModule,
   ],
-  controllers: [AppController]
+  controllers: [AppController],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
