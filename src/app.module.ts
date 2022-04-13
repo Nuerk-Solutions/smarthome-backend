@@ -13,6 +13,7 @@ import { YoutubeModule } from './youtube/youtube.module';
 import { FoodModule } from './food/food.module';
 import { TeamModule } from './team/team.module';
 import { VplanModule } from './vplan/vplan.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { VplanModule } from './vplan/vplan.module';
     TeamModule,
     VplanModule,
   ],
+  controllers: [AppController]
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
