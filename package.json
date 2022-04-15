@@ -49,7 +49,7 @@
     "handlebars": "^4.7.7",
     "helmet": "^5.0.2",
     "mongo-gridfs": "^1.1.0",
-    "mongoose": "^6.2.10",
+    "mongoose": "^6.3.0",
     "multer-gridfs-storage": "^5.0.2",
     "nestjs-form-data": "^1.6.2",
     "nodemailer": "^6.7.3",
