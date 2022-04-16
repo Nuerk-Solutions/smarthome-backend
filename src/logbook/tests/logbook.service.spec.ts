@@ -60,6 +60,7 @@ describe('LogbookService', () => {
             new: jest.fn().mockResolvedValue(mockLogbook),
             constructor: jest.fn().mockResolvedValue(mockLogbook),
             find: jest.fn(),
+            count: jest.fn(),
             findOne: jest.fn(),
             create: jest.fn(),
             exec: jest.fn(),
@@ -77,12 +78,21 @@ describe('LogbookService', () => {
   });
 
   it('should return all logbooks', async () => {
+    jest.spyOn(model, 'count').mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce(2),
+    } as any);
+
     jest.spyOn(model, 'find').mockReturnValue({
       sort: jest.fn().mockImplementation(() => ({
-        exec: jest.fn().mockResolvedValue(logbookArray),
+        skip: jest.fn().mockImplementation(() => ({
+          limit: jest.fn().mockImplementation(() => ({
+            exec: jest.fn().mockResolvedValue(logbookArray),
+          })),
+        })),
       })),
       exec: jest.fn().mockResolvedValueOnce(logbookArray),
     } as any);
+
     const logbooks = await service.findAll();
     expect(logbooks).toEqual(logbookArray);
   });
