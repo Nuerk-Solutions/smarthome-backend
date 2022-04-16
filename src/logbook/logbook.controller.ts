@@ -12,7 +12,8 @@ import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 @ApiKey()
 @Controller('logbook')
 export class LogbookController {
-  constructor(private readonly logbookService: LogbookService) {}
+  constructor(private readonly logbookService: LogbookService) {
+  }
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
@@ -22,8 +23,11 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/all')
-  async findAll(@Query('sort') query?: string): Promise<Logbook[]> {
-    return this.logbookService.findAll(query);
+  async findAll(@Query('sort') sort?: string,
+                @Query('page') page?: number,
+                @Query('limit') limit?: number
+  ): Promise<Logbook[]> {
+    return await this.logbookService.findAll(sort, page, limit);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -51,20 +55,20 @@ export class LogbookController {
         items: DriverParameter,
         type: Driver,
         separator: ',',
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-      }),
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+      })
     )
-    drivers?: DriverParameter[],
+      drivers?: DriverParameter[],
     @Query(
       'vehicles',
       new ParseArray({
         items: VehicleParameter,
         type: VehicleTyp,
         separator: ',',
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-      }),
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+      })
     )
-    vehicles?: VehicleParameter[],
+      vehicles?: VehicleParameter[]
   ): Promise<StreamableFile> {
     console.log(drivers, vehicles);
 

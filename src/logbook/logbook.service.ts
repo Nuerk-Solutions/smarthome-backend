@@ -10,8 +10,9 @@ import { AdditionalInformationTyp } from './core/enums/additional-information-ty
 export class LogbookService {
   constructor(
     @InjectModel(Logbook.name)
-    private readonly logbookModel: Model<LogbookDocument>,
-  ) {}
+    private readonly logbookModel: Model<LogbookDocument>
+  ) {
+  }
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
@@ -23,7 +24,7 @@ export class LogbookService {
       const LastAdditionalInformation = await this.logbookModel
         .findOne({
           vehicleTyp: createLogbookDto.vehicleTyp,
-          additionalInformationTyp: createLogbookDto.additionalInformationTyp,
+          additionalInformationTyp: createLogbookDto.additionalInformationTyp
         })
         .sort({ date: -1 })
         .limit(1)
@@ -37,14 +38,23 @@ export class LogbookService {
       ...createLogbookDto,
       distance,
       distanceCost,
-      distanceSinceLastAdditionalInformation,
+      distanceSinceLastAdditionalInformation
     };
 
     return await this.logbookModel.create(logbook);
   }
 
-  async findAll(sort?: string): Promise<Logbook[]> {
-    return this.logbookModel.find().sort(sort).exec();
+  async findAll(sort?: string, page?: number, limit?: number): Promise<Logbook[]> {
+    const total = await this.logbookModel.count({}).exec();
+    // Outbound protection
+    const protectedLimit = limit <= 0 || limit >= total ? 1 : total;
+    const protectedPage = page < 0 || page > total ? 1 : page;
+
+    // protectedSkip beware the query of any kind of outbound inputs
+    const skip = protectedPage <= 0 ? 0 : protectedPage * protectedLimit;
+    const protectedSkip = skip >= total ? total - limit : skip;
+
+    return await this.logbookModel.find().sort(sort).skip(protectedSkip).limit(limit).exec();
   }
 
   async findOne(id: string): Promise<Logbook> {
@@ -98,7 +108,7 @@ export class LogbookService {
         'Zusatzinformationen - Inhalt': logbook.additionalInformation,
         'Zusatzinformationen - Kosten': logbook.additionalInformationCost,
         'Entfernung seit letzter Information': logbook.distanceSinceLastAdditionalInformation,
-        'Durchschnittlicher Verbrauch': fuelConsumption || '',
+        'Durchschnittlicher Verbrauch': fuelConsumption || ''
       };
     });
 
@@ -109,7 +119,7 @@ export class LogbookService {
     // Generate buffer
     return XLSX.write(workBook, {
       bookType: 'xlsx',
-      type: 'buffer',
+      type: 'buffer'
     });
   }
 
