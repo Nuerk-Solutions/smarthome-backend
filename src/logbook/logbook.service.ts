@@ -47,7 +47,7 @@ export class LogbookService {
   async findAll(sort?: string, page?: number, limit?: number): Promise<Logbook[]> {
     const total = await this.logbookModel.count({}).exec();
     // Outbound protection
-    const protectedLimit = limit <= 0 || limit >= total ? 1 : total;
+    const protectedLimit = limit <= 0 || limit >= total ? 1 : limit;
     const protectedPage = page < 0 || page > total ? 1 : page;
 
     // protectedSkip beware the query of any kind of outbound inputs
