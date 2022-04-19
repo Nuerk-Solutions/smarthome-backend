@@ -147,12 +147,36 @@ export class LogbookService {
       })
       // sum the cost for every driver
       .reduce((previousValue, currentValue) => {
-        let found = previousValue.find(item => item.driver === currentValue.driver);
-        if (found) {
-          found.distanceCost += currentValue.distanceCost;
-          found.distance += currentValue.distance;
-        }
-        else previousValue.push(currentValue);
+        let existingDriver = previousValue.find(item => item.driver === currentValue.driver && item.vehicle === currentValue.vehicle); // Check if driver already exists once in new array
+        if (existingDriver) {
+          // console.log(existingDriver)
+          // let existingVehicle = existingDriver.vehicle !== currentValue.vehicle;
+          // if (existingVehicle) {
+            existingDriver.vehicle.distance += currentValue.distance;
+            existingDriver.vehicle.distanceCost += currentValue.distanceCost;
+          // } else {
+          //   const vehicle = currentValue.vehicle;
+          //   existingDriver = {
+          //     ...existingDriver,
+          //     [vehicle]: {
+          //       distance: currentValue.distance,
+          //       distanceCost: currentValue.distanceCost
+          //     }
+          //   };
+            // console.log(existingDriver);
+          // }
+
+          // existingDriver.distanceCost += currentValue.distanceCost;
+          // existingDriver.distance += currentValue.distance;
+        } else previousValue.push(
+          {
+            ...currentValue,
+            [currentValue.vehicle]: {
+              distance: currentValue.distance,
+              distanceCost: currentValue.distanceCost
+            }
+          }
+        ); // Add value if not exist in new Array
         return previousValue;
       }, []);
     return cost;
