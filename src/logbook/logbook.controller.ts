@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile, ValidationPipe } from '@nestjs/common';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './core/schemas/logbook.schema';
@@ -8,6 +8,7 @@ import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
 import { Driver } from './core/enums/driver.enum';
 import { ParseArray } from './core/pipes/ParseEnumArray.pipe';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
+import { DateParameter } from './core/dto/parameters/date.parameter';
 
 @ApiKey()
 @Controller('logbook')
@@ -22,12 +23,36 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Get('/stats')
+  async getStats(
+    @Query() date: DateParameter,
+    @Query(
+      'drivers',
+      new ParseArray({
+        items: DriverParameter,
+        type: Driver,
+        separator: ',',
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+      })
+    )
+      drivers?: DriverParameter[],
+    @Query(
+      'vehicles',
+      new ParseArray({
+        items: VehicleParameter,
+        type: VehicleTyp,
+        separator: ',',
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+      })) vehicles?: VehicleParameter[]
+  ) {
+    // return date;
+    return await this.logbookService.calculateStats(date.date, drivers, vehicles);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get('/find/all')
-  async findAll(@Query('sort') sort?: string,
-                @Query('page') page?: number,
-                @Query('limit') limit?: number
-  ): Promise<Logbook[]> {
-    return await this.logbookService.findAll(sort, page, limit);
+  async findAll(@Query('sort') sort?: string, @Query('page') page?: number, @Query('limit') limit?: number): Promise<Logbook[]> {
+    return await this.logbookService.findAll(undefined, sort, page, limit);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -70,8 +95,6 @@ export class LogbookController {
     )
       vehicles?: VehicleParameter[]
   ): Promise<StreamableFile> {
-    console.log(drivers, vehicles);
-
     const xlsx = await this.logbookService.download(drivers, vehicles);
     return new StreamableFile(xlsx);
   }

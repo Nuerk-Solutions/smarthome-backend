@@ -5,6 +5,8 @@ import * as XLSX from 'xlsx';
 import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { AdditionalInformationTyp } from './core/enums/additional-information-typ.enum';
+import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
+import { DriverParameter } from './core/dto/parameters/driver.parameter';
 
 @Injectable()
 export class LogbookService {
@@ -44,7 +46,7 @@ export class LogbookService {
     return await this.logbookModel.create(logbook);
   }
 
-  async findAll(sort?: string, page?: number, limit?: number): Promise<Logbook[]> {
+  async findAll(filter?: object, sort?: string, page?: number, limit?: number): Promise<Logbook[]> {
     const total = await this.logbookModel.count({}).exec();
     // Outbound protection
     const protectedLimit = limit <= 0 || limit >= total ? 1 : limit;
@@ -54,7 +56,7 @@ export class LogbookService {
     const skip = protectedPage <= 0 ? 0 : protectedPage * protectedLimit;
     const protectedSkip = skip >= total ? total - limit : skip;
 
-    return await this.logbookModel.find().sort(sort).skip(protectedSkip).limit(limit).exec();
+    return await this.logbookModel.find(filter).sort(sort).skip(protectedSkip).limit(limit).exec();
   }
 
   async findOne(id: string): Promise<Logbook> {
@@ -121,6 +123,42 @@ export class LogbookService {
       bookType: 'xlsx',
       type: 'buffer'
     });
+  }
+
+  async calculateStats(startDate: string, drivers, vehicles) {
+    const logbooks: Logbook[] = await this.findAll({
+        vehicleTyp: vehicles,
+        driver: drivers,
+        date: {
+          $gt: new Date(startDate)
+        }
+      },
+      '-date');
+    let cost = [];
+
+    logbooks
+      // Map the values and transform cost into number
+      .map(logbook => {
+        return {
+          driver: logbook.driver,
+          vehicle: logbook.vehicleTyp,
+          distance: +logbook.distance,
+          distanceCost: +logbook.distanceCost
+        };
+      })
+      // sum the cost for every driver
+      .reduce((previousValue, currentValue) => {
+        if (!previousValue[currentValue.driver]) {
+          previousValue[currentValue.driver] = {
+            driver: currentValue.driver,
+            distanceCost: 0
+          };
+          cost.push(previousValue[currentValue.driver]);
+        }
+        previousValue[currentValue.driver].distanceCost += currentValue.distanceCost;
+        return previousValue;
+      }, []);
+    return cost;
   }
 
   async remove(id: number): Promise<Logbook> {
