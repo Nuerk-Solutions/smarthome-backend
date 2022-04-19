@@ -134,9 +134,8 @@ export class LogbookService {
         }
       },
       '-date');
-    let cost = [];
 
-    logbooks
+    const cost = logbooks
       // Map the values and transform cost into number
       .map(logbook => {
         return {
@@ -148,14 +147,12 @@ export class LogbookService {
       })
       // sum the cost for every driver
       .reduce((previousValue, currentValue) => {
-        if (!previousValue[currentValue.driver]) {
-          previousValue[currentValue.driver] = {
-            driver: currentValue.driver,
-            distanceCost: 0
-          };
-          cost.push(previousValue[currentValue.driver]);
+        let found = previousValue.find(item => item.driver === currentValue.driver);
+        if (found) {
+          found.distanceCost += currentValue.distanceCost;
+          found.distance += currentValue.distance;
         }
-        previousValue[currentValue.driver].distanceCost += currentValue.distanceCost;
+        else previousValue.push(currentValue);
         return previousValue;
       }, []);
     return cost;
