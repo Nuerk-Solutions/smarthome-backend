@@ -10,6 +10,8 @@ import { ParseArray } from './core/pipes/ParseEnumArray.pipe';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { DateParameter } from './core/dto/parameters/date.parameter';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
+import { MailService } from '../core/mail/mail.service';
+import { InvoiceParameter } from './core/dto/parameters/invoice.parameter';
 
 @ApiKey()
 @Controller('logbook')
@@ -52,6 +54,12 @@ export class LogbookController {
       return await this.logbookService.calculateDriverStats(date.date, drivers, vehicles, detailed);
     else if (type === 'vehicle')
       return await this.logbookService.calculateVehicleStats(date.date, vehicles);
+  }
+
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Get()
+  async sendInvoice(@Query() invoiceParameter: InvoiceParameter) {
+    await this.logbookService.sendInvoiceMail(invoiceParameter);
   }
 
   @HttpCode(HttpStatus.OK)

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import * as XLSX from 'xlsx';
@@ -10,14 +10,18 @@ import { DriverParameter } from './core/dto/parameters/driver.parameter';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { Driver } from './core/enums/driver.enum';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
+import { MailService } from '../core/mail/mail.service';
+import * as SendGrid from '@sendgrid/mail';
+import { convertToMonth } from '../core/utils/date.util';
+import { InvoiceParameter } from './core/dto/parameters/invoice.parameter';
 
 @Injectable()
 export class LogbookService {
   constructor(
     @InjectModel(Logbook.name)
-    private readonly logbookModel: Model<LogbookDocument>
-  ) {
-  }
+    private readonly logbookModel: Model<LogbookDocument>,
+    private readonly _mailService: MailService
+  ) {}
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
@@ -83,7 +87,7 @@ export class LogbookService {
   async download(drivers: DriverParameter[], vehicles: VehicleParameter[]): Promise<Buffer> {
     const logbooks = await this.logbookModel.find({
       vehicleTyp: vehicles,
-      driver: drivers,
+      driver: drivers
     }).sort({ date: 1 }).exec();
 
     if (!logbooks.length) {
@@ -233,5 +237,24 @@ export class LogbookService {
         distanceCost,
         ...updateLogbookDto
       }).exec();
+  }
+
+  async sendInvoiceMail(invoiceParameter: InvoiceParameter) {
+    const sum = 0;
+
+    const mail: SendGrid.MailDataRequired = {
+      to: invoiceParameter.email,
+      from: 'abrechnung@nuerk-solutions.de',
+      templateId: 'd-6348c3dcdc9a4514b88efc4401c0299e',
+      dynamicTemplateData: {
+        startMonth: convertToMonth(invoiceParameter.startDate),
+        endMonth: convertToMonth(invoiceParameter.endDate),
+        person: invoiceParameter.driver,
+        sum: sum,
+      },
+    }
+    await this._mailService.sendEmail(mail).catch(error => {
+      throw new InternalServerErrorException(error, "Failed to send mail!");
+    });
   }
 }
