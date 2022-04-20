@@ -43,10 +43,11 @@ export class LogbookController {
         type: VehicleTyp,
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-      })) vehicles?: VehicleParameter[]
+      })) vehicles?: VehicleParameter[],
+    @Query('detailed') detailed?: boolean,
   ) {
     // return date;
-    return await this.logbookService.calculateStats(date.date, drivers, vehicles);
+    return await this.logbookService.calculateDriverStats(date.date, drivers, vehicles, detailed);
   }
 
   @HttpCode(HttpStatus.OK)

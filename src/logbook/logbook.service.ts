@@ -125,7 +125,7 @@ export class LogbookService {
     });
   }
 
-  async calculateStats(startDate: string, drivers, vehicles) {
+  async calculateDriverStats(startDate: string, drivers, vehicles, detailed: boolean = true) {
     const logbooks: Logbook[] = await this.findAll({
         vehicleTyp: vehicles,
         driver: drivers,
@@ -150,6 +150,11 @@ export class LogbookService {
         let existingDriver = previousValue.find(item => item.driver === currentValue.driver); // Check if driver already exists once in new array
 
         if (existingDriver) { // If driver exists keep going
+          existingDriver.distanceCost += currentValue.distanceCost;
+          existingDriver.distance += currentValue.distance;
+
+          if (!detailed)
+            return previousValue;
 
           if (existingDriver.vehicles[currentValue.vehicle]) { // If vehicles contains the key of the vehicle keep going
             existingDriver.vehicles[currentValue.vehicle].distance += currentValue.distance;
@@ -163,17 +168,17 @@ export class LogbookService {
               }
             };
           }
-          existingDriver.distanceCost += currentValue.distanceCost;
-          existingDriver.distance += currentValue.distance;
         } else previousValue.push(
           { // Declaration for each to avoid vehicle property
             driver: currentValue.driver,
             distance: currentValue.distance,
             distanceCost: currentValue.distanceCost,
-            vehicles: {
-              [currentValue.vehicle]: {
-                distance: currentValue.distance,
-                distanceCost: currentValue.distanceCost
+            ...detailed && {
+              vehicles: {
+                [currentValue.vehicle]: {
+                  distance: currentValue.distance,
+                  distanceCost: currentValue.distanceCost
+                }
               }
             }
           }
