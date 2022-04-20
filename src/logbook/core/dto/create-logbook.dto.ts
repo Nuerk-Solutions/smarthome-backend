@@ -33,8 +33,8 @@ export class CreateLogbookDto {
   additionalInformationTyp: AdditionalInformationTyp;
 
   @IsOptional()
-  additionalInformation = '';
+  additionalInformation: string = '';
 
   @IsOptional()
-  additionalInformationCost = '';
+  additionalInformationCost: string = '';
 }
