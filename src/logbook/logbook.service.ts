@@ -135,7 +135,7 @@ export class LogbookService {
       },
       '-date');
 
-    const cost = logbooks
+    return logbooks
       // Map the values and transform cost into number
       .map(logbook => {
         return {
@@ -147,39 +147,39 @@ export class LogbookService {
       })
       // sum the cost for every driver
       .reduce((previousValue, currentValue) => {
-        let existingDriver = previousValue.find(item => item.driver === currentValue.driver && item.vehicle === currentValue.vehicle); // Check if driver already exists once in new array
-        if (existingDriver) {
-          // console.log(existingDriver)
-          // let existingVehicle = existingDriver.vehicle !== currentValue.vehicle;
-          // if (existingVehicle) {
-            existingDriver.vehicle.distance += currentValue.distance;
-            existingDriver.vehicle.distanceCost += currentValue.distanceCost;
-          // } else {
-          //   const vehicle = currentValue.vehicle;
-          //   existingDriver = {
-          //     ...existingDriver,
-          //     [vehicle]: {
-          //       distance: currentValue.distance,
-          //       distanceCost: currentValue.distanceCost
-          //     }
-          //   };
-            // console.log(existingDriver);
-          // }
+        let existingDriver = previousValue.find(item => item.driver === currentValue.driver); // Check if driver already exists once in new array
 
-          // existingDriver.distanceCost += currentValue.distanceCost;
-          // existingDriver.distance += currentValue.distance;
+        if (existingDriver) { // If driver exists keep going
+
+          if (existingDriver.vehicles[currentValue.vehicle]) { // If vehicles contains the key of the vehicle keep going
+            existingDriver.vehicles[currentValue.vehicle].distance += currentValue.distance;
+            existingDriver.vehicles[currentValue.vehicle].distanceCost += currentValue.distanceCost;
+          } else { // Else add the missing vehicle to the vehicles array including the already containing ones
+            existingDriver.vehicles = {
+              ...existingDriver.vehicles,
+              [currentValue.vehicle]: {
+                distance: currentValue.distance,
+                distanceCost: currentValue.distanceCost
+              }
+            };
+          }
+          existingDriver.distanceCost += currentValue.distanceCost;
+          existingDriver.distance += currentValue.distance;
         } else previousValue.push(
-          {
-            ...currentValue,
-            [currentValue.vehicle]: {
-              distance: currentValue.distance,
-              distanceCost: currentValue.distanceCost
+          { // Declaration for each to avoid vehicle property
+            driver: currentValue.driver,
+            distance: currentValue.distance,
+            distanceCost: currentValue.distanceCost,
+            vehicles: {
+              [currentValue.vehicle]: {
+                distance: currentValue.distance,
+                distanceCost: currentValue.distanceCost
+              }
             }
           }
-        ); // Add value if not exist in new Array
+        ); // Else add new value if not exist in Array vvv
         return previousValue;
-      }, []);
-    return cost;
+      }, []); // This array ^^^
   }
 
   async remove(id: number): Promise<Logbook> {
