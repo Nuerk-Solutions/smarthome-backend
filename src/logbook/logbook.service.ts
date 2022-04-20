@@ -81,14 +81,10 @@ export class LogbookService {
   }
 
   async download(drivers: DriverParameter[], vehicles: VehicleParameter[]): Promise<Buffer> {
-    const filterObject: any = {};
-    if (vehicles) {
-      filterObject.vehicleTyp = vehicles;
-    }
-    if (drivers) {
-      filterObject.driver = drivers;
-    }
-    const logbooks = await this.logbookModel.find(filterObject).sort({ date: 1 }).exec();
+    const logbooks = await this.logbookModel.find({
+      vehicleTyp: vehicles,
+      driver: drivers,
+    }).sort({ date: 1 }).exec();
 
     if (!logbooks.length) {
       throw new NotFoundException('No logbooks found');
@@ -102,13 +98,13 @@ export class LogbookService {
       }
       return {
         Fahrer: logbook.driver,
-        Fahrzeug_Typ: logbook.vehicleTyp,
+        Fahrzeug: logbook.vehicleTyp,
         'Aktueller Kilometerstand': +logbook.currentMileAge,
         'Neuer Kilometerstand': +logbook.newMileAge,
-        Entfernung: +logbook.distance,
+        Strecke: +logbook.distance,
         Kosten: logbook.distanceCost,
         Datum: logbook.date,
-        Grund: logbook.driveReason,
+        Reiseziel: logbook.driveReason,
         'Zusatzinformationen - Art': logbook.additionalInformationTyp,
         'Zusatzinformationen - Inhalt': logbook.additionalInformation,
         'Zusatzinformationen - Kosten': logbook.additionalInformationCost,
@@ -120,7 +116,7 @@ export class LogbookService {
     const workSheet = XLSX.utils.json_to_sheet(data);
     const workBook = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(workBook, workSheet, 'LogBook');
+    XLSX.utils.book_append_sheet(workBook, workSheet, 'Fahrtenbuch');
     // Generate buffer
     return XLSX.write(workBook, {
       bookType: 'xlsx',
