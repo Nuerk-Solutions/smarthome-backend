@@ -95,7 +95,11 @@ export class AuthenticationService {
     if (user.authentication.isEmailConfirmed) {
       throw new BadRequestException('Email is already confirmed');
     }
-    await this._mailService.sendConfirmationEmail(user);
+    // await this._mailService.sendConfirmationEmail(user).then(response => {
+    //   console.log(response);
+    // }).catch(error => {
+    //   console.error(`Error queueing registration email to user ${error}`)
+    // });;
   }
 
   public getJwtConfirmToken(emailAddress: string): string {

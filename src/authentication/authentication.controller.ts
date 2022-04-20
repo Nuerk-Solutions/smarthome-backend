@@ -28,7 +28,11 @@ export class AuthenticationController {
   async registration(@Body() registrationDto: RegistrationDto): Promise<UserReturnPayload> {
     const user = await this._authenticationService.registration(registrationDto);
 
-    await this._mailService.sendConfirmationEmail(user);
+    // await this._mailService.sendConfirmationEmail(user).then(response => {
+    //   console.log(response);
+    // }).catch(error => {
+    //   console.error(`Error queueing registration email to user ${error}`)
+    // });
     const payload: UserReturnPayload = {
       _id: user._id,
       firstName: user.firstName,

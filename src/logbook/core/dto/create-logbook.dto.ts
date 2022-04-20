@@ -1,4 +1,4 @@
-import { IsDateString, IsEnum, IsISO8601, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
+import { IsBoolean, IsDateString, IsEnum, IsISO8601, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
 import { Driver } from '../enums/driver.enum';
 import { VehicleTyp } from '../enums/vehicle-typ.enum';
 import { AdditionalInformationTyp } from '../enums/additional-information-typ.enum';
@@ -17,6 +17,10 @@ export class CreateLogbookDto {
   @IsNotEmpty()
   @IsNumberString()
   newMileAge: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  takeOver: boolean;
 
   @IsNotEmpty()
   @IsISO8601()

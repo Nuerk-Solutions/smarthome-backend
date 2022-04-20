@@ -19,7 +19,7 @@ import { AppController } from './app.controller';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.development'],
+      envFilePath: ['.env.development', 'sendgrid.env'],
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
