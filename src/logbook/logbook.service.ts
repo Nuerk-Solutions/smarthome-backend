@@ -7,6 +7,8 @@ import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { AdditionalInformationTyp } from './core/enums/additional-information-typ.enum';
 import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
 import { DriverParameter } from './core/dto/parameters/driver.parameter';
+import { VehicleTyp } from './core/enums/vehicle-typ.enum';
+import { Driver } from './core/enums/driver.enum';
 
 @Injectable()
 export class LogbookService {
@@ -77,7 +79,7 @@ export class LogbookService {
     return [latestLogbookVw, latestLogbookFerrari, latestLogbookPorsche];
   }
 
-  async download(drivers, vehicles): Promise<Buffer> {
+  async download(drivers: DriverParameter[], vehicles: VehicleParameter[]): Promise<Buffer> {
     const filterObject: any = {};
     if (vehicles) {
       filterObject.vehicleTyp = vehicles;
@@ -125,7 +127,7 @@ export class LogbookService {
     });
   }
 
-  async calculateDriverStats(startDate: string, drivers, vehicles, detailed: boolean = true) {
+  async calculateDriverStats(startDate: string, drivers: DriverParameter[], vehicles: VehicleParameter[], detailed: boolean = true) {
     const logbooks: Logbook[] = await this.findAll({
         vehicleTyp: vehicles,
         driver: drivers,
@@ -137,12 +139,12 @@ export class LogbookService {
 
     return logbooks
       // Map the values and transform cost into number
-      .map(logbook => {
+      .map(item => {
         return {
-          driver: logbook.driver,
-          vehicle: logbook.vehicleTyp,
-          distance: +logbook.distance,
-          distanceCost: +logbook.distanceCost
+          driver: item.driver,
+          vehicle: item.vehicleTyp,
+          distance: +item.distance,
+          distanceCost: +item.distanceCost
         };
       })
       // sum the cost for every driver
@@ -184,7 +186,7 @@ export class LogbookService {
           }
         ); // Else add new value if not exist in Array vvv
         return previousValue;
-      }, []); // This array ^^^
+      }, [] as { driver: Driver, distance: number, distanceCost: number, vehicles: { [vehicle: string]: { distance: number, distanceCost: number } } }[]); // This array ^^^
   }
 
   async remove(id: number): Promise<Logbook> {
