@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogbookController } from './logbook.controller';
 import { LogbookService } from './logbook.service';
 import { Logbook, LogbookSchema } from './core/schemas/logbook.schema';
+import { MailModule } from '../core/mail/mail.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { Logbook, LogbookSchema } from './core/schemas/logbook.schema';
       ],
       'logbook',
     ),
+    forwardRef(() => MailModule),
   ],
   controllers: [LogbookController],
   providers: [LogbookService],
