@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, HttpCode, HttpStatus, Param, Post, Query, StreamableFile, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, HttpCode, HttpStatus, Param, Patch, Post, Query, StreamableFile, ValidationPipe } from '@nestjs/common';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './core/schemas/logbook.schema';
@@ -9,6 +9,7 @@ import { Driver } from './core/enums/driver.enum';
 import { ParseArray } from './core/pipes/ParseEnumArray.pipe';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { DateParameter } from './core/dto/parameters/date.parameter';
+import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
 
 @ApiKey()
 @Controller('logbook')
@@ -66,9 +67,9 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('/find/:id')
-  async findOne(@Param('id') id: string): Promise<Logbook> {
-    return await this.logbookService.findOne(id);
+  @Get('/find/:_id')
+  async findOne(@Param('_id') _id: string): Promise<Logbook> {
+    return await this.logbookService.findOne(_id);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -103,14 +104,15 @@ export class LogbookController {
     return new StreamableFile(xlsx);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateLogbookDto: UpdateLogbookDto) {
-  //   return this.logbookService.update(+id, updateLogbookDto);
-  // }
+  @HttpCode(HttpStatus.OK)
+  @Patch(':_id')
+  async update(@Param('_id') _id: string, @Body() updateLogbookDto: UpdateLogbookDto) {
+    return await this.logbookService.update(_id, updateLogbookDto);
+  }
 
-  // @HttpCode(HttpStatus.NO_CONTENT)
-  // @Delete(':id')
-  // async remove(@Param('id') id: string): Promise<void> {
-  //   await this.logbookService.remove(+id);
-  // }
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':_id')
+  async remove(@Param('_id') _id: string): Promise<void> {
+    await this.logbookService.remove(_id);
+  }
 }

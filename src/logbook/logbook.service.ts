@@ -9,6 +9,7 @@ import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
 import { DriverParameter } from './core/dto/parameters/driver.parameter';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { Driver } from './core/enums/driver.enum';
+import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
 
 @Injectable()
 export class LogbookService {
@@ -218,7 +219,23 @@ export class LogbookService {
       }, [] as { driver: Driver, distance: number, distanceCost: number, vehicles: { [vehicle: string]: { distance: number, distanceCost: number } } }[]); // This array ^^^
   }
 
-  async remove(id: number): Promise<Logbook> {
-    return this.logbookModel.findOneAndDelete({ _id: id });
+  // <h1> TODO: Add exception handling for 404 of id </h1>
+  async remove(_id: string) {
+    await this.logbookModel.deleteOne({ _id: new Types.ObjectId(_id) }).exec();
+  }
+
+  // TODO: Add safety check for update task. Currently only managed with UI lock
+  async update(id: string, updateLogbookDto: UpdateLogbookDto): Promise<Logbook> {
+    const distance = Number(+updateLogbookDto.newMileAge - +updateLogbookDto.currentMileAge).toFixed(2);
+    const distanceCost = Number(+distance * 0.2).toFixed(2);
+
+    return await this.logbookModel.findOneAndUpdate({
+        _id: new Types.ObjectId(id)
+      },
+      {
+        distance,
+        distanceCost,
+        ...updateLogbookDto
+      }).exec();
   }
 }
