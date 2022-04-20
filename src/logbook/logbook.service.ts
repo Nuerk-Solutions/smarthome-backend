@@ -127,6 +127,35 @@ export class LogbookService {
     });
   }
 
+  async calculateVehicleStats(startDate: string, vehicles: VehicleParameter[]) {
+    const logbooks: Logbook[] = await this.findAll({
+        vehicleTyp: vehicles,
+        date: {
+          $gt: new Date(startDate)
+        }
+      },
+      '-date');
+
+    return logbooks
+      .map(item => {
+        return {
+          vehicle: item.vehicleTyp,
+          distance: +item.distance,
+          distanceCost: +item.distanceCost
+        };
+      })
+      .reduce((previousValue, currentValue) => {
+        const existingVehicle = previousValue.find(item => item.vehicle === currentValue.vehicle);
+
+        if (existingVehicle) {
+          existingVehicle.distance += currentValue.distance;
+          existingVehicle.distanceCost += currentValue.distanceCost;
+        } else previousValue.push({ ...currentValue });
+
+        return previousValue;
+      }, [] as { distance: number, distanceCost: number, vehicle: VehicleTyp }[]);
+  }
+
   async calculateDriverStats(startDate: string, drivers: DriverParameter[], vehicles: VehicleParameter[], detailed: boolean = true) {
     const logbooks: Logbook[] = await this.findAll({
         vehicleTyp: vehicles,

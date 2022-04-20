@@ -23,8 +23,9 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('/stats')
+  @Get('/stats/:type')
   async getStats(
+    @Param('type') type: string,
     @Query() date: DateParameter,
     @Query(
       'drivers',
@@ -44,10 +45,12 @@ export class LogbookController {
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
       })) vehicles?: VehicleParameter[],
-    @Query('detailed') detailed?: boolean,
+    @Query('detailed') detailed?: boolean
   ) {
-    // return date;
-    return await this.logbookService.calculateDriverStats(date.date, drivers, vehicles, detailed);
+    if (type === 'driver')
+      return await this.logbookService.calculateDriverStats(date.date, drivers, vehicles, detailed);
+    else if (type === 'vehicle')
+      return await this.logbookService.calculateVehicleStats(date.date, vehicles);
   }
 
   @HttpCode(HttpStatus.OK)
