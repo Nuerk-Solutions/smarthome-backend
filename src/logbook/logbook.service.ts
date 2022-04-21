@@ -336,7 +336,7 @@ export class LogbookService {
         startMonth: convertToMonth(invoiceParameter.startDate),
         endMonth: convertToMonth(invoiceParameter.endDate),
         person: invoiceParameter.driver,
-        sum: Math.round(sum).toFixed(2),
+        sum: sum.toLocaleString('de-DE', {maximumFractionDigits: 2, style: 'currency', currency: 'EUR'}),
         key: '1BF31DEB232411D1E3FABA4F911CA'
       }
     };
