@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, HttpCode, HttpStatus, Param, Patch, Post, Query, StreamableFile, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, HttpCode, HttpStatus, Param, Patch, Post, Query, StreamableFile } from '@nestjs/common';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 import { LogbookService } from './logbook.service';
 import { Logbook } from './core/schemas/logbook.schema';
@@ -10,8 +10,8 @@ import { ParseArray } from './core/pipes/ParseEnumArray.pipe';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { DateParameter } from './core/dto/parameters/date.parameter';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
-import { MailService } from '../core/mail/mail.service';
 import { InvoiceParameter } from './core/dto/parameters/invoice.parameter';
+import { CreateLogbookInvoiceDto } from './core/dto/create-logbook-invoice.dto';
 
 @ApiKey()
 @Controller('logbook')
@@ -45,21 +45,38 @@ export class LogbookController {
       new ParseArray({
         items: VehicleParameter,
         type: VehicleTyp,
+        allowEmpty: true,
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
       })) vehicles?: VehicleParameter[],
     @Query('detailed') detailed?: boolean
   ) {
     if (type === 'driver')
-      return await this.logbookService.calculateDriverStats(date.date, drivers, vehicles, detailed);
+      return await this.logbookService.calculateDriverStats(drivers, date.startDate, date.endDate, vehicles, detailed);
     else if (type === 'vehicle')
-      return await this.logbookService.calculateVehicleStats(date.date, vehicles);
+      return await this.logbookService.calculateVehicleStats(vehicles, date.startDate, date.endDate);
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @Get()
+  @Get('/invoice')
   async sendInvoice(@Query() invoiceParameter: InvoiceParameter) {
     await this.logbookService.sendInvoiceMail(invoiceParameter);
+  }
+
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Post('/invoice/create')
+  async createInvoice(@Body() createLogbookInvoiceDto: CreateLogbookInvoiceDto, @Query(
+    'drivers',
+    new ParseArray({
+      items: DriverParameter,
+      type: Driver,
+      separator: ',',
+      errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+    })
+  )
+    drivers?: DriverParameter[]) {
+    // console.log(createLogbookInvoiceDto.date.getDate())
+    return await this.logbookService.executeInvoice(createLogbookInvoiceDto, drivers);
   }
 
   @HttpCode(HttpStatus.OK)

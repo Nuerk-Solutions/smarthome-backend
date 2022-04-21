@@ -11,13 +11,12 @@ export class InvoiceParameter {
   @IsEnum(Driver, { each: true, message: 'Driver is not valid' })
   driver: Driver;
 
+  @IsDateString()
+  @IsNotEmpty()
+  startDate: Date;
 
   @IsDateString()
   @IsNotEmpty()
-  startDate: string;
-
-  @IsDateString()
-  @IsNotEmpty()
-  endDate: string;
+  endDate: Date;
 
 }

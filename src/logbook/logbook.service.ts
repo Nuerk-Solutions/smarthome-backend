@@ -14,12 +14,16 @@ import { MailService } from '../core/mail/mail.service';
 import * as SendGrid from '@sendgrid/mail';
 import { convertToMonth } from '../core/utils/date.util';
 import { InvoiceParameter } from './core/dto/parameters/invoice.parameter';
+import { LogbookInvoice, LogbookInvoiceDocument } from './core/schemas/logbook-invoice.schema';
+import { CreateLogbookInvoiceDto } from './core/dto/create-logbook-invoice.dto';
 
 @Injectable()
 export class LogbookService {
   constructor(
     @InjectModel(Logbook.name)
     private readonly logbookModel: Model<LogbookDocument>,
+    @InjectModel(LogbookInvoice.name)
+    private readonly logbookInvoiceModel: Model<LogbookInvoiceDocument>,
     private readonly _mailService: MailService
   ) {
   }
@@ -130,11 +134,16 @@ export class LogbookService {
     });
   }
 
-  async calculateVehicleStats(startDate: string, vehicles: VehicleParameter[]) {
+  async calculateVehicleStats(vehicles: VehicleParameter[], startDate?: Date, endDate?: Date) {
     const logbooks: Logbook[] = await this.findAll({
         vehicleTyp: vehicles,
         date: {
-          $gt: new Date(startDate)
+          ...startDate && {
+            $gt: startDate
+          },
+          ...endDate && {
+            $lt: endDate
+          }
         }
       },
       '-date');
@@ -159,15 +168,36 @@ export class LogbookService {
       }, [] as { distance: number, distanceCost: number, vehicle: VehicleTyp }[]);
   }
 
-  async calculateDriverStats(startDate: string, drivers: DriverParameter[], vehicles: VehicleParameter[], detailed: boolean = true) {
-    const logbooks: Logbook[] = await this.findAll({
-        vehicleTyp: vehicles,
-        driver: drivers,
-        date: {
-          $gt: new Date(startDate)
+  /**
+   *
+   * @param startDate Is the date from which to start count
+   * @param endDate
+   * @param drivers All drivers that should be displayed in the output
+   * @param vehicles All vehicles that should be displayed in the output
+   * @param detailed Detailed information to every driver
+   */
+  async calculateDriverStats(drivers: DriverParameter[], startDate?: Date, endDate?: Date, vehicles?: VehicleParameter[], detailed: boolean = true):
+    Promise<{
+      driver: Driver, distance: number, distanceCost: number, drivesCostForFree?: number,
+      vehicles: {
+        [p: string]: {
+          distance: number, distanceCost: number, drivesCostForFree?: number
         }
-      },
-      '-date');
+      }
+    }[]> {
+
+    const logbooks: Logbook[] = await this.findAll({
+      vehicleTyp: vehicles || Object.values(VehicleTyp),
+      driver: drivers,
+      date: {
+        ...startDate && {
+          $gt: startDate
+        },
+        ...endDate && {
+          $lt: endDate
+        }
+      }
+    });
 
     return logbooks
       // Map the values and transform cost into number
@@ -264,12 +294,40 @@ export class LogbookService {
         distance,
         distanceCost,
         ...updateLogbookDto
-      }).exec();
+      },
+      { new: true }
+    ).exec();
   }
 
-  async sendInvoiceMail(invoiceParameter: InvoiceParameter) {
-    const sum = 0;
+  async executeInvoice(createLogbookInvoiceDto: CreateLogbookInvoiceDto, drivers: DriverParameter[]) {
+    const lastLogbookInvoiceDate = await this.logbookInvoiceModel.findOne().sort({ date: -1 }).exec();
+    const invoiceStats = await this.calculateDriverStats(drivers, lastLogbookInvoiceDate.date, createLogbookInvoiceDto.endDate);
 
+    await this.logbookInvoiceModel.create({ date: createLogbookInvoiceDto.endDate });
+
+    const driverEmailStatsMap: Map<Driver, { email: string, sum: number }> = new Map<Driver, { email: string, sum: number }>();
+    if (drivers.includes(Driver.ANDREA as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: invoiceStats.find(item => item.driver === Driver.ANDREA).distanceCost });
+    } else if (drivers.includes(Driver.CLAUDIA as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.CLAUDIA, { email: 'claudia_dresden@icloud.de', sum: invoiceStats.find(item => item.driver === Driver.CLAUDIA).distanceCost });
+    } else if (drivers.includes(Driver.OLIVER as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.OLIVER, { email: 'oliver_dresden@freenet.de', sum: invoiceStats.find(item => item.driver === Driver.OLIVER).distanceCost });
+    } else if (drivers.includes(Driver.THOMAS as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: invoiceStats.find(item => item.driver === Driver.THOMAS).distanceCost });
+    }
+    driverEmailStatsMap.forEach((emailStats, driver) => {
+      const invoiceParameter: InvoiceParameter = {
+        email: emailStats.email,
+        driver,
+        startDate: lastLogbookInvoiceDate.date,
+        endDate: new Date(createLogbookInvoiceDto.endDate)
+      };
+      this.sendInvoiceMail(invoiceParameter, emailStats.sum);
+    });
+    return invoiceStats;
+  }
+
+  async sendInvoiceMail(invoiceParameter: InvoiceParameter, sum: number = 0) {
     const mail: SendGrid.MailDataRequired = {
       to: invoiceParameter.email,
       from: 'abrechnung@nuerk-solutions.de',
@@ -282,7 +340,7 @@ export class LogbookService {
         key: '1BF31DEB232411D1E3FABA4F911CA'
       }
     };
-    await this._mailService.sendEmail(mail).catch(error => {
+    await this._mailService.sendEmail(mail, true).catch(error => {
       throw new InternalServerErrorException(error, 'Failed to send mail!');
     });
   }

@@ -8,13 +8,13 @@ export class MailService {
   private readonly _logger = new Logger(MailService.name);
 
   constructor(
-    private readonly _configService: ConfigService,
+    private readonly _configService: ConfigService
   ) {
     SendGrid.setApiKey(this._configService.get<string>('SENDGRID_API_KEY'));
   }
 
-  public async sendEmail(mail: SendGrid.MailDataRequired): Promise<[ClientResponse, {}]> {
-    const transport = await SendGrid.send(mail);
+  public async sendEmail(mail: SendGrid.MailDataRequired, multiple: boolean = false): Promise<[ClientResponse, {}]> {
+    const transport = await SendGrid.send(mail, multiple);
     this._logger.log(`Email send to ${mail.to}`);
     return transport;
   }
