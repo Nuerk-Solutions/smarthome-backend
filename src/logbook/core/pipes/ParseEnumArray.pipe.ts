@@ -11,9 +11,12 @@ export class ParseArray implements PipeTransform<string> {
 
   private readonly separator: string;
 
-  constructor(options: any) {
+  private readonly allowEmpty: boolean;
+
+  constructor(options: { exceptionFactory?: (error: string) => any, errorHttpStatusCode?: HttpStatus, type: any, items: any, separator: string, allowEmpty?: boolean }) {
     this.type = options.type;
     this.separator = options.separator;
+    this.allowEmpty = options.allowEmpty || false;
 
     const { exceptionFactory, errorHttpStatusCode = HttpStatus.BAD_REQUEST } = options;
     this.exceptionFactory = exceptionFactory || ((error) => new HttpErrorByCode[errorHttpStatusCode](error));
@@ -31,7 +34,9 @@ export class ParseArray implements PipeTransform<string> {
     try {
       items = value.split(this.separator);
     } catch (error) {
-      throw this.exceptionFactory('Given input is not parsable.');
+      if (!this.allowEmpty)
+        throw this.exceptionFactory('Given input is not parsable.');
+      items = Object.values(this.type);
     }
 
     return items.map((item) => {
