@@ -251,6 +251,7 @@ export class LogbookService {
         endMonth: convertToMonth(invoiceParameter.endDate),
         person: invoiceParameter.driver,
         sum: sum,
+        key: '1BF31DEB232411D1E3FABA4F911CA'
       },
     }
     await this._mailService.sendEmail(mail).catch(error => {

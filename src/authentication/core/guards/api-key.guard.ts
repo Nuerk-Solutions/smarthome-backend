@@ -9,10 +9,8 @@ export class ApiKeyAuthenticationGuard extends AuthGuard('api-key') {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
-    if (request && request.query['api-key'] && !request.header('Authorization')) {
-      request.headers['Authorization'] = `Api-Key ${request.query['api-key']}`;
-      request.headers.Authorization = `Api-Key ${request.query['api-key']}`
-      return true;
+    if (request && request.query['api-key'] && !request.header('authorization')) {
+      request.headers['authorization'] = `Api-Key ${request.query['api-key']}`;
     }
     return super.canActivate(context);
   }
