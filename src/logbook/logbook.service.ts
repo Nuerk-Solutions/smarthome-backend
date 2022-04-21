@@ -21,7 +21,8 @@ export class LogbookService {
     @InjectModel(Logbook.name)
     private readonly logbookModel: Model<LogbookDocument>,
     private readonly _mailService: MailService
-  ) {}
+  ) {
+  }
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
@@ -105,6 +106,7 @@ export class LogbookService {
         Fahrzeug: logbook.vehicleTyp,
         'Aktueller Kilometerstand': +logbook.currentMileAge,
         'Neuer Kilometerstand': +logbook.newMileAge,
+        'Uebernommen': logbook.forFree ? 'Ja' : 'Nein',
         Strecke: +logbook.distance,
         Kosten: logbook.distanceCost,
         Datum: logbook.date,
@@ -174,49 +176,75 @@ export class LogbookService {
           driver: item.driver,
           vehicle: item.vehicleTyp,
           distance: +item.distance,
-          distanceCost: +item.distanceCost
+          distanceCost: +item.distanceCost,
+          forFree: item.forFree
         };
       })
       // sum the cost for every driver
       .reduce((previousValue, currentValue) => {
         let existingDriver = previousValue.find(item => item.driver === currentValue.driver); // Check if driver already exists once in new array
+        let payingDriver = currentValue.forFree ? previousValue.find(item => item.driver === Driver.CLAUDIA) : undefined;
 
-        if (existingDriver) { // If driver exists keep going
-          existingDriver.distanceCost += currentValue.distanceCost;
+        if (existingDriver) { // If driver already contains the array
+          (payingDriver || existingDriver).distanceCost += currentValue.distanceCost;
           existingDriver.distance += currentValue.distance;
+          if (payingDriver)
+            payingDriver.drivesCostForFree += currentValue.distanceCost;
 
           if (!detailed)
             return previousValue;
 
           if (existingDriver.vehicles[currentValue.vehicle]) { // If vehicles contains the key of the vehicle keep going
             existingDriver.vehicles[currentValue.vehicle].distance += currentValue.distance;
-            existingDriver.vehicles[currentValue.vehicle].distanceCost += currentValue.distanceCost;
+            (payingDriver || existingDriver).vehicles[currentValue.vehicle].distanceCost += currentValue.distanceCost;
+            if (payingDriver)
+              payingDriver.vehicles[currentValue.vehicle].drivesCostForFree += currentValue.distanceCost;
           } else { // Else add the missing vehicle to the vehicles array including the already containing ones
             existingDriver.vehicles = {
               ...existingDriver.vehicles,
               [currentValue.vehicle]: {
                 distance: currentValue.distance,
-                distanceCost: currentValue.distanceCost
+                distanceCost: currentValue.forFree ? 0 : currentValue.distanceCost,
+                ...(currentValue.forFree && existingDriver.driver === Driver.CLAUDIA) && {
+                  drivesCostForFree: currentValue.distanceCost
+                }
               }
             };
           }
-        } else previousValue.push(
-          { // Declaration for each to avoid vehicle property
+        } else {
+          previousValue.push({ // Declaration for each to avoid vehicle property
             driver: currentValue.driver,
             distance: currentValue.distance,
-            distanceCost: currentValue.distanceCost,
+            distanceCost: currentValue.forFree ? 0 : currentValue.distanceCost, // When there is a paying driver set the amount to 0
             ...detailed && {
               vehicles: {
                 [currentValue.vehicle]: {
                   distance: currentValue.distance,
-                  distanceCost: currentValue.distanceCost
+                  distanceCost: currentValue.forFree ? 0 : currentValue.distanceCost
                 }
               }
             }
+          });
+          if (currentValue.forFree) {
+            previousValue.push({ // Declaration for each to avoid vehicle property
+              driver: Driver.CLAUDIA,
+              distance: 0,
+              distanceCost: currentValue.distanceCost, // When there is a paying driver set the amount to 0
+              drivesCostForFree: currentValue.distanceCost,
+              ...detailed && {
+                vehicles: {
+                  [currentValue.vehicle]: {
+                    distance: 0,
+                    distanceCost: currentValue.distanceCost,
+                    drivesCostForFree: currentValue.distanceCost
+                  }
+                }
+              }
+            });
           }
-        ); // Else add new value if not exist in Array vvv
+        } // Else add new value if not exist in Array vvv
         return previousValue;
-      }, [] as { driver: Driver, distance: number, distanceCost: number, vehicles: { [vehicle: string]: { distance: number, distanceCost: number } } }[]); // This array ^^^
+      }, [] as { driver: Driver, distance: number, distanceCost: number, drivesCostForFree?: number, vehicles: { [vehicle: string]: { distance: number, distanceCost: number, drivesCostForFree?: number } } }[]); // This array ^^^
   }
 
   // <h1> TODO: Add exception handling for 404 of id </h1>
@@ -252,10 +280,10 @@ export class LogbookService {
         person: invoiceParameter.driver,
         sum: sum,
         key: '1BF31DEB232411D1E3FABA4F911CA'
-      },
-    }
+      }
+    };
     await this._mailService.sendEmail(mail).catch(error => {
-      throw new InternalServerErrorException(error, "Failed to send mail!");
+      throw new InternalServerErrorException(error, 'Failed to send mail!');
     });
   }
 }

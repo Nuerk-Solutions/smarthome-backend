@@ -20,7 +20,7 @@ export class CreateLogbookDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  takeOver: boolean;
+  forFree: boolean = false;
 
   @IsNotEmpty()
   @IsISO8601()

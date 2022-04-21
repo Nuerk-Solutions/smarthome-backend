@@ -25,6 +25,9 @@ export class Logbook {
   newMileAge: string;
 
   @Prop()
+  forFree: boolean;
+
+  @Prop()
   distance: string;
 
   @Prop()
