@@ -299,7 +299,7 @@ export class LogbookService {
     ).exec();
   }
 
-  async executeInvoice(createLogbookInvoiceDto: CreateLogbookInvoiceDto, drivers: DriverParameter[]) {
+  async executeInvoice(createLogbookInvoiceDto: CreateLogbookInvoiceDto, drivers: DriverParameter[]): Promise<boolean> {
     const lastLogbookInvoiceDate = await this.logbookInvoiceModel.findOne().sort({ date: -1 }).exec();
     const invoiceStats = await this.calculateDriverStats(drivers, lastLogbookInvoiceDate.date, createLogbookInvoiceDto.endDate);
 
@@ -324,13 +324,13 @@ export class LogbookService {
       };
       this.sendInvoiceMail(invoiceParameter, emailStats.sum);
     });
-    return invoiceStats;
+    return true;
   }
 
-  async sendInvoiceMail(invoiceParameter: InvoiceParameter, sum: number = 0) {
+  private async sendInvoiceMail(invoiceParameter: InvoiceParameter, sum: number = 0) {
     const mail: SendGrid.MailDataRequired = {
       to: invoiceParameter.email,
-      from: 'abrechnung@nuerk-solutions.de',
+      from: 'Fahrtenbuch Abrechnung <abrechnung@nuerk-solutions.de>',
       templateId: 'd-6348c3dcdc9a4514b88efc4401c0299e',
       dynamicTemplateData: {
         startMonth: convertToMonth(invoiceParameter.startDate),

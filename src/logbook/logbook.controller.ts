@@ -58,12 +58,6 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @Get('/invoice')
-  async sendInvoice(@Query() invoiceParameter: InvoiceParameter) {
-    await this.logbookService.sendInvoiceMail(invoiceParameter);
-  }
-
-  @HttpCode(HttpStatus.ACCEPTED)
   @Post('/invoice/create')
   async createInvoice(@Body() createLogbookInvoiceDto: CreateLogbookInvoiceDto, @Query(
     'drivers',
@@ -74,8 +68,7 @@ export class LogbookController {
       errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
     })
   )
-    drivers?: DriverParameter[]) {
-    // console.log(createLogbookInvoiceDto.date.getDate())
+    drivers?: DriverParameter[]): Promise<boolean> {
     return await this.logbookService.executeInvoice(createLogbookInvoiceDto, drivers);
   }
 
