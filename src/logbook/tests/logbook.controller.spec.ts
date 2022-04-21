@@ -25,6 +25,7 @@ describe('LogbookController', () => {
     additionalInformationTyp: AdditionalInformationTyp.GETANKT,
     additionalInformation: '20',
     additionalInformationCost: '40',
+    forFree: false,
   };
 
   const mockLogbook = {
@@ -43,6 +44,7 @@ describe('LogbookController', () => {
     _id: new Types.ObjectId(),
     createdAt: 'a timestemp',
     updatedAt: 'a timestemp',
+    forFree: false,
   };
 
   beforeEach(async () => {

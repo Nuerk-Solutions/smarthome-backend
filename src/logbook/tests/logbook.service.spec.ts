@@ -6,6 +6,10 @@ import { Logbook } from '../core/schemas/logbook.schema';
 import { Driver } from '../core/enums/driver.enum';
 import { VehicleTyp } from '../core/enums/vehicle-typ.enum';
 import { AdditionalInformationTyp } from '../core/enums/additional-information-typ.enum';
+import { MailService } from '../../core/mail/mail.service';
+import { forwardRef } from '@nestjs/common';
+import { MailModule } from '../../core/mail/mail.module';
+import { LogbookInvoice } from '../core/schemas/logbook-invoice.schema';
 
 const date: Date = new Date();
 
@@ -23,7 +27,9 @@ const mockLogbook = {
 
 describe('LogbookService', () => {
   let service: LogbookService;
+  let mailService: MailService;
   let model: Model<Logbook>;
+  let invoiceModel: Model<LogbookInvoice>;
 
   const logbookArray = [
     {
@@ -36,6 +42,7 @@ describe('LogbookService', () => {
       additionalInformationTyp: AdditionalInformationTyp.KEINE,
       additionalInformation: '',
       additionalInformationCost: '',
+      forFree: false,
     },
     {
       driver: Driver.CLAUDIA,
@@ -47,15 +54,31 @@ describe('LogbookService', () => {
       additionalInformationTyp: AdditionalInformationTyp.GETANKT,
       additionalInformation: '20.4',
       additionalInformationCost: '26,8',
+      forFree: false,
     },
   ];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        forwardRef(() => MailModule)
+      ],
       providers: [
         LogbookService,
         {
-          provide: getModelToken('Logbook'),
+          provide: getModelToken(Logbook.name),
+          useValue: {
+            new: jest.fn().mockResolvedValue(mockLogbook),
+            constructor: jest.fn().mockResolvedValue(mockLogbook),
+            find: jest.fn(),
+            count: jest.fn(),
+            findOne: jest.fn(),
+            create: jest.fn(),
+            exec: jest.fn(),
+          },
+        },
+        {
+          provide: getModelToken(LogbookInvoice.name),
           useValue: {
             new: jest.fn().mockResolvedValue(mockLogbook),
             constructor: jest.fn().mockResolvedValue(mockLogbook),
@@ -70,11 +93,14 @@ describe('LogbookService', () => {
     }).compile();
 
     service = module.get<LogbookService>(LogbookService);
-    model = module.get<Model<Logbook>>(getModelToken('Logbook'));
+    mailService = module.get<MailService>(MailService);
+    model = module.get<Model<Logbook>>(getModelToken(Logbook.name));
+    invoiceModel = module.get<Model<LogbookInvoice>>(getModelToken(LogbookInvoice.name))
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+    expect(mailService).toBeDefined();
   });
 
   it('should return all logbooks', async () => {

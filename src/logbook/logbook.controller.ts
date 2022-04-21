@@ -95,7 +95,6 @@ export class LogbookController {
   @Header('Content-disposition', 'attachment;filename=Fahrtenbuch_' + new Date().toISOString() + '.xlsx')
   @Header('Access-Control-Expose-Headers', 'Content-Disposition')
   @Get('/download')
-  // TODO: validate enum array
   async download(
     @Query(
       'drivers',

@@ -25,8 +25,7 @@ export class LogbookService {
     @InjectModel(LogbookInvoice.name)
     private readonly logbookInvoiceModel: Model<LogbookInvoiceDocument>,
     private readonly _mailService: MailService
-  ) {
-  }
+  ) {}
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
@@ -176,8 +175,7 @@ export class LogbookService {
    * @param vehicles All vehicles that should be displayed in the output
    * @param detailed Detailed information to every driver
    */
-  async calculateDriverStats(drivers: DriverParameter[], startDate?: Date, endDate?: Date, vehicles?: VehicleParameter[], detailed: boolean = true):
-    Promise<{
+  async calculateDriverStats(drivers: DriverParameter[], startDate?: Date, endDate?: Date, vehicles?: VehicleParameter[], detailed: boolean = true): Promise<{
       driver: Driver, distance: number, distanceCost: number, drivesCostForFree?: number,
       vehicles: {
         [p: string]: {
