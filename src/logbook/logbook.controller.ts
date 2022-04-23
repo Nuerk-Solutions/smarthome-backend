@@ -10,8 +10,8 @@ import { ParseArray } from './core/pipes/ParseEnumArray.pipe';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { DateParameter } from './core/dto/parameters/date.parameter';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
-import { InvoiceParameter } from './core/dto/parameters/invoice.parameter';
 import { CreateLogbookInvoiceDto } from './core/dto/create-logbook-invoice.dto';
+import { LogbookInvoice } from './core/schemas/logbook-invoice.schema';
 
 @ApiKey()
 @Controller('logbook')
@@ -73,6 +73,12 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Post('/invoice/history')
+  async getInvoiceHistory(): Promise<LogbookInvoice[]> {
+    return await this.logbookService.getInvoiceHistory();
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get('/find/all')
   async findAll(@Query('sort') sort?: string, @Query('page') page?: number, @Query('limit') limit?: number): Promise<Logbook[]> {
     return await this.logbookService.findAll(undefined, sort, page, limit);
@@ -115,9 +121,10 @@ export class LogbookController {
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
       })
     )
-      vehicles?: VehicleParameter[]
+      vehicles?: VehicleParameter[],
+    @Query() date?: DateParameter
   ): Promise<StreamableFile> {
-    const xlsx = await this.logbookService.download(drivers, vehicles);
+    const xlsx = await this.logbookService.download(drivers, vehicles, date.startDate, date.endDate);
     return new StreamableFile(xlsx);
   }
 

@@ -89,10 +89,18 @@ export class LogbookService {
     return [latestLogbookVw, latestLogbookFerrari, latestLogbookPorsche];
   }
 
-  async download(drivers: DriverParameter[], vehicles: VehicleParameter[]): Promise<Buffer> {
+  async download(drivers: DriverParameter[], vehicles: VehicleParameter[], startDate: Date, endDate: Date): Promise<Buffer> {
     const logbooks = await this.logbookModel.find({
       vehicleTyp: vehicles,
-      driver: drivers
+      driver: drivers,
+      date: {
+        ...startDate && {
+          $gt: startDate
+        },
+        ...endDate && {
+          $lt: endDate
+        }
+      }
     }).sort({ date: 1 }).exec();
 
     if (!logbooks.length) {
@@ -176,12 +184,7 @@ export class LogbookService {
    * @param vehicles All vehicles that should be displayed in the output
    * @param detailed Detailed information to every driver
    */
-  async calculateDriverStats(drivers: DriverParameter[], startDate?: Date, endDate?: Date, vehicles?: VehicleParameter[], detailed: boolean = true): Promise<{
-    driver: Driver, distance: number, distanceCost: number, drivesCostForFree?: number,
-    vehicles: [{
-      vehicleTyp: VehicleTyp, distance: number, distanceCost: number, drivesCostForFree?: number
-    }]
-  }[]> {
+  async calculateDriverStats(drivers: DriverParameter[], startDate?: Date, endDate?: Date, vehicles?: VehicleParameter[], detailed: boolean = true): Promise<{ driver: Driver, distance: number, distanceCost: number, drivesCostForFree?: number, vehicles: [{ vehicleTyp: VehicleTyp, distance: number, distanceCost: number, drivesCostForFree?: number }] }[]> {
 
     const logbooks: Logbook[] = await this.findAll({
       vehicleTyp: vehicles || Object.values(VehicleTyp),
@@ -233,10 +236,10 @@ export class LogbookService {
               }
             });
           } else {
-            payingDriver.drivesCostForFree = (payingDriver.drivesCostForFree || 0 ) + currentValue.distanceCost;
+            payingDriver.drivesCostForFree = (payingDriver.drivesCostForFree || 0) + currentValue.distanceCost;
             if (detailed) {
               const vehicle = payingDriver.vehicles.find(item => item.vehicleTyp === currentValue.vehicle);
-              vehicle.drivesCostForFree = (vehicle.drivesCostForFree || 0 ) + currentValue.distanceCost;
+              vehicle.drivesCostForFree = (vehicle.drivesCostForFree || 0) + currentValue.distanceCost;
             }
           }
         }
@@ -347,5 +350,9 @@ export class LogbookService {
     await this._mailService.sendEmail(mail, true).catch(error => {
       throw new InternalServerErrorException(error, 'Failed to send mail!');
     });
+  }
+
+  async getInvoiceHistory(): Promise<LogbookInvoice[]> {
+    return await this.logbookInvoiceModel.find().exec();
   }
 }
