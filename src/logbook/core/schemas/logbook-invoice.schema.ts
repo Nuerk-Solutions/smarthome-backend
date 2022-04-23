@@ -4,11 +4,8 @@ import { ObjectID } from 'bson';
 
 export type LogbookInvoiceDocument = LogbookInvoice & Document;
 
-@Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: false })
+@Schema({ timestamps: { createdAt: true, updatedAt: true }, _id: true })
 export class LogbookInvoice {
-
-  @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectID() })
-  _id: Types.ObjectId;
 
   @Prop({ required: true })
   date: Date;
