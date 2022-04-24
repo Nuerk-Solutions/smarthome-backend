@@ -26,9 +26,8 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('/stats/:type')
-  async getStats(
-    @Param('type') type: string,
+  @Get('/stats/driver')
+  async getDriverStats(
     @Query() date: DateParameter,
     @Query(
       'drivers',
@@ -51,11 +50,26 @@ export class LogbookController {
       })) vehicles?: VehicleParameter[],
     @Query('detailed') detailed?: boolean
   ) {
-    if (type === 'driver')
-      return await this.logbookService.calculateDriverStats(drivers, date.startDate, date.endDate, vehicles, detailed);
-    else if (type === 'vehicle')
-      return await this.logbookService.calculateVehicleStats(vehicles, date.startDate, date.endDate);
+    return await this.logbookService.calculateDriverStats(drivers, date.startDate, date.endDate, vehicles, detailed);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/stats/vehicle')
+  async getVehicleStats(
+    @Query() date: DateParameter,
+    @Query(
+      'vehicles',
+      new ParseArray({
+        items: VehicleParameter,
+        type: VehicleTyp,
+        allowEmpty: true,
+        separator: ',',
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+      })) vehicles?: VehicleParameter[]
+  ) {
+    return await this.logbookService.calculateVehicleStats(vehicles, date.startDate, date.endDate);
+  }
+
 
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('/invoice/create')
@@ -106,6 +120,7 @@ export class LogbookController {
       'drivers',
       new ParseArray({
         items: DriverParameter,
+        allowEmpty: true,
         type: Driver,
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
@@ -116,6 +131,7 @@ export class LogbookController {
       'vehicles',
       new ParseArray({
         items: VehicleParameter,
+        allowEmpty: true,
         type: VehicleTyp,
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE

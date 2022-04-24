@@ -95,10 +95,10 @@ export class LogbookService {
       driver: drivers,
       date: {
         ...startDate && {
-          $gt: startDate
+          $gte: startDate
         },
         ...endDate && {
-          $lt: endDate
+          $lte: endDate
         }
       }
     }).sort({ date: 1 }).exec();
@@ -147,33 +147,71 @@ export class LogbookService {
         vehicleTyp: vehicles,
         date: {
           ...startDate && {
-            $gt: startDate
+            $gte: startDate
           },
           ...endDate && {
-            $lt: endDate
+            $lte: endDate
           }
         }
       },
-      '-date');
+      'date'); //NOTE: Sort need to be ASC in order to calculate the average consumption correctly
 
     return logbooks
       .map(item => {
         return {
+          ...vehicles,
           vehicle: item.vehicleTyp,
           distance: +item.distance,
-          distanceCost: +item.distanceCost
+          desc: item.driveReason,
+          distanceCost: +item.distanceCost,
+          additionalInformation: item.additionalInformation,
+          additionalInformationTyp: item.additionalInformationTyp,
+          additionalInformationCost: item.additionalInformationCost,
+          distanceSinceLastAdditionalInformation: item.distanceSinceLastAdditionalInformation
         };
       })
-      .reduce((previousValue, currentValue) => {
-        const existingVehicle = previousValue.find(item => item.vehicle === currentValue.vehicle);
+      .reduce((resultArray, currentValue) => {
+        const existingVehicle = resultArray.find(item => item.vehicle === currentValue.vehicle);
+
 
         if (existingVehicle) {
           existingVehicle.distance += currentValue.distance;
           existingVehicle.distanceCost += currentValue.distanceCost;
-        } else previousValue.push({ ...currentValue });
+          if (currentValue.additionalInformationTyp == AdditionalInformationTyp.GETANKT && +currentValue.distanceSinceLastAdditionalInformation !== 0) {
+            existingVehicle.averageConsumptionSinceLastRefuel = ((+currentValue.additionalInformation) / (+currentValue.distanceSinceLastAdditionalInformation)) * 100;
+            existingVehicle.averageCostPerKmSinceLastRefuel = ((+currentValue.additionalInformationCost) / (+currentValue.distanceSinceLastAdditionalInformation));
+            existingVehicle.totalRefuels++;
+            existingVehicle.averageCost += existingVehicle.averageCostPerKmSinceLastRefuel;
+            existingVehicle.averageConsumption += existingVehicle.averageConsumptionSinceLastRefuel;
+          }
+        } else {
+          resultArray.push(
+            {
+              vehicle: currentValue.vehicle,
+              distance: currentValue.distance,
+              distanceCost: currentValue.distanceCost,
+              averageConsumptionSinceLastRefuel: -1,
+              averageCostPerKmSinceLastRefuel: -1,
+              averageConsumption: 0,
+              averageCost: 0,
+              totalRefuels: 0,
+            }
+          );
+        }
+        return resultArray;
+      }, [] as { vehicle: VehicleTyp, distance: number, distanceCost: number, averageConsumptionSinceLastRefuel: number, averageCostPerKmSinceLastRefuel: number, averageConsumption: number, averageCost: number, totalRefuels: number }[])
+      .reduce((resultArray, currentValue) => {
+        const averageConsumption = currentValue.averageConsumption / currentValue.totalRefuels;
+        const averageCost = currentValue.averageCost / currentValue.totalRefuels;
 
-        return previousValue;
-      }, [] as { distance: number, distanceCost: number, vehicle: VehicleTyp }[]);
+        resultArray.push({
+          ...currentValue,
+          averageConsumption: averageConsumption,
+          averageCost: averageCost
+        });
+
+        return resultArray;
+      }, [] as { vehicle: VehicleTyp, distance: number, distanceCost: number, averageConsumptionSinceLastRefuel: number, averageCostPerKmSinceLastRefuel: number, averageConsumption: number, averageCost: number, totalRefuels: number }[]);
   }
 
   /**
@@ -191,10 +229,10 @@ export class LogbookService {
       driver: drivers,
       date: {
         ...startDate && {
-          $gt: startDate
+          $gte: startDate
         },
         ...endDate && {
-          $lt: endDate
+          $lte: endDate
         }
       }
     });
