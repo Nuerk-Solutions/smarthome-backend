@@ -11,12 +11,16 @@ export class ParseArray implements PipeTransform<string> {
 
   private readonly separator: string;
 
-  private readonly allowEmpty: boolean;
+  private readonly emptyHandling: { allow: boolean, allCases: boolean } = {
+    allow: false,
+    allCases: false,
+  };
 
-  constructor(options: { exceptionFactory?: (error: string) => any, errorHttpStatusCode?: HttpStatus, type: any, items: any, separator: string, allowEmpty?: boolean }) {
+  constructor(options: { exceptionFactory?: (error: string) => any, errorHttpStatusCode?: HttpStatus, type: any, items: any, separator: string, emptyHandling?: { allow: boolean, allCases: boolean } }) {
     this.type = options.type;
     this.separator = options.separator;
-    this.allowEmpty = options.allowEmpty || false;
+    this.emptyHandling.allow = options.emptyHandling == undefined ? false : options.emptyHandling.allow;
+    this.emptyHandling.allCases = options.emptyHandling == undefined ? false : options.emptyHandling.allCases;
 
     const { exceptionFactory, errorHttpStatusCode = HttpStatus.BAD_REQUEST } = options;
     this.exceptionFactory = exceptionFactory || ((error) => new HttpErrorByCode[errorHttpStatusCode](error));
@@ -34,9 +38,12 @@ export class ParseArray implements PipeTransform<string> {
     try {
       items = value.split(this.separator);
     } catch (error) {
-      if (!this.allowEmpty)
+      if (!this.emptyHandling.allow)
         throw this.exceptionFactory('Given input is not parsable.');
-      items = Object.values(this.type);
+      if (this.emptyHandling.allCases)
+        items = Object.values(this.type);
+      else
+        return ""
     }
 
     return items.map((item) => {
