@@ -44,7 +44,10 @@ export class LogbookController {
       new ParseArray({
         items: VehicleParameter,
         type: VehicleTyp,
-        allowEmpty: true,
+        emptyHandling: {
+          allow: true,
+          allCases: true
+        },
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
       })) vehicles?: VehicleParameter[],
@@ -62,7 +65,10 @@ export class LogbookController {
       new ParseArray({
         items: VehicleParameter,
         type: VehicleTyp,
-        allowEmpty: true,
+        emptyHandling: {
+          allow: true,
+          allCases: true
+        },
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
       })) vehicles?: VehicleParameter[]
@@ -73,17 +79,34 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('/invoice/create')
-  async createInvoice(@Body() createLogbookInvoiceDto: CreateLogbookInvoiceDto, @Query(
-    'drivers',
-    new ParseArray({
-      items: DriverParameter,
-      type: Driver,
-      separator: ',',
-      errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-    })
-  )
-    drivers?: DriverParameter[]): Promise<boolean> {
-    return await this.logbookService.executeInvoice(createLogbookInvoiceDto, drivers);
+  async createInvoice(@Body() createLogbookInvoiceDto: CreateLogbookInvoiceDto,
+                      @Query('drivers',
+                        new ParseArray({
+                          items: DriverParameter,
+                          type: Driver,
+                          emptyHandling: {
+                            allow: true,
+                            allCases: true
+                          },
+                          separator: ',',
+                          errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+                        })
+                      )
+                        drivers?: DriverParameter[],
+                      @Query('drivers',
+                        new ParseArray({
+                          items: DriverParameter,
+                          type: Driver,
+                          emptyHandling: {
+                            allow: true,
+                            allCases: false
+                          },
+                          separator: ',',
+                          errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+                        })
+                      )
+                        emailDrivers?: DriverParameter[]): Promise<boolean> {
+    return await this.logbookService.executeInvoice(createLogbookInvoiceDto, drivers, emailDrivers);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -120,7 +143,10 @@ export class LogbookController {
       'drivers',
       new ParseArray({
         items: DriverParameter,
-        allowEmpty: true,
+        emptyHandling: {
+          allow: true,
+          allCases: true
+        },
         type: Driver,
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
@@ -131,7 +157,10 @@ export class LogbookController {
       'vehicles',
       new ParseArray({
         items: VehicleParameter,
-        allowEmpty: true,
+        emptyHandling: {
+          allow: true,
+          allCases: true
+        },
         type: VehicleTyp,
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE

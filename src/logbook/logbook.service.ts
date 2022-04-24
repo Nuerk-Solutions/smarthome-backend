@@ -344,20 +344,20 @@ export class LogbookService {
     ).exec();
   }
 
-  async executeInvoice(createLogbookInvoiceDto: CreateLogbookInvoiceDto, drivers: DriverParameter[]): Promise<boolean> {
+  async executeInvoice(createLogbookInvoiceDto: CreateLogbookInvoiceDto, drivers: DriverParameter[], emailDrivers: DriverParameter[]): Promise<boolean> {
     const lastLogbookInvoiceDate = await this.logbookInvoiceModel.findOne().sort({ date: -1 }).exec();
     const invoiceStats = await this.calculateDriverStats(drivers, lastLogbookInvoiceDate.date, createLogbookInvoiceDto.endDate);
 
     await this.logbookInvoiceModel.create({ date: createLogbookInvoiceDto.endDate });
 
     const driverEmailStatsMap: Map<Driver, { email: string, sum: number }> = new Map<Driver, { email: string, sum: number }>();
-    if (drivers.includes(Driver.ANDREA as DriverParameter)) {
+    if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
       driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: invoiceStats.find(item => item.driver === Driver.ANDREA).distanceCost });
-    } else if (drivers.includes(Driver.CLAUDIA as DriverParameter)) {
+    } else if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
       driverEmailStatsMap.set(Driver.CLAUDIA, { email: 'claudia_dresden@icloud.de', sum: invoiceStats.find(item => item.driver === Driver.CLAUDIA).distanceCost });
-    } else if (drivers.includes(Driver.OLIVER as DriverParameter)) {
+    } else if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
       driverEmailStatsMap.set(Driver.OLIVER, { email: 'oliver_dresden@freenet.de', sum: invoiceStats.find(item => item.driver === Driver.OLIVER).distanceCost });
-    } else if (drivers.includes(Driver.THOMAS as DriverParameter)) {
+    } else if (emailDrivers.includes(Driver.THOMAS as DriverParameter)) {
       driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: invoiceStats.find(item => item.driver === Driver.THOMAS).distanceCost });
     }
     driverEmailStatsMap.forEach((emailStats, driver) => {
