@@ -382,7 +382,9 @@ export class LogbookService {
         endMonth: convertToMonth(invoiceParameter.endDate),
         person: invoiceParameter.driver,
         sum: sum.toLocaleString('de-DE', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' }),
-        key: '1BF31DEB232411D1E3FABA4F911CA'
+        key: '1BF31DEB232411D1E3FABA4F911CA',
+        startDate: invoiceParameter.startDate,
+        endDate: invoiceParameter.endDate,
       }
     };
     await this._mailService.sendEmail(mail, true).catch(error => {
