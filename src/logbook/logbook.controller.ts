@@ -87,7 +87,7 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('/invoice/history')
+  @Get('/invoice/history')
   async getInvoiceHistory(): Promise<LogbookInvoice[]> {
     return await this.logbookService.getInvoiceHistory();
   }
