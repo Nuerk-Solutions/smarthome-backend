@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
 import { Driver } from '../enums/driver.enum';
 
 export class UpdateLogbookDto {
@@ -15,6 +15,10 @@ export class UpdateLogbookDto {
   @IsOptional()
   @IsNumberString()
   newMileAge: string;
+
+  @IsOptional()
+  @IsBoolean()
+  forFree: boolean = false;
 
   @IsOptional()
   driveReason: string;
