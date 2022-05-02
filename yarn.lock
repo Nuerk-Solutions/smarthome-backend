@@ -332,17 +332,17 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@derech1e/mailer@^1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@derech1e/mailer/-/mailer-1.7.2.tgz#6dec6d2801a883ef9670a52d533e7cec991577cc"
-  integrity sha512-cYUgJUiZVOvFTsd9tdMiHv5ewsO541sXx3H2dJSbRvcSRnBTbFyFeUBaKwlRivrAQFdL383ex9Lh17ahFf3TZA==
+"@derech1e/mailer@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@derech1e/mailer/-/mailer-1.7.3.tgz#be6cf7ed22cf9e06501dde31ee69ce9ddfd0ee23"
+  integrity sha512-F9uRRn/NY1if75ds6/6P1fvh7xk7lynmlEg5q12d/3LnQMvhczbbPD8yAuoFbCYZ+IvRSGy6BYtqSTT+cQiklQ==
   dependencies:
     glob "8.0.1"
     preview-email "3.0.5"
   optionalDependencies:
     "@types/ejs" "^3.1.0"
     "@types/pug" "2.0.6"
-    ejs "^3.1.6"
+    ejs "^3.1.7"
     handlebars "^4.7.7"
     pug "^3.0.2"
 
@@ -2861,7 +2861,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-ejs@^3.1.6:
+ejs@^3.1.7:
   version "3.1.7"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.7.tgz#c544d9c7f715783dd92f0bddcf73a59e6962d006"
   integrity sha512-BIar7R6abbUxDA3bfXrO4DSgwo8I+fB5/1zgujl3HLLjwd6+9iOnrT+t3grn2qbk9vOgBubXOFwX2m9axoFaGw==
