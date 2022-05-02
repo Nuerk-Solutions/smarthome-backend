@@ -22,7 +22,7 @@
     "db:seed": "ts-node ./src/cli.ts create:user"
   },
   "dependencies": {
-    "@derech1e/mailer": "^1.7.2",
+    "@derech1e/mailer": "^1.7.3",
     "@nestjs/bull": "^0.5.4",
     "@nestjs/common": "^8.4.4",
     "@nestjs/config": "^2.0.0",
