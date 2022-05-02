@@ -5357,10 +5357,10 @@ neo-async@^2.6.0, neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nestjs-form-data@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/nestjs-form-data/-/nestjs-form-data-1.6.2.tgz#31ec53b9089f884ca74279176a65de4f29e966fd"
-  integrity sha512-OHOS7wfVhw95G/AaszYQKO0fp2lcQ8pI+alYvmydubyZ7N3YCHkTWa3R+sI2/FtsXC2uCYQadkIra0audiRg6g==
+nestjs-form-data@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/nestjs-form-data/-/nestjs-form-data-1.6.3.tgz#f73d2523e3922fda170b37b61b9a6c1eb82dffc7"
+  integrity sha512-OTnBKKm/4qQsSUtZq3QgAi6XYoQExJEl3d8DYnXuyM2NxrFuBSOZeANS4bJ+RuM/RmksgbKB+91zJ2yfGiwHYw==
   dependencies:
     uid "^2.0.0"
     append-field "^1.0.0"

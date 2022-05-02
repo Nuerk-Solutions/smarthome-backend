@@ -52,7 +52,7 @@
     "mongo-gridfs": "^1.1.0",
     "mongoose": "^6.3.1",
     "multer-gridfs-storage": "^5.0.2",
-    "nestjs-form-data": "^1.6.2",
+    "nestjs-form-data": "^1.6.3",
     "nodemailer": "^6.7.4",
     "passport": "^0.5.2",
     "passport-headerapikey": "^1.2.2",
