@@ -117,13 +117,40 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/all')
-  async findAll(@Query('sort') sort?: string, @Query('page') page?: number, @Query('limit') limit?: number): Promise<Logbook[]> {
-    return await this.logbookService.findAll(undefined, sort, page, limit);
+  async findAll(@Query() date?: DateParameter,
+                @Query('drivers',
+                  new ParseArray({
+                    items: DriverParameter,
+                    type: Driver,
+                    emptyHandling: {
+                      allow: true,
+                      allCases: true
+                    },
+                    separator: ',',
+                    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+                  })
+                )
+                  drivers?: DriverParameter[],
+                @Query('sort') sort?: string, @Query('page') page?: number, @Query('limit') limit?: number) {
+    return await this.logbookService.findAll({
+      ...drivers && {
+        driver: drivers
+      },
+      date: {
+        ...date.startDate && {
+          $gte: date.startDate
+        },
+        ...date.endDate && {
+          $lte: date.endDate
+        }
+      }
+    }, sort, page, limit);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/latest')
   async findLatest(): Promise<Logbook[]> {
+    const test = '<table class="table-wrap is-auto-width"><thead> <th>Datum</th> <th>Fahrzeug</th> <th>Reiseziel</th> <th>Strecke</th> <th>Kosten</th></thead> <tr> <td><strong>01.01.2001</strong></td> <td><span class="mono">VW</span></td> <td>Stadtfahrt</td> <td>20 km</td> <td><strong>4 €</strong></td> </tr> <tr> <td><strong>01.01.2001</strong></td> <td><span class="mono">Ferrari</span></td> <td>Stadtfahrt</td> <td>20 km</td> <td><strong>4 €</strong></td> </tr> <tr> <td><strong>01.01.2001</strong></td> <td><span class="mono">Porsche</span></td> <td>Stadtfahrt</td> <td>20 km</td> <td><strong>4 €</strong></td> </tr></table>';
     return this.logbookService.findLatest();
   }
 
