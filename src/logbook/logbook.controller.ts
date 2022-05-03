@@ -136,12 +136,14 @@ export class LogbookController {
       ...drivers && {
         driver: drivers
       },
-      date: {
-        ...date.startDate && {
-          $gte: date.startDate
-        },
-        ...date.endDate && {
-          $lte: date.endDate
+      ...(date.startDate || date.endDate) && {
+        date: {
+          ...date.startDate && {
+            $gte: date.startDate
+          },
+          ...date.endDate && {
+            $lte: date.endDate
+          }
         }
       }
     }, sort, page, limit);

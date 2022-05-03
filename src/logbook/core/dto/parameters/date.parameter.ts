@@ -2,8 +2,8 @@ import { IsDateString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class DateParameter {
   @IsDateString()
-  @IsNotEmpty()
-  startDate: Date;
+  @IsOptional()
+  startDate?: Date;
 
 
   @IsDateString()
