@@ -183,6 +183,9 @@ export class LogbookService {
             existingVehicle.totalRefuels++;
             existingVehicle.averageCost += existingVehicle.averageCostPerKmSinceLastRefuel;
             existingVehicle.averageConsumption += existingVehicle.averageConsumptionSinceLastRefuel;
+          } else if(currentValue.additionalInformationTyp === AdditionalInformationTyp.GEWARTET && +currentValue.distanceSinceLastAdditionalInformation !== 0 && +currentValue.additionalInformationCost !== 0) {
+            existingVehicle.totalMaintenanceCost += +currentValue.additionalInformationCost;
+            existingVehicle.totalMaintenancesDistance += +currentValue.distanceSinceLastAdditionalInformation;
           }
         } else {
           resultArray.push(
@@ -195,23 +198,23 @@ export class LogbookService {
               averageConsumption: 0,
               averageCost: 0,
               totalRefuels: 0,
+              totalMaintenancesDistance: 0,
+              totalMaintenanceCost: 0,
             }
           );
         }
         return resultArray;
-      }, [] as { vehicle: VehicleTyp, distance: number, distanceCost: number, averageConsumptionSinceLastRefuel: number, averageCostPerKmSinceLastRefuel: number, averageConsumption: number, averageCost: number, totalRefuels: number }[])
+      }, [] as { vehicle: VehicleTyp, distance: number, distanceCost: number, averageConsumptionSinceLastRefuel: number, averageCostPerKmSinceLastRefuel: number, averageConsumption: number, averageCost: number, totalRefuels: number, totalMaintenancesDistance: number, totalMaintenanceCost: number }[])
       .reduce((resultArray, currentValue) => {
-        const averageConsumption = currentValue.averageConsumption / currentValue.totalRefuels;
-        const averageCost = currentValue.averageCost / currentValue.totalRefuels;
-
         resultArray.push({
           ...currentValue,
-          averageConsumption: averageConsumption,
-          averageCost: averageCost
+          averageConsumption: currentValue.averageConsumption / currentValue.totalRefuels,
+          averageCost: currentValue.averageCost / currentValue.totalRefuels,
+          averageMaintenanceCostPerKm: currentValue.totalMaintenanceCost / currentValue.totalMaintenancesDistance
         });
 
         return resultArray;
-      }, [] as { vehicle: VehicleTyp, distance: number, distanceCost: number, averageConsumptionSinceLastRefuel: number, averageCostPerKmSinceLastRefuel: number, averageConsumption: number, averageCost: number, totalRefuels: number }[]);
+      }, [] as { vehicle: VehicleTyp, distance: number, distanceCost: number, averageConsumptionSinceLastRefuel: number, averageCostPerKmSinceLastRefuel: number, averageConsumption: number, averageCost: number, totalRefuels: number, averageMaintenanceCostPerKm: number }[]);
   }
 
   /**
