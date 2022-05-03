@@ -22,7 +22,6 @@
     "db:seed": "ts-node ./src/cli.ts create:user"
   },
   "dependencies": {
-    "@derech1e/mailer": "^1.7.3",
     "@nestjs/bull": "^0.5.4",
     "@nestjs/common": "^8.4.4",
     "@nestjs/config": "^2.0.0",
@@ -47,13 +46,11 @@
     "express": "^4.17.3",
     "firebase-admin": "^10.1.0",
     "firebase-functions": "^3.20.1",
-    "handlebars": "^4.7.7",
     "helmet": "^5.0.2",
     "mongo-gridfs": "^1.1.0",
     "mongoose": "^6.3.1",
     "multer-gridfs-storage": "^5.0.2",
     "nestjs-form-data": "^1.6.3",
-    "nodemailer": "^6.7.4",
     "passport": "^0.5.2",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.0",
@@ -61,13 +58,11 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.5",
-    "xlsx": "^0.18.5",
-    "yarn": "^1.22.18"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.5",
     "@nestjs/testing": "^8.4.4",
-    "@types/bull": "^3.15.8",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/jest": "27.4.1",
