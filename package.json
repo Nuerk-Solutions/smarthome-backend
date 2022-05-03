@@ -22,7 +22,7 @@
     "db:seed": "ts-node ./src/cli.ts create:user"
   },
   "dependencies": {
-    "@derech1e/mailer": "^1.7.2",
+    "@derech1e/mailer": "^1.7.3",
     "@nestjs/bull": "^0.5.4",
     "@nestjs/common": "^8.4.4",
     "@nestjs/config": "^2.0.0",
@@ -35,7 +35,7 @@
     "@nestjs/platform-express": "^8.4.4",
     "@nestjs/schematics": "^8.0.10",
     "@sendgrid/mail": "^7.6.2",
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "bson": "^4.6.3",
@@ -52,8 +52,8 @@
     "mongo-gridfs": "^1.1.0",
     "mongoose": "^6.3.1",
     "multer-gridfs-storage": "^5.0.2",
-    "nestjs-form-data": "^1.6.2",
-    "nodemailer": "^6.7.3",
+    "nestjs-form-data": "^1.6.3",
+    "nodemailer": "^6.7.4",
     "passport": "^0.5.2",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.0",
@@ -82,7 +82,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
-    "supertest": "^6.2.2",
+    "supertest": "^6.2.3",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
