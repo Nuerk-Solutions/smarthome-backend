@@ -93,7 +93,7 @@ export class LogbookController {
                         })
                       )
                         drivers?: DriverParameter[],
-                      @Query('drivers',
+                      @Query('emailDrivers',
                         new ParseArray({
                           items: DriverParameter,
                           type: Driver,
