@@ -129,14 +129,13 @@ export class LogbookController {
                     separator: ',',
                     errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
                   })
-                )
-                  drivers?: DriverParameter[],
+                ) drivers?: DriverParameter[],
                 @Query('sort') sort?: string, @Query('page') page?: number, @Query('limit') limit?: number) {
     return await this.logbookService.findAll({
       ...drivers && {
         driver: drivers
       },
-      ...(date.startDate || date.endDate) && {
+      ...(date && (date.startDate || date.endDate)) && {
         date: {
           ...date.startDate && {
             $gte: date.startDate

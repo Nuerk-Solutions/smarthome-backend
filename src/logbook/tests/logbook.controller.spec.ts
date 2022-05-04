@@ -115,7 +115,7 @@ describe('LogbookController', () => {
 
   describe('findAll()', () => {
     it('should return all Logbook', async () => {
-      expect(controller.findAll()).resolves.toEqual([
+      await expect(controller.findAll()).resolves.toEqual([
         {
           driver: Driver.ANDREA,
           vehicleTyp: VehicleTyp.FERRARI,
