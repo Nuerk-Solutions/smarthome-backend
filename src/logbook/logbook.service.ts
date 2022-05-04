@@ -350,19 +350,29 @@ export class LogbookService {
   async executeInvoice(createLogbookInvoiceDto: CreateLogbookInvoiceDto, drivers: DriverParameter[], emailDrivers: DriverParameter[]): Promise<boolean> {
     const lastLogbookInvoiceDate = await this.logbookInvoiceModel.findOne().sort({ date: -1 }).exec();
     const invoiceStats = await this.calculateDriverStats(drivers, lastLogbookInvoiceDate.date, createLogbookInvoiceDto.endDate);
+    const sumThomas = invoiceStats.find(item => item.driver === Driver.THOMAS).distanceCost;
+    const sumAndrea = invoiceStats.find(item => item.driver === Driver.ANDREA).distanceCost;
 
     await this.logbookInvoiceModel.create({ date: createLogbookInvoiceDto.endDate });
 
     const driverEmailStatsMap: Map<Driver, { email: string, sum: number }> = new Map<Driver, { email: string, sum: number }>();
     if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: invoiceStats.find(item => item.driver === Driver.ANDREA).distanceCost });
+      driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
     } else if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
       driverEmailStatsMap.set(Driver.CLAUDIA, { email: 'claudia_dresden@icloud.de', sum: invoiceStats.find(item => item.driver === Driver.CLAUDIA).distanceCost });
     } else if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
       driverEmailStatsMap.set(Driver.OLIVER, { email: 'oliver_dresden@freenet.de', sum: invoiceStats.find(item => item.driver === Driver.OLIVER).distanceCost });
     } else if (emailDrivers.includes(Driver.THOMAS as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: invoiceStats.find(item => item.driver === Driver.THOMAS).distanceCost });
+      driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: sumThomas });
     }
+
+    await this.sendInvoiceSummary({
+      email: 'thomas@nuerkler.de',
+      driver: Driver.CLAUDIA,
+      startDate: lastLogbookInvoiceDate.date,
+      endDate: new Date(createLogbookInvoiceDto.endDate),
+    }, sumThomas, sumAndrea, sumAndrea + sumThomas);
+
     driverEmailStatsMap.forEach((emailStats, driver) => {
       const invoiceParameter: InvoiceParameter = {
         email: emailStats.email,
@@ -385,6 +395,28 @@ export class LogbookService {
         endMonth: convertToMonth(invoiceParameter.endDate),
         person: invoiceParameter.driver,
         sum: sum.toLocaleString('de-DE', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' }),
+        key: '1BF31DEB232411D1E3FABA4F911CA',
+        startDate: invoiceParameter.startDate,
+        endDate: invoiceParameter.endDate,
+      }
+    };
+    await this._mailService.sendEmail(mail, true).catch(error => {
+      throw new InternalServerErrorException(error, 'Failed to send mail!');
+    });
+  }
+
+  public async sendInvoiceSummary(invoiceParameter: InvoiceParameter, sumThomas: number, sumAndrea: number, sumAll: number) {
+    const mail: SendGrid.MailDataRequired = {
+      to: invoiceParameter.email,
+      from: 'Fahrtenbuch Abrechnung <abrechnung@nuerk-solutions.de>',
+      templateId: 'd-6caeb18ce41d497d87aaeb78d31aba3c',
+      dynamicTemplateData: {
+        startMonth: convertToMonth(invoiceParameter.startDate),
+        endMonth: convertToMonth(invoiceParameter.endDate),
+        person: invoiceParameter.driver,
+        sumThomas: sumThomas.toLocaleString('de-DE', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' }),
+        sumAndrea: sumThomas.toLocaleString('de-DE', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' }),
+        sumAll: sumThomas.toLocaleString('de-DE', { maximumFractionDigits: 2, style: 'currency', currency: 'EUR' }),
         key: '1BF31DEB232411D1E3FABA4F911CA',
         startDate: invoiceParameter.startDate,
         endDate: invoiceParameter.endDate,

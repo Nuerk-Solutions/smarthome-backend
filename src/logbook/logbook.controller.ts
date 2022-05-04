@@ -152,7 +152,6 @@ export class LogbookController {
   @HttpCode(HttpStatus.OK)
   @Get('/find/latest')
   async findLatest(): Promise<Logbook[]> {
-    const test = '<table class="table-wrap is-auto-width"><thead> <th>Datum</th> <th>Fahrzeug</th> <th>Reiseziel</th> <th>Strecke</th> <th>Kosten</th></thead> <tr> <td><strong>01.01.2001</strong></td> <td><span class="mono">VW</span></td> <td>Stadtfahrt</td> <td>20 km</td> <td><strong>4 €</strong></td> </tr> <tr> <td><strong>01.01.2001</strong></td> <td><span class="mono">Ferrari</span></td> <td>Stadtfahrt</td> <td>20 km</td> <td><strong>4 €</strong></td> </tr> <tr> <td><strong>01.01.2001</strong></td> <td><span class="mono">Porsche</span></td> <td>Stadtfahrt</td> <td>20 km</td> <td><strong>4 €</strong></td> </tr></table>';
     return this.logbookService.findLatest();
   }
 
