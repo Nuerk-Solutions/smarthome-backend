@@ -367,7 +367,7 @@ export class LogbookService {
     }
 
     await this.sendInvoiceSummary({
-      email: 'thomas@nuerkler.de',
+      email: 'claudia_dresden@icloud.de',
       driver: Driver.CLAUDIA,
       startDate: lastLogbookInvoiceDate.date,
       endDate: new Date(createLogbookInvoiceDto.endDate),
