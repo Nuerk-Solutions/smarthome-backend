@@ -3047,7 +3047,7 @@ expect@^28.0.2:
     jest-message-util "^28.0.2"
     jest-util "^28.0.2"
 
-express@4.17.3, express@^4.17.1:
+express@4.17.3:
   version "4.17.3"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.3.tgz#f6c7302194a4fb54271b73a1fe7a06478c8f85a1"
   integrity sha512-yuSQpz5I+Ch7gFrPCk4/c+dIBKlQUxtgwqzph132bsT6qhuzss6I8cLJQz7B3rFblzd6wtcI0ZbGltH/C4LjUg==
@@ -3083,7 +3083,7 @@ express@4.17.3, express@^4.17.1:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
-express@^4.18.1:
+express@^4.17.1, express@^4.18.1:
   version "4.18.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.18.1.tgz#7797de8b9c72c857b9cd0e14a5eea80666267caf"
   integrity sha512-zZBcOX9TfehHQhtupq57OF8lFZ3UZi08Y97dwFCkD8p9d/d2Y3M+ykKcwaMDEL+4qyUolgBDX6AblpR3fL212Q==
@@ -3267,10 +3267,10 @@ firebase-admin@^10.1.0:
     "@google-cloud/firestore" "^4.15.1"
     "@google-cloud/storage" "^5.18.3"
 
-firebase-functions@^3.20.1:
-  version "3.20.1"
-  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.20.1.tgz#d7c6aa7aaa91d39d55347c4cd3e72e9b9bfe5988"
-  integrity sha512-x8TEWOsaUnytsNBkrpraa2pOokdjMaGnOkcKdC6HDX/tvlBxrdNpvAMc+Vu/u0lzow9Hs+W+3jEe6Ss4duIz6g==
+firebase-functions@^3.21.0:
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.21.0.tgz#46b4c771781891929408bd4424959fe552d6cd6c"
+  integrity sha512-Xl0EFV05+RSB9hJHlo12LguoRqAmpSXmBnpI0MANeNj07dGW0QCWPHtaAewxYEzRS3RfSCL8WH12rjvo0PPKGw==
   dependencies:
     "@types/cors" "^2.8.5"
     "@types/express" "4.17.3"
