@@ -41,6 +41,6 @@ export const api = functions
   .region('europe-west1')
   .runWith({
     // timeoutSeconds: 0,
-    // minInstances: 1,
+    minInstances: 1,
   })
   .https.onRequest(server);
