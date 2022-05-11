@@ -116,6 +116,21 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Get('/invoice/summary')
+  async sendInvoiceSummary(@Query() date: DateParameter, @Query('email') email: string): Promise<void> {
+    const invoiceStats = await this.logbookService.calculateDriverStats([Driver.ANDREA, Driver.THOMAS], date.startDate, date.endDate);
+    const sumThomas = invoiceStats.find(item => item.driver === Driver.THOMAS).distanceCost;
+    const sumAndrea = invoiceStats.find(item => item.driver === Driver.ANDREA).distanceCost;
+
+      await this.logbookService.sendInvoiceSummary({
+        email: email,
+        driver: Driver.CLAUDIA,
+        endDate: new Date(date.endDate),
+        startDate: new Date(date.startDate)
+      }, sumThomas, sumAndrea, sumThomas + sumAndrea);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get('/find/all')
   async findAll(@Query() date?: DateParameter,
                 @Query('drivers',

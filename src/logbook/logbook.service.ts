@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, Schema, Types } from 'mongoose';
 import * as XLSX from 'xlsx';
 import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
@@ -225,7 +225,7 @@ export class LogbookService {
    * @param vehicles All vehicles that should be displayed in the output
    * @param detailed Detailed information to every driver
    */
-  async calculateDriverStats(drivers: DriverParameter[], startDate?: Date, endDate?: Date, vehicles?: VehicleParameter[], detailed: boolean = true): Promise<{ driver: Driver, distance: number, distanceCost: number, drivesCostForFree?: number, vehicles: [{ vehicleTyp: VehicleTyp, distance: number, distanceCost: number, drivesCostForFree?: number }] }[]> {
+  async calculateDriverStats(drivers: DriverParameter[] | Driver[], startDate?: Date, endDate?: Date, vehicles?: VehicleParameter[], detailed: boolean = true): Promise<{ driver: Driver, distance: number, distanceCost: number, drivesCostForFree?: number, vehicles: [{ vehicleTyp: VehicleTyp, distance: number, distanceCost: number, drivesCostForFree?: number }] }[]> {
 
     const logbooks: Logbook[] = await this.findAll({
       vehicleTyp: vehicles || Object.values(VehicleTyp),
