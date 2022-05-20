@@ -48,7 +48,7 @@
     "firebase-functions": "^3.21.0",
     "helmet": "^5.0.2",
     "mongo-gridfs": "^1.1.0",
-    "mongoose": "^6.3.2",
+    "mongoose": "^6.3.4",
     "multer-gridfs-storage": "^5.0.2",
     "nestjs-form-data": "^1.6.3",
     "passport": "^0.5.2",
