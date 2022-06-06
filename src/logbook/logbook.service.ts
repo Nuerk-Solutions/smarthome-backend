@@ -358,16 +358,26 @@ export class LogbookService {
     const driverEmailStatsMap: Map<Driver, { email: string, sum: number }> = new Map<Driver, { email: string, sum: number }>();
     if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
       driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
-    } else if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.CLAUDIA, { email: 'claudia_dresden@icloud.de', sum: invoiceStats.find(item => item.driver === Driver.CLAUDIA).distanceCost });
-    } else if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
+    }
+    if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.CLAUDIA, { email: 'claudia_dresden@icloud.com', sum: invoiceStats.find(item => item.driver === Driver.CLAUDIA).distanceCost });
+    }
+    if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
       driverEmailStatsMap.set(Driver.OLIVER, { email: 'oliver_dresden@freenet.de', sum: invoiceStats.find(item => item.driver === Driver.OLIVER).distanceCost });
-    } else if (emailDrivers.includes(Driver.THOMAS as DriverParameter)) {
+    }
+    if (emailDrivers.includes(Driver.THOMAS as DriverParameter)) {
       driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: sumThomas });
     }
 
     await this.sendInvoiceSummary({
-      email: 'claudia_dresden@icloud.de',
+      email: 'claudia_dresden@icloud.com',
+      driver: Driver.CLAUDIA,
+      startDate: lastLogbookInvoiceDate.date,
+      endDate: new Date(createLogbookInvoiceDto.endDate),
+    }, sumThomas, sumAndrea, sumAndrea + sumThomas);
+
+    await this.sendInvoiceSummary({
+      email: 'thomas@nuerkler.de',
       driver: Driver.CLAUDIA,
       startDate: lastLogbookInvoiceDate.date,
       endDate: new Date(createLogbookInvoiceDto.endDate),
