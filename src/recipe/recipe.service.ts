@@ -8,7 +8,7 @@ import { Recipe, RecipeDocument } from './core/schemas/recipe.schema';
 @Injectable()
 export class RecipeService {
   constructor(
-    @InjectModel(Recipe.name)
+    @InjectModel(Recipe.name, 'logbook')
     private readonly _recipeModel: Model<RecipeDocument>,
   ) {}
 

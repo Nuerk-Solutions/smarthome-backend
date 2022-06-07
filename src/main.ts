@@ -10,7 +10,7 @@ import { AppModule } from './app.module';
 import * as admin from 'firebase-admin';
 import { ServiceAccount } from 'firebase-admin';
 
-const serviceAccount = require('./../logbookbackend-firebase-adminsdk-r4je1-9b3004b91b.json');
+const serviceAccount = require('./../logbookbackend-firebase-adminsdk-r4je1-0667f9fa1a.json');
 
 async function bootstrap() {
   console.log('Server Ready!');

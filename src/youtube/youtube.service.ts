@@ -8,7 +8,7 @@ import { YouTube, YouTubeDocument } from './schemas/youtube.schema';
 @Injectable()
 export class YoutubeService {
   constructor(
-    @InjectModel(YouTube.name)
+    @InjectModel(YouTube.name, 'youtube')
     private readonly _youtubeModel: Model<YouTubeDocument>,
   ) {}
 

@@ -8,7 +8,7 @@ import { CreateAuthenticationDto } from '../authentication/core/dto/create-authe
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name)
+    @InjectModel(User.name, 'logbook')
     private readonly _userModel: Model<UserDocument>,
   ) {}
 

@@ -20,9 +20,9 @@ import { CreateLogbookInvoiceDto } from './core/dto/create-logbook-invoice.dto';
 @Injectable()
 export class LogbookService {
   constructor(
-    @InjectModel(Logbook.name)
+    @InjectModel(Logbook.name, 'logbook')
     private readonly logbookModel: Model<LogbookDocument>,
-    @InjectModel(LogbookInvoice.name)
+    @InjectModel(LogbookInvoice.name, 'logbook')
     private readonly logbookInvoiceModel: Model<LogbookInvoiceDocument>,
     private readonly _mailService: MailService
   ) {
