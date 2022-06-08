@@ -66,7 +66,7 @@ describe('LogbookService', () => {
       providers: [
         LogbookService,
         {
-          provide: getModelToken(Logbook.name),
+          provide: getModelToken(Logbook.name, 'logbook'),
           useValue: {
             new: jest.fn().mockResolvedValue(mockLogbook),
             constructor: jest.fn().mockResolvedValue(mockLogbook),
@@ -78,7 +78,7 @@ describe('LogbookService', () => {
           },
         },
         {
-          provide: getModelToken(LogbookInvoice.name),
+          provide: getModelToken(LogbookInvoice.name, 'logbook'),
           useValue: {
             new: jest.fn().mockResolvedValue(mockLogbook),
             constructor: jest.fn().mockResolvedValue(mockLogbook),
@@ -94,8 +94,8 @@ describe('LogbookService', () => {
 
     service = module.get<LogbookService>(LogbookService);
     mailService = module.get<MailService>(MailService);
-    model = module.get<Model<Logbook>>(getModelToken(Logbook.name));
-    invoiceModel = module.get<Model<LogbookInvoice>>(getModelToken(LogbookInvoice.name))
+    model = module.get<Model<Logbook>>(getModelToken(Logbook.name, 'logbook'));
+    invoiceModel = module.get<Model<LogbookInvoice>>(getModelToken(LogbookInvoice.name, 'logbook'))
   });
 
   it('should be defined', () => {
