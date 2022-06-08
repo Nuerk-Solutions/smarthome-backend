@@ -13,14 +13,14 @@ jobs:
         with:
           node-version: '16'
 
-      - uses: borales/actions-yarn@v2.3.0
+      - uses: borales/actions-yarn@latest
         with:
           cmd: install
 
-      - uses: borales/actions-yarn@v2.3.0
+      - uses: borales/actions-yarn@latest
         with:
           cmd: build
 
-      - uses: borales/actions-yarn@v2.3.0
+      - uses: borales/actions-yarn@latest
         with:
           cmd: test # will run `yarn test` command
