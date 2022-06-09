@@ -3,8 +3,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { LogbookController } from './logbook.controller';
 import { LogbookService } from './logbook.service';
 import { Logbook, LogbookSchema } from './core/schemas/logbook.schema';
-import { MailModule } from '../core/mail/mail.module';
-import { LogbookInvoice, LogbookInvoiceSchema } from './core/schemas/logbook-invoice.schema';
+import { StatsModule } from './stats/stats.module';
+import { InvoiceModule } from './invoice/invoice.module';
 
 @Module({
   imports: [
@@ -17,20 +17,11 @@ import { LogbookInvoice, LogbookInvoiceSchema } from './core/schemas/logbook-inv
       ],
       'logbook',
     ),
-    MongooseModule.forFeatureAsync(
-      [
-        {
-          name: LogbookInvoice.name,
-          useFactory: () => LogbookInvoiceSchema,
-        },
-      ],
-      'logbook',
-    ),
-    forwardRef(() => MailModule),
+    // forwardRef(() => StatsModule),
+    // forwardRef(() => InvoiceModule),
   ],
   controllers: [LogbookController],
   providers: [LogbookService],
+  exports: [LogbookService],
 })
 export class LogbookModule {}
-
-// scaninfo@paloaltonetworks.com

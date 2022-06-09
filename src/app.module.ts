@@ -14,6 +14,9 @@ import { FoodModule } from './food/food.module';
 import { TeamModule } from './team/team.module';
 import { VplanModule } from './vplan/vplan.module';
 import { AppController } from './app.controller';
+import { RouterModule } from '@nestjs/core';
+import { StatsModule } from './logbook/stats/stats.module';
+import { InvoiceModule } from './logbook/invoice/invoice.module';
 
 @Module({
   imports: [
@@ -57,6 +60,24 @@ import { AppController } from './app.controller';
       inject: [ConfigService],
     }),
     LogbookModule,
+    RouterModule.register([
+      {
+        path: 'logbook',
+        module: LogbookModule,
+        children: [
+          {
+            path: 'stats',
+            module: StatsModule,
+          },
+          {
+            path: 'invoice',
+            module: InvoiceModule,
+          }
+        ]
+      }
+    ]),
+    StatsModule,
+    InvoiceModule,
     UserModule,
     AuthenticationModule,
     MailModule,
