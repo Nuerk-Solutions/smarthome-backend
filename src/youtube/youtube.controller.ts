@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
 import { YoutubeService } from './youtube.service';
 import { CreateYoutubeDto } from './dto/create-youtube.dto';
 import { UpdateYoutubeDto } from './dto/update-youtube.dto';
 import { Role } from '../authentication/core/enums/role.enum';
-import { Roles } from '../authentication/core/decorators/roles.decorator';
 import { YouTube } from './schemas/youtube.schema';
 import { Authorization } from '../authentication/core/decorators/authorization.decorator';
 
