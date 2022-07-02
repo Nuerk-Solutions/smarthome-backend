@@ -27,7 +27,6 @@ export class InvoiceService {
     const sumThomas = invoiceStats.find(item => item.driver === Driver.THOMAS).distanceCost;
     const sumAndrea = invoiceStats.find(item => item.driver === Driver.ANDREA).distanceCost;
 
-    await this.logbookInvoiceModel.create({ date: createLogbookInvoiceDto.endDate });
 
     const driverEmailStatsMap: Map<Driver, { email: string, sum: number }> = new Map<Driver, { email: string, sum: number }>();
     if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
@@ -66,6 +65,9 @@ export class InvoiceService {
       };
       this.sendInvoiceMail(invoiceParameter, emailStats.sum);
     });
+
+    await this.logbookInvoiceModel.create({ date: createLogbookInvoiceDto.endDate });
+
     return true;
   }
 

@@ -11,7 +11,6 @@ import { RecipeModule } from './recipe/recipe.module';
 import { FileModule } from './file/file.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { FoodModule } from './food/food.module';
-import { TeamModule } from './team/team.module';
 import { VplanModule } from './vplan/vplan.module';
 import { AppController } from './app.controller';
 import { RouterModule } from '@nestjs/core';
@@ -85,7 +84,6 @@ import { InvoiceModule } from './logbook/invoice/invoice.module';
     FileModule,
     YoutubeModule,
     FoodModule,
-    TeamModule,
     VplanModule,
   ],
   controllers: [AppController],
