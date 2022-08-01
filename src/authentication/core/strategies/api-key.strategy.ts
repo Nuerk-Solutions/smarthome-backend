@@ -5,14 +5,15 @@ import { HeaderAPIKeyStrategy } from 'passport-headerapikey';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(HeaderAPIKeyStrategy, 'api-key') {
-
   constructor(private readonly _authenticationService: AuthenticationService) {
-    super({
+    super(
+      {
         header: 'authorization',
-        prefix: 'Api-Key '
+        prefix: 'Api-Key ',
       },
       true,
-      async (apiKey, done) => this.validate(apiKey, done));
+      async (apiKey, done) => this.validate(apiKey, done),
+    );
   }
 
   validate(apiKey: string, done: (error: Error, data) => {}) {

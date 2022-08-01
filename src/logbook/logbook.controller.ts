@@ -14,8 +14,7 @@ import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
 @ApiKey()
 @Controller()
 export class LogbookController {
-  constructor(private readonly _logbookService: LogbookService) {
-  }
+  constructor(private readonly _logbookService: LogbookService) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
@@ -25,35 +24,47 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/all')
-  async findAll(@Query() date?: DateParameter,
-                @Query('drivers',
-                  new ParseArray({
-                    items: DriverParameter,
-                    type: Driver,
-                    emptyHandling: {
-                      allow: true,
-                      allCases: true
-                    },
-                    separator: ',',
-                    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-                  })
-                ) drivers?: DriverParameter[],
-                @Query('sort') sort?: string, @Query('page') page?: number, @Query('limit') limit?: number) {
-    return await this._logbookService.findAll({
-      ...drivers && {
-        driver: drivers
+  async findAll(
+    @Query() date?: DateParameter,
+    @Query(
+      'drivers',
+      new ParseArray({
+        items: DriverParameter,
+        type: Driver,
+        emptyHandling: {
+          allow: true,
+          allCases: true,
+        },
+        separator: ',',
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    drivers?: DriverParameter[],
+    @Query('sort') sort?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return await this._logbookService.findAll(
+      {
+        ...(drivers && {
+          driver: drivers,
+        }),
+        ...(date &&
+          (date.startDate || date.endDate) && {
+            date: {
+              ...(date.startDate && {
+                $gte: date.startDate,
+              }),
+              ...(date.endDate && {
+                $lte: date.endDate,
+              }),
+            },
+          }),
       },
-      ...(date && (date.startDate || date.endDate)) && {
-        date: {
-          ...date.startDate && {
-            $gte: date.startDate
-          },
-          ...date.endDate && {
-            $lte: date.endDate
-          }
-        }
-      }
-    }, sort, page, limit);
+      sort,
+      page,
+      limit,
+    );
   }
 
   @HttpCode(HttpStatus.OK)
@@ -80,29 +91,29 @@ export class LogbookController {
         items: DriverParameter,
         emptyHandling: {
           allow: true,
-          allCases: true
+          allCases: true,
         },
         type: Driver,
         separator: ',',
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-      })
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
     )
-      drivers?: DriverParameter[],
+    drivers?: DriverParameter[],
     @Query(
       'vehicles',
       new ParseArray({
         items: VehicleParameter,
         emptyHandling: {
           allow: true,
-          allCases: true
+          allCases: true,
         },
         type: VehicleTyp,
         separator: ',',
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-      })
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
     )
-      vehicles?: VehicleParameter[],
-    @Query() date?: DateParameter
+    vehicles?: VehicleParameter[],
+    @Query() date?: DateParameter,
   ): Promise<StreamableFile> {
     const xlsx = await this._logbookService.download(drivers, vehicles, date.startDate, date.endDate);
     return new StreamableFile(xlsx);

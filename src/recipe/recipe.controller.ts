@@ -1,6 +1,5 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { RecipeService } from './recipe.service';
 import { CreateRecipeDto } from './core/dto/create-recipe.dto';
 import { UpdateRecipeDto } from './core/dto/update-recipe.dto';

@@ -13,9 +13,8 @@ import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
 export class LogbookService {
   constructor(
     @InjectModel(Logbook.name, 'logbook')
-    private readonly logbookModel: Model<LogbookDocument>
-  ) {
-  }
+    private readonly logbookModel: Model<LogbookDocument>,
+  ) {}
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
@@ -27,7 +26,7 @@ export class LogbookService {
       const LastAdditionalInformation = await this.logbookModel
         .findOne({
           vehicleTyp: createLogbookDto.vehicleTyp,
-          additionalInformationTyp: createLogbookDto.additionalInformationTyp
+          additionalInformationTyp: createLogbookDto.additionalInformationTyp,
         })
         .sort({ date: -1 })
         .limit(1)
@@ -41,7 +40,7 @@ export class LogbookService {
       ...createLogbookDto,
       distance,
       distanceCost,
-      distanceSinceLastAdditionalInformation
+      distanceSinceLastAdditionalInformation,
     };
 
     return await this.logbookModel.create(logbook);
@@ -55,7 +54,7 @@ export class LogbookService {
 
     // protectedSkip beware the query of any kind of outbound inputs
     const skip = protectedPage <= 0 ? 0 : protectedPage * protectedLimit;
-    const protectedSkip = skip >= total ? total - total % limit : skip;
+    const protectedSkip = skip >= total ? total - (total % limit) : skip;
 
     return await this.logbookModel.find(filter).sort(sort).skip(protectedSkip).limit(limit).exec();
   }
@@ -79,18 +78,21 @@ export class LogbookService {
   }
 
   async download(drivers: DriverParameter[], vehicles: VehicleParameter[], startDate: Date, endDate: Date): Promise<Buffer> {
-    const logbooks = await this.logbookModel.find({
-      vehicleTyp: vehicles,
-      driver: drivers,
-      date: {
-        ...startDate && {
-          $gte: startDate
+    const logbooks = await this.logbookModel
+      .find({
+        vehicleTyp: vehicles,
+        driver: drivers,
+        date: {
+          ...(startDate && {
+            $gte: startDate,
+          }),
+          ...(endDate && {
+            $lte: endDate,
+          }),
         },
-        ...endDate && {
-          $lte: endDate
-        }
-      }
-    }).sort({ date: 1 }).exec();
+      })
+      .sort({ date: 1 })
+      .exec();
 
     if (!logbooks.length) {
       throw new NotFoundException('No logbooks found');
@@ -107,7 +109,7 @@ export class LogbookService {
         Fahrzeug: logbook.vehicleTyp,
         'Aktueller Kilometerstand': +logbook.currentMileAge,
         'Neuer Kilometerstand': +logbook.newMileAge,
-        'Uebernommen': logbook.forFree ? 'Ja' : 'Nein',
+        Uebernommen: logbook.forFree ? 'Ja' : 'Nein',
         Strecke: +logbook.distance,
         Kosten: logbook.distanceCost,
         Datum: logbook.date,
@@ -116,7 +118,7 @@ export class LogbookService {
         'Zusatzinformationen - Inhalt': logbook.additionalInformation,
         'Zusatzinformationen - Kosten': logbook.additionalInformationCost,
         'Entfernung seit letzter Information': logbook.distanceSinceLastAdditionalInformation,
-        'Durchschnittlicher Verbrauch': fuelConsumption || ''
+        'Durchschnittlicher Verbrauch': fuelConsumption || '',
       };
     });
 
@@ -127,7 +129,7 @@ export class LogbookService {
     // Generate buffer
     return XLSX.write(workBook, {
       bookType: 'xlsx',
-      type: 'buffer'
+      type: 'buffer',
     });
   }
 
@@ -141,15 +143,18 @@ export class LogbookService {
     const distance = Number(+updateLogbookDto.newMileAge - +updateLogbookDto.currentMileAge).toFixed(2);
     const distanceCost = Number(+distance * 0.2).toFixed(2);
 
-    return await this.logbookModel.findOneAndUpdate({
-        _id: new Types.ObjectId(id)
-      },
-      {
-        distance,
-        distanceCost,
-        ...updateLogbookDto
-      },
-      { new: true }
-    ).exec();
+    return await this.logbookModel
+      .findOneAndUpdate(
+        {
+          _id: new Types.ObjectId(id),
+        },
+        {
+          distance,
+          distanceCost,
+          ...updateLogbookDto,
+        },
+        { new: true },
+      )
+      .exec();
   }
 }

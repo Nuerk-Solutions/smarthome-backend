@@ -2,7 +2,6 @@ import { IsDateString, IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
 import { Driver } from '../../enums/driver.enum';
 
 export class InvoiceParameter {
-
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -18,5 +17,4 @@ export class InvoiceParameter {
   @IsDateString()
   @IsNotEmpty()
   endDate: Date;
-
 }

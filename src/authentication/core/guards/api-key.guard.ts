@@ -5,7 +5,6 @@ import { Request } from 'express';
 
 @Injectable()
 export class ApiKeyAuthenticationGuard extends AuthGuard('api-key') {
-
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 

@@ -2,7 +2,6 @@ import { IsBoolean, IsEnum, IsNotEmpty, IsNumberString, IsOptional } from 'class
 import { Driver } from '../enums/driver.enum';
 
 export class UpdateLogbookDto {
-
   @IsOptional()
   @IsEnum(Driver, { each: true, message: 'Driver is not valid' })
   driver: Driver;

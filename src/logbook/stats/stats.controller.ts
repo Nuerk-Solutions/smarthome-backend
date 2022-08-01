@@ -11,7 +11,6 @@ import { VehicleTyp } from '../core/enums/vehicle-typ.enum';
 export class StatsController {
   constructor(private readonly _statsService: StatsService) {}
 
-
   @HttpCode(HttpStatus.OK)
   @Get('/driver')
   async getDriverStats(
@@ -22,10 +21,10 @@ export class StatsController {
         items: DriverParameter,
         type: Driver,
         separator: ',',
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-      })
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
     )
-      drivers?: DriverParameter[],
+    drivers?: DriverParameter[],
     @Query(
       'vehicles',
       new ParseArray({
@@ -33,12 +32,14 @@ export class StatsController {
         type: VehicleTyp,
         emptyHandling: {
           allow: true,
-          allCases: true
+          allCases: true,
         },
         separator: ',',
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-      })) vehicles?: VehicleParameter[],
-    @Query('detailed') detailed?: boolean
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    vehicles?: VehicleParameter[],
+    @Query('detailed') detailed?: boolean,
   ) {
     return await this._statsService.calculateDriverStats(drivers, date.startDate, date.endDate, vehicles, detailed);
   }
@@ -54,11 +55,13 @@ export class StatsController {
         type: VehicleTyp,
         emptyHandling: {
           allow: true,
-          allCases: true
+          allCases: true,
         },
         separator: ',',
-        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-      })) vehicles?: VehicleParameter[]
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    vehicles?: VehicleParameter[],
   ) {
     return await this._statsService.calculateVehicleStats(vehicles, date.startDate, date.endDate);
   }

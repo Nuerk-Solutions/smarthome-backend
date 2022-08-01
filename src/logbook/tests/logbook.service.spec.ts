@@ -60,9 +60,7 @@ describe('LogbookService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        forwardRef(() => MailModule)
-      ],
+      imports: [forwardRef(() => MailModule)],
       providers: [
         LogbookService,
         {
@@ -95,7 +93,7 @@ describe('LogbookService', () => {
     service = module.get<LogbookService>(LogbookService);
     mailService = module.get<MailService>(MailService);
     model = module.get<Model<Logbook>>(getModelToken(Logbook.name, 'logbook'));
-    invoiceModel = module.get<Model<LogbookInvoice>>(getModelToken(LogbookInvoice.name, 'logbook'))
+    invoiceModel = module.get<Model<LogbookInvoice>>(getModelToken(LogbookInvoice.name, 'logbook'));
   });
 
   it('should be defined', () => {

@@ -1,4 +1,4 @@
-import { Header, Injectable, Res } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import axios from 'axios';
 import { Readable } from 'stream';
 

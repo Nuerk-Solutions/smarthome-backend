@@ -7,9 +7,7 @@ import { ClientResponse } from '@sendgrid/client/src/response';
 export class MailService {
   private readonly _logger = new Logger(MailService.name);
 
-  constructor(
-    private readonly _configService: ConfigService
-  ) {
+  constructor(private readonly _configService: ConfigService) {
     SendGrid.setApiKey(this._configService.get<string>('SENDGRID_API_KEY'));
   }
 
