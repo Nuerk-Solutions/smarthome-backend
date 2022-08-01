@@ -23,14 +23,12 @@ import { InvoiceModule } from './logbook/invoice/invoice.module';
       isGlobal: true,
       envFilePath: ['.env.development', 'sendgrid.env'],
     }),
+
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        redis: {
-          host: configService.get<string>('REDIS_HOST'),
-          port: +configService.get<number>('REDIS_PORT'),
-          password: configService.get<string>('REDIS_PASSWORD'),
-        },
+        url: configService.get('REDIS_URL'),
+        // redis://user:pass@host:6379/0
       }),
       inject: [ConfigService],
     }),
@@ -71,9 +69,9 @@ import { InvoiceModule } from './logbook/invoice/invoice.module';
           {
             path: 'invoice',
             module: InvoiceModule,
-          }
-        ]
-      }
+          },
+        ],
+      },
     ]),
     StatsModule,
     InvoiceModule,
