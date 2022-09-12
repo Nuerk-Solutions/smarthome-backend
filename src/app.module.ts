@@ -7,11 +7,8 @@ import { LogbookModule } from './logbook/logbook.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './users/user.module';
 import { MailModule } from './core/mail/mail.module';
-import { RecipeModule } from './recipe/recipe.module';
 import { FileModule } from './file/file.module';
 import { YoutubeModule } from './youtube/youtube.module';
-import { FoodModule } from './food/food.module';
-import { VplanModule } from './vplan/vplan.module';
 import { AppController } from './app.controller';
 import { RouterModule } from '@nestjs/core';
 import { StatsModule } from './logbook/stats/stats.module';
@@ -78,11 +75,8 @@ import { InvoiceModule } from './logbook/invoice/invoice.module';
     UserModule,
     AuthenticationModule,
     MailModule,
-    RecipeModule,
     FileModule,
     YoutubeModule,
-    FoodModule,
-    VplanModule,
   ],
   controllers: [AppController],
 })
