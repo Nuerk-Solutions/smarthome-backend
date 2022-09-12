@@ -27,8 +27,10 @@ export class InvoiceService {
   ): Promise<boolean> {
     const lastLogbookInvoiceDate = await this.logbookInvoiceModel.findOne().sort({ date: -1 }).exec();
     const invoiceStats = await this._statsService.calculateDriverStats(drivers, lastLogbookInvoiceDate.date, createLogbookInvoiceDto.endDate);
-    const sumThomas = invoiceStats.find((item) => item.driver === Driver.THOMAS).distanceCost;
-    const sumAndrea = invoiceStats.find((item) => item.driver === Driver.ANDREA).distanceCost;
+    const sumArrayThomas = invoiceStats.find((item) => item.driver === Driver.THOMAS);
+    const sumArrayAndrea = invoiceStats.find((item) => item.driver === Driver.ANDREA);
+    const sumThomas = (sumArrayThomas && sumArrayThomas.distanceCost) || 0;
+    const sumAndrea = (sumArrayAndrea && sumArrayAndrea.distanceCost) || 0;
 
     const driverEmailStatsMap: Map<Driver, { email: string; sum: number }> = new Map<Driver, { email: string; sum: number }>();
     if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
