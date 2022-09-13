@@ -827,9 +827,9 @@
   version "1.1.0"
   resolved "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-1.1.0.tgz"
 
-"@nestjs/microservices@^9.0.9":
-  version "9.0.9"
-  resolved "https://registry.npmjs.org/@nestjs/microservices/-/microservices-9.0.9.tgz"
+"@nestjs/microservices@^9.0.11":
+  version "9.0.11"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-9.0.11.tgz#bab0d5cd05cb749f434ec5a196bfd4d427614b7c"
   dependencies:
     iterare "1.2.1"
     tslib "2.4.0"
