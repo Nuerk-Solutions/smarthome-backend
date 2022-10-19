@@ -16,14 +16,6 @@ export abstract class EntityRepository<T extends Document> {
       .exec();
   }
 
-  async findLastAddedEntityParameter(entityFilterQuery: FilterQuery<T>, parameter: string): Promise<T | null> {
-    return this.entityModel
-      .findOne(entityFilterQuery)
-      .sort({ [parameter]: -1 })
-      .limit(1)
-      .exec();
-  }
-
   async find(entityFilterQuery: FilterQuery<T>): Promise<T[] | null> {
     return this.entityModel.find(entityFilterQuery);
   }
