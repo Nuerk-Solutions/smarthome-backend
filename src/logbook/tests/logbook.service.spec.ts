@@ -10,6 +10,7 @@ import { MailService } from '../../core/mail/mail.service';
 import { forwardRef } from '@nestjs/common';
 import { MailModule } from '../../core/mail/mail.module';
 import { LogbookInvoice } from '../core/schemas/logbook-invoice.schema';
+import { LogbooksRepository } from '../logbooks.repository';
 
 const date: Date = new Date();
 
@@ -30,6 +31,7 @@ describe('LogbookService', () => {
   let mailService: MailService;
   let model: Model<Logbook>;
   let invoiceModel: Model<LogbookInvoice>;
+  let logbookRepository: LogbooksRepository;
 
   const logbookArray = [
     {
@@ -63,6 +65,7 @@ describe('LogbookService', () => {
       imports: [forwardRef(() => MailModule)],
       providers: [
         LogbookService,
+        LogbooksRepository,
         {
           provide: getModelToken(Logbook.name, 'logbook'),
           useValue: {
@@ -70,6 +73,7 @@ describe('LogbookService', () => {
             constructor: jest.fn().mockResolvedValue(mockLogbook),
             find: jest.fn(),
             count: jest.fn(),
+            countDocuments: jest.fn(),
             findOne: jest.fn(),
             create: jest.fn(),
             exec: jest.fn(),
@@ -90,10 +94,12 @@ describe('LogbookService', () => {
       ],
     }).compile();
 
+    logbookRepository = module.get<LogbooksRepository>(LogbooksRepository);
     service = module.get<LogbookService>(LogbookService);
     mailService = module.get<MailService>(MailService);
     model = module.get<Model<Logbook>>(getModelToken(Logbook.name, 'logbook'));
     invoiceModel = module.get<Model<LogbookInvoice>>(getModelToken(LogbookInvoice.name, 'logbook'));
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -102,7 +108,7 @@ describe('LogbookService', () => {
   });
 
   it('should return all logbooks', async () => {
-    jest.spyOn(model, 'count').mockReturnValue({
+    jest.spyOn(model, 'countDocuments').mockReturnValue({
       exec: jest.fn().mockResolvedValueOnce(2),
     } as any);
 
@@ -118,7 +124,14 @@ describe('LogbookService', () => {
     } as any);
 
     const logbooks = await service.findAll();
-    expect(logbooks).toEqual(logbookArray);
+    expect(logbooks).toEqual({
+      data: [...logbookArray],
+      length: 2,
+      limit: 2,
+      page: 0,
+      pageCount: 1,
+      total: 2,
+    });
   });
 
   // it('should create a new Logbook', async () => {

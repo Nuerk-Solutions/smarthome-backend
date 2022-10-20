@@ -104,7 +104,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return a logbooks', () => {
-        expect(logbook).toMatchObject(logbookStub());
+        expect(logbook).toEqual(logbookStub());
       });
     });
   });

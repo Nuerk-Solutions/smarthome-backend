@@ -33,7 +33,7 @@ export class Logbook {
   @Prop()
   distanceCost: string;
 
-  @Prop({ type: Date, required: true })
+  @Prop({ required: true })
   date: Date;
 
   @Prop({ required: true })

@@ -1,7 +1,7 @@
 import { Document, FilterQuery, Model, SortOrder, Types, UpdateQuery } from 'mongoose';
 
 export abstract class EntityRepository<T extends Document> {
-  constructor(readonly entityModel: Model<T>) {}
+  constructor(protected readonly entityModel: Model<T>) {}
 
   async findOne(
     entityFilterQuery: FilterQuery<T>,

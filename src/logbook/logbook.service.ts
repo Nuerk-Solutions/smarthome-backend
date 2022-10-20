@@ -1,20 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as XLSX from 'xlsx';
-import { Logbook } from './core/schemas/logbook.schema';
+import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
 import { AdditionalInformationTyp } from './core/enums/additional-information-typ.enum';
 import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
 import { DriverParameter } from './core/dto/parameters/driver.parameter';
 import { LogbooksRepository } from './logbooks.repository';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
-import { Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class LogbookService {
   constructor(
-    // @InjectModel(Logbook.name, 'logbook')
-    // private readonly logbookModel: Model<LogbookDocument>,
+    @InjectModel(Logbook.name, 'logbook')
+    private readonly logbookModel: Model<LogbookDocument>,
     // @InjectModel(Logbook.name, 'logbook')
     private readonly logbooksRepository: LogbooksRepository,
   ) {}
@@ -53,36 +54,38 @@ export class LogbookService {
       });
 
       let lastUpdatedLogbook = createLogbookDto;
-      for (const logbook of logbooksToUpdate) {
-        logbook.currentMileAge = lastUpdatedLogbook.newMileAge;
-        logbook.newMileAge = Number(+lastUpdatedLogbook.newMileAge + +logbook.distance).toFixed(0);
+      if (logbooksToUpdate.length > 0) {
+        for (const logbook of logbooksToUpdate) {
+          logbook.currentMileAge = lastUpdatedLogbook.newMileAge;
+          logbook.newMileAge = Number(+lastUpdatedLogbook.newMileAge + +logbook.distance).toFixed(0);
 
-        if (logbook.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
-          const distance = +createLogbookDto.newMileAge - +createLogbookDto.currentMileAge;
-          // let distanceSinceLastAdditionalInformation = '';
-          // const LastAdditionalInformation = await this.logbookModel
-          //   .findOne({
-          //     vehicleTyp: lastUpdatedLogbook.vehicleTyp,
-          //     additionalInformationTyp: lastUpdatedLogbook.additionalInformationTyp,
-          //     date: { $lt: logbook.date },
-          //   })
-          //   .sort({ date: -1 })
-          //   .limit(1)
-          //   .exec();
-          // if (LastAdditionalInformation) {
-          const newDistance = distance + +logbook.distanceSinceLastAdditionalInformation;
-          logbook.distanceSinceLastAdditionalInformation = newDistance.toFixed(2);
-          // }
+          if (logbook.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
+            const distance = +createLogbookDto.newMileAge - +createLogbookDto.currentMileAge;
+            // let distanceSinceLastAdditionalInformation = '';
+            // const LastAdditionalInformation = await this.logbookModel
+            //   .findOne({
+            //     vehicleTyp: lastUpdatedLogbook.vehicleTyp,
+            //     additionalInformationTyp: lastUpdatedLogbook.additionalInformationTyp,
+            //     date: { $lt: logbook.date },
+            //   })
+            //   .sort({ date: -1 })
+            //   .limit(1)
+            //   .exec();
+            // if (LastAdditionalInformation) {
+            const newDistance = distance + +logbook.distanceSinceLastAdditionalInformation;
+            logbook.distanceSinceLastAdditionalInformation = newDistance.toFixed(2);
+            // }
+          }
+          lastUpdatedLogbook = logbook;
+          await this.logbooksRepository.findOneAndUpdate(
+            {
+              _id: logbook._id,
+            },
+            {
+              ...logbook,
+            },
+          );
         }
-        lastUpdatedLogbook = logbook;
-        await this.logbooksRepository.findOneAndUpdate(
-          {
-            _id: logbook._id,
-          },
-          {
-            ...logbook,
-          },
-        );
       }
     }
 
@@ -91,6 +94,7 @@ export class LogbookService {
     let distanceSinceLastAdditionalInformation = '';
 
     if (createLogbookDto.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
+      // eslint-disable-next-line max-len
       // Calculate the distance since the last additional information from the corresponding typ and from the same vehicleTyp
       const LastAdditionalInformation = await this.logbooksRepository.findOne(
         {

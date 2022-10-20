@@ -18,9 +18,9 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'max-len': ['warn', { code: 120, ignoreUrls: true }],
-    'prettier/prettier': ['error', { printWidth: 120 }],
+    'prettier/prettier': ['warn', { printWidth: 120 }],
     'no-shadow': 'off',
-    quotes: ['error', 'single', { avoidEscape: true }],
-    '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
+    quotes: ['warn', 'single', { avoidEscape: true }],
+    '@typescript-eslint/quotes': ['warn', 'single', { avoidEscape: true }],
   },
 };

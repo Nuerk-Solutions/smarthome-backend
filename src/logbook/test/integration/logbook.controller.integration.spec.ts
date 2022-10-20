@@ -1,8 +1,8 @@
 import { AppModule } from '../../../app.module';
 import { Test } from '@nestjs/testing';
-import { Connection } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { DatabaseService } from '../../../database/database.service';
-import { logbookStub } from '../stubs/logbook.stub';
+import { logbookStub, logbookStubTypeless } from '../stubs/logbook.stub';
 import * as request from 'supertest';
 
 describe('LogbookController', () => {
@@ -26,7 +26,7 @@ describe('LogbookController', () => {
   });
 
   beforeEach(async () => {
-    // await dbConnection.collection('logbooks').deleteMany({});
+    await dbConnection.collection('logbooks').deleteMany({});
   });
 
   describe('findLatest', () => {
@@ -37,7 +37,7 @@ describe('LogbookController', () => {
         .set('Authorization', 'Api-Key ca03na188ame03u1d78620de67282882a84');
 
       expect(response.status).toBe(200);
-      expect(response.body).toMatchObject([logbookStub()]);
+      expect(response.body).toMatchObject([logbookStubTypeless()]);
     });
   });
 
@@ -54,15 +54,15 @@ describe('LogbookController', () => {
         vehicleTyp: 'VW',
       };
       const response = await request(httpServer)
-        .post('/logbook/create')
+        .post('/logbook')
         .set('Authorization', 'Api-Key ca03na188ame03u1d78620de67282882a84')
         .send(createLogbookDto);
 
-      expect(response.status).toBe(201);
       expect(response.body).toMatchObject(createLogbookDto);
+      expect(response.status).toBe(201);
 
-      const logbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
-      expect(logbook).toMatchObject(createLogbookDto);
+      const logbook = await dbConnection.collection('logbooks').findOne({ _id: new Types.ObjectId(response.body._id) });
+      expect(logbook).toMatchObject({ ...createLogbookDto, date: new Date(createLogbookDto.date) });
     });
   });
 });

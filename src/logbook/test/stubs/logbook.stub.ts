@@ -23,3 +23,22 @@ export const logbookStub = (): Logbook => {
     vehicleTyp: VehicleTyp.VW,
   };
 };
+
+export const logbookStubTypeless = (): any => {
+  return {
+    _id: '634ff77d18495f2dc3a8be80',
+    additionalInformation: 'Winterräder montiert. \n2 Winterreifen neu (Dunlop)',
+    additionalInformationCost: '308.90',
+    additionalInformationTyp: 'Gewartet',
+    currentMileAge: '168228',
+    date: '2022-10-19T15:09:37.399Z',
+    distance: '23',
+    distanceCost: '4.60',
+    distanceSinceLastAdditionalInformation: '23.00',
+    driveReason: 'Stadtfahrt & Reifen/Räderwechsel',
+    driver: 'Oliver',
+    forFree: false,
+    newMileAge: '168251',
+    vehicleTyp: 'VW',
+  };
+};

@@ -18,14 +18,14 @@ describe('LogbooksRepository', () => {
         providers: [
           LogbooksRepository,
           {
-            provide: getModelToken(Logbook.name),
+            provide: getModelToken(Logbook.name, 'logbook'),
             useClass: LogbookModel,
           },
         ],
       }).compile();
 
       logbookRepository = moduleRef.get<LogbooksRepository>(LogbooksRepository);
-      logbookModel = moduleRef.get<LogbookModel>(getModelToken(Logbook.name));
+      logbookModel = moduleRef.get<LogbookModel>(getModelToken(Logbook.name, 'logbook'));
       logbookFilterQuery = { _id: logbookStub()._id };
       jest.clearAllMocks();
     });
@@ -41,15 +41,11 @@ describe('LogbooksRepository', () => {
 
         test('then it should call the logbookModel', () => {
           // { _id: logbookStub()._id.toString() } => defines which fields should be returned
-          expect(logbookModel.findOne).toHaveBeenCalledWith(
-            logbookFilterQuery,
-            {},
-            { _id: logbookStub()._id.toString() },
-          );
+          expect(logbookModel.findOne).toHaveBeenCalledWith(logbookFilterQuery, { _id: logbookStub()._id.toString() });
         });
 
         test('then it should return a logbook', () => {
-          expect(logbook).toEqual(logbookStub());
+          expect(logbook).toMatchObject(logbookStub());
         });
       });
     });
@@ -101,7 +97,7 @@ describe('LogbooksRepository', () => {
         providers: [
           LogbooksRepository,
           {
-            provide: getModelToken(Logbook.name),
+            provide: getModelToken(Logbook.name, 'logbook'),
             useValue: LogbookModel,
           },
         ],

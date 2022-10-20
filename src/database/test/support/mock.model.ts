@@ -7,14 +7,35 @@ export abstract class MockModel<T> {
 
   constructorSpy(_createEntityData: T): void {}
 
-  findOne(): { exec: () => T } {
+  findOne(): {
+    sort(): {
+      limit(): {
+        exec: () => T;
+      };
+    };
+    exec: () => T;
+  } {
     return {
+      sort(): { limit(): { exec: () => T } } {
+        return {
+          limit: () => {
+            return {
+              exec: (): T => {
+                return this.exec();
+              },
+            };
+          },
+        };
+      },
       exec: (): T => this.entityStub,
     };
   }
 
-  async find(): Promise<T[]> {
-    return [this.entityStub];
+  // the find function should return a promise
+  find(): { sort: () => Promise<T[]> } {
+    return {
+      sort: async (): Promise<T[]> => [this.entityStub],
+    };
   }
 
   async save(): Promise<T> {
