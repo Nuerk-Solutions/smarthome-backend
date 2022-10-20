@@ -13,6 +13,7 @@ import { AppController } from './app.controller';
 import { RouterModule } from '@nestjs/core';
 import { StatsModule } from './logbook/stats/stats.module';
 import { InvoiceModule } from './logbook/invoice/invoice.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -21,38 +22,30 @@ import { InvoiceModule } from './logbook/invoice/invoice.module';
       envFilePath: ['.env.development', 'sendgrid.env'],
     }),
 
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        url: configService.get('REDIS_URL'),
-        // redis://user:pass@host:6379/0
-      }),
-      inject: [ConfigService],
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      connectionName: 'logbook',
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
-      inject: [ConfigService],
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      connectionName: 'files',
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MULTER_MONGO_DB'),
-      }),
-      inject: [ConfigService],
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      connectionName: 'youtube',
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI_YOUTUBE'),
-      }),
-      inject: [ConfigService],
-    }),
+    // BullModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     url: configService.get('REDIS_URL'),
+    //     // redis://user:pass@host:6379/0
+    //   }),
+    //   inject: [ConfigService],
+    // }),
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   connectionName: 'files',
+    //   useFactory: async (configService: ConfigService) => ({
+    //     uri: configService.get<string>('MULTER_MONGO_DB'),
+    //   }),
+    //   inject: [ConfigService],
+    // }),
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   connectionName: 'youtube',
+    //   useFactory: async (configService: ConfigService) => ({
+    //     uri: configService.get<string>('MONGODB_URI_YOUTUBE'),
+    //   }),
+    //   inject: [ConfigService],
+    // }),
     LogbookModule,
     RouterModule.register([
       {
@@ -72,11 +65,12 @@ import { InvoiceModule } from './logbook/invoice/invoice.module';
     ]),
     StatsModule,
     InvoiceModule,
-    UserModule,
+    // UserModule,
     AuthenticationModule,
     MailModule,
-    FileModule,
-    YoutubeModule,
+    // FileModule,
+    // YoutubeModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
 })

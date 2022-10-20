@@ -43,6 +43,23 @@ describe('LogbookController', () => {
     });
   });
 
+  describe('findLatest', () => {
+    describe('when findLatest is called', () => {
+      let logbooks: Logbook[];
+      beforeEach(async () => {
+        logbooks = await logbookController.findLatest();
+      });
+
+      test('then it should call logbookService', () => {
+        expect(logbookService.findLatest).toBeCalled();
+      });
+
+      test('then it should return all latest logbooks', () => {
+        expect(logbooks).toEqual([logbookStub()]);
+      });
+    });
+  });
+
   // Todo: Impl more cases
   describe('findAll', () => {
     describe('when findAll is called', () => {
@@ -55,7 +72,7 @@ describe('LogbookController', () => {
         expect(logbookService.findAll).toHaveBeenCalled();
       });
 
-      test('then it should return a logbooks', () => {
+      test('then it should return a array of logbooks', () => {
         expect(logbooks).toEqual([logbookStub()]);
       });
     });
@@ -110,6 +127,23 @@ describe('LogbookController', () => {
 
       test('then it should call logbookService', () => {
         expect(logbookService.update).toHaveBeenCalledWith(logbookStub()._id.toString(), updateLogbookDto);
+      });
+
+      test('then it should return a logbooks', () => {
+        expect(logbook).toEqual(logbookStub());
+      });
+    });
+  });
+
+  describe('remove', () => {
+    describe('when remove is called', () => {
+      let logbook: Logbook;
+      beforeEach(async () => {
+        logbook = await logbookController.remove('asd');
+      });
+
+      test('then it should call logbookService', () => {
+        expect(logbookService.remove).toHaveBeenCalledWith('asd');
       });
 
       test('then it should return a logbooks', () => {
