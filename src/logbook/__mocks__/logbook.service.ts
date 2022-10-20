@@ -12,5 +12,5 @@ export const LogbookService = jest.fn().mockReturnValue({
   findLatest: jest.fn().mockResolvedValue([logbookStub()]),
   update: jest.fn().mockResolvedValue(logbookStub()),
   create: jest.fn().mockResolvedValue(logbookStub()),
-  remove: jest.fn().mockResolvedValue(logbookStub()),
+  remove: jest.fn().mockResolvedValue({ success: true }),
 });

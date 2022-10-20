@@ -104,7 +104,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return a logbooks', () => {
-        expect(logbook).toEqual(logbookStub());
+        expect(logbook).toMatchObject(logbookStub());
       });
     });
   });
@@ -137,9 +137,9 @@ describe('LogbookController', () => {
 
   describe('remove', () => {
     describe('when remove is called', () => {
-      let logbook: Logbook;
+      let success: { success: boolean };
       beforeEach(async () => {
-        logbook = await logbookController.remove('asd');
+        success = await logbookController.remove('asd');
       });
 
       test('then it should call logbookService', () => {
@@ -147,7 +147,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return a logbooks', () => {
-        expect(logbook).toEqual(logbookStub());
+        expect(success).toEqual({ success: true });
       });
     });
   });

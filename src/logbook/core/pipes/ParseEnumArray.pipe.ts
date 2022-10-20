@@ -1,6 +1,6 @@
 import * as validator from 'class-validator';
 
-import { HttpStatus, Injectable, PipeTransform, Type } from '@nestjs/common';
+import { ArgumentMetadata, HttpStatus, Injectable, PipeTransform, Type } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 
 @Injectable()
@@ -40,12 +40,12 @@ export class ParseArray implements PipeTransform<string> {
     return value;
   }
 
-  transform(value: any) {
+  transform(value: any, metadata: ArgumentMetadata) {
     let items: any;
     try {
       items = value.split(this.separator);
     } catch (error) {
-      if (!this.emptyHandling.allow) throw this.exceptionFactory('Given input is not parsable.');
+      if (!this.emptyHandling.allow) throw this.exceptionFactory(`${metadata.data} is not parsable.`);
       if (this.emptyHandling.allCases) items = Object.values(this.type);
       else return '';
     }

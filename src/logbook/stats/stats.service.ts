@@ -12,20 +12,21 @@ export class StatsService {
   constructor(private readonly _logbookService: LogbookService) {}
 
   async calculateVehicleStats(vehicles: VehicleParameter[], startDate?: Date, endDate?: Date) {
-    const logbooks: Logbook[] = await this._logbookService.findAll(
-      {
-        vehicleTyp: vehicles,
-        date: {
-          ...(startDate && {
-            $gte: startDate,
-          }),
-          ...(endDate && {
-            $lte: endDate,
-          }),
-        },
-      },
-      'date',
-    ); //NOTE: Sort need to be ASC in order to calculate the average consumption correctly
+    const logbooks: Logbook[] = [];
+    // const logbooks: Logbook[] = await this._logbookService.findAll(
+    //   {
+    //     vehicleTyp: vehicles,
+    //     date: {
+    //       ...(startDate && {
+    //         $gte: startDate,
+    //       }),
+    //       ...(endDate && {
+    //         $lte: endDate,
+    //       }),
+    //     },
+    //   },
+    //   'date',
+    // ); //NOTE: Sort need to be ASC in order to calculate the average consumption correctly
 
     return logbooks
       .map((item) => {
@@ -117,18 +118,19 @@ export class StatsService {
       vehicles: [{ vehicleTyp: VehicleTyp; distance: number; distanceCost: number; drivesCostForFree?: number }];
     }[]
   > {
-    const logbooks: Logbook[] = await this._logbookService.findAll({
-      vehicleTyp: vehicles || Object.values(VehicleTyp),
-      driver: drivers,
-      date: {
-        ...(startDate && {
-          $gte: startDate,
-        }),
-        ...(endDate && {
-          $lte: endDate,
-        }),
-      },
-    });
+    const logbooks: Logbook[] = [];
+    // const logbooks: Logbook[] = await this._logbookService.findAll({
+    //   vehicleTyp: vehicles || Object.values(VehicleTyp),
+    //   driver: drivers,
+    //   date: {
+    //     ...(startDate && {
+    //       $gte: startDate,
+    //     }),
+    //     ...(endDate && {
+    //       $lte: endDate,
+    //     }),
+    //   },
+    // });
 
     return (
       logbooks

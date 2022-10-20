@@ -26,7 +26,7 @@ describe('LogbookController', () => {
   });
 
   beforeEach(async () => {
-    await dbConnection.collection('logbooks').deleteMany({});
+    // await dbConnection.collection('logbooks').deleteMany({});
   });
 
   describe('findLatest', () => {

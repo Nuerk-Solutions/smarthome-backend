@@ -36,12 +36,16 @@ describe('LogbooksRepository', () => {
 
         beforeEach(async () => {
           jest.spyOn(logbookModel, 'findOne');
-          logbook = await logbookRepository.findOne(logbookFilterQuery, { _id: logbookStub()._id.toString() });
+          logbook = await logbookRepository.findOne(logbookFilterQuery, {}, { _id: logbookStub()._id.toString() });
         });
 
         test('then it should call the logbookModel', () => {
           // { _id: logbookStub()._id.toString() } => defines which fields should be returned
-          expect(logbookModel.findOne).toHaveBeenCalledWith(logbookFilterQuery, { _id: logbookStub()._id.toString() });
+          expect(logbookModel.findOne).toHaveBeenCalledWith(
+            logbookFilterQuery,
+            {},
+            { _id: logbookStub()._id.toString() },
+          );
         });
 
         test('then it should return a logbook', () => {

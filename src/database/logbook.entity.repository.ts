@@ -1,13 +1,13 @@
 import { EntityRepository } from './entity.repository';
-import { Aggregate, Model } from 'mongoose';
+import { FilterQuery, Model, SortOrder } from 'mongoose';
 import { LogbookDocument } from '../logbook/core/schemas/logbook.schema';
 
 export abstract class LogbookEntityRepository<T extends LogbookDocument> extends EntityRepository<T> {
-  constructor(protected readonly entityModel: Model<T>) {
+  constructor(readonly entityModel: Model<T>) {
     super(entityModel);
   }
 
-  async findLastAddedLogbook(): Promise<T[]> {
+  async findLastAddedLogbooks(): Promise<T[]> {
     return this.entityModel
       .aggregate([
         {
@@ -32,6 +32,43 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
       .exec();
   }
 
+  async getPagination(
+    filterQuery: FilterQuery<T> = {},
+    page: number = 0,
+    limit: number = 100_000,
+    sort: string | { [key: string]: SortOrder | { $meta: 'textScore' } } | [string, SortOrder][] | undefined | null = {
+      date: -1,
+    },
+  ): Promise<{
+    total: number;
+    pageCount: number;
+    data: T[];
+    length: number;
+    limit: number;
+    page: number;
+  }> {
+    const total = await this.entityModel.countDocuments(filterQuery).exec();
+    // eslint-disable-next-line max-len
+    limit = limit <= 0 || limit >= total ? total : limit; // the limit can be not greater than the total (e.g @param) and must be minimum 1
+    page = page < 0 ? 1 : page; // the page cannot be negative be must be minimum 1
+
+    const data = await this.entityModel
+      .find(filterQuery)
+      .sort(sort)
+      .skip(page * limit >= total ? total - limit : page * limit)
+      .limit(limit)
+      .exec();
+
+    return {
+      data,
+      total,
+      length: data.length,
+      limit,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
+  }
+
   /**
    * @deprecated The method should not be used
    */
@@ -53,25 +90,5 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
       .exec();
 
     return [latestLogbookVw, latestLogbookFerrari, latestLogbookPorsche];
-  }
-
-  async findLastAddedLogbooksForEachVehicleType(): Promise<Aggregate<Array<T>>> {
-    return await this.entityModel
-      .aggregate([
-        {
-          $group: {
-            _id: '$vehicleTyp',
-            lastLogbook: {
-              $last: '$$ROOT',
-            },
-          },
-        },
-        {
-          $replaceRoot: {
-            newRoot: '$lastLogbook',
-          },
-        },
-      ])
-      .exec();
   }
 }

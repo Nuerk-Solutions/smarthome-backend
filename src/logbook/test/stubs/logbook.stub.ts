@@ -12,7 +12,7 @@ export const logbookStub = (): Logbook => {
     additionalInformationCost: '308.90',
     additionalInformationTyp: AdditionalInformationTyp.GEWARTET,
     currentMileAge: '168228',
-    date: '1666192177399',
+    date: new Date(1666192177399),
     distance: '23',
     distanceCost: '4.60',
     distanceSinceLastAdditionalInformation: '23.00',
