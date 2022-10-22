@@ -13,7 +13,11 @@ jobs:
         uses: SpicyPizza/create-envfile@v1.3
         with:
           envkey_MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
-          envkey_JWT_ACCESS_TOKEN_SECRET: 'secret2'
+          envkey_JWT_ACCESS_TOKEN_SECRET: 'secret'
+          envkey_JWT_VERIFICATION_TOKEN_SECRET: 'secret'
+          envkey_JWT_REFRESH_TOKEN_SECRET: 'secret'
+          envkey_JWT_ACCESS_TOKEN_EXPIRATION_TIME: 7200
+          envkey_JWT_REFRESH_TOKEN_EXPIRATION_TIME: 3600
           file_name: .env.development
           fail_on_empty: true
 
@@ -32,4 +36,4 @@ jobs:
 
       - uses: Borales/actions-yarn@v3.0.0
         with:
-          cmd: test # will run `yarn test` command
+          cmd: test --detectOpenHandles
