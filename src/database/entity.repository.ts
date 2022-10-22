@@ -52,8 +52,8 @@ export abstract class EntityRepository<T extends Document> {
     return deleteResult.deletedCount >= 1;
   }
 
-  async deleteOneById(id: string): Promise<{ success: boolean }> {
+  async deleteOneById(id: string): Promise<boolean> {
     const deleteResult = await this.entityModel.deleteOne({ _id: new Types.ObjectId(id) });
-    return { success: deleteResult.deletedCount >= 1 };
+    return deleteResult.deletedCount >= 1;
   }
 }

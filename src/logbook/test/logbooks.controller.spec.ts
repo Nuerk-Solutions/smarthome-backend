@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { LogbookController } from '../logbook.controller';
 import { LogbookService } from '../logbook.service';
-import { logbookStub } from './stubs/logbook.stub';
+import { basicLogbookStub } from './stubs/basic.logbook.stub';
 import { Logbook } from '../core/schemas/logbook.schema';
 import { CreateLogbookDto } from '../core/dto/create-logbook.dto';
 import { UpdateLogbookDto } from '../core/dto/update-logbook.dto';
@@ -30,15 +30,15 @@ describe('LogbookController', () => {
     describe('when findOne is called', () => {
       let logbook: Logbook;
       beforeEach(async () => {
-        logbook = await logbookController.findOne(logbookStub()._id.toString());
+        logbook = await logbookController.findOne(basicLogbookStub()._id.toString());
       });
 
       test('then it should call logbookService', () => {
-        expect(logbookService.findOne).toBeCalledWith(logbookStub()._id.toString());
+        expect(logbookService.findOne).toBeCalledWith(basicLogbookStub()._id.toString());
       });
 
       test('then it should return a logbook', () => {
-        expect(logbook).toEqual(logbookStub());
+        expect(logbook).toEqual(basicLogbookStub());
       });
     });
   });
@@ -55,7 +55,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return all latest logbooks', () => {
-        expect(logbooks).toEqual([logbookStub()]);
+        expect(logbooks).toEqual([basicLogbookStub()]);
       });
     });
   });
@@ -73,7 +73,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return a array of logbooks', () => {
-        expect(logbooks).toEqual([logbookStub()]);
+        expect(logbooks).toEqual([basicLogbookStub()]);
       });
     });
   });
@@ -85,16 +85,16 @@ describe('LogbookController', () => {
 
       beforeEach(async () => {
         createLogbookDto = {
-          additionalInformation: logbookStub().additionalInformation,
-          additionalInformationCost: logbookStub().additionalInformationCost,
-          additionalInformationTyp: logbookStub().additionalInformationTyp,
-          currentMileAge: logbookStub().currentMileAge,
-          date: logbookStub().date,
-          driveReason: logbookStub().driveReason,
-          driver: logbookStub().driver,
-          forFree: logbookStub().forFree,
-          newMileAge: logbookStub().newMileAge,
-          vehicleTyp: logbookStub().vehicleTyp,
+          additionalInformation: basicLogbookStub().additionalInformation,
+          additionalInformationCost: basicLogbookStub().additionalInformationCost,
+          additionalInformationTyp: basicLogbookStub().additionalInformationTyp,
+          currentMileAge: basicLogbookStub().currentMileAge,
+          date: basicLogbookStub().date,
+          driveReason: basicLogbookStub().driveReason,
+          driver: basicLogbookStub().driver,
+          forFree: basicLogbookStub().forFree,
+          newMileAge: basicLogbookStub().newMileAge,
+          vehicleTyp: basicLogbookStub().vehicleTyp,
         };
         logbook = await logbookController.create(createLogbookDto);
       });
@@ -104,7 +104,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return a logbooks', () => {
-        expect(logbook).toEqual(logbookStub());
+        expect(logbook).toEqual(basicLogbookStub());
       });
     });
   });
@@ -121,33 +121,30 @@ describe('LogbookController', () => {
           newMileAge: '2002',
           forFree: true,
           driveReason: 'Updated drive reason',
+          additionalInformation: 'Updated additional information',
+          additionalInformationCost: 'Updated additional information cost',
         };
-        logbook = await logbookController.update(logbookStub()._id.toString(), updateLogbookDto);
+        logbook = await logbookController.update(basicLogbookStub()._id.toString(), updateLogbookDto);
       });
 
       test('then it should call logbookService', () => {
-        expect(logbookService.update).toHaveBeenCalledWith(logbookStub()._id.toString(), updateLogbookDto);
+        expect(logbookService.update).toHaveBeenCalledWith(basicLogbookStub()._id.toString(), updateLogbookDto);
       });
 
       test('then it should return a logbooks', () => {
-        expect(logbook).toEqual(logbookStub());
+        expect(logbook).toEqual(basicLogbookStub());
       });
     });
   });
 
   describe('remove', () => {
     describe('when remove is called', () => {
-      let success: { success: boolean };
       beforeEach(async () => {
-        success = await logbookController.remove('asd');
+        await logbookController.remove('asd');
       });
 
       test('then it should call logbookService', () => {
         expect(logbookService.remove).toHaveBeenCalledWith('asd');
-      });
-
-      test('then it should return a logbooks', () => {
-        expect(success).toEqual({ success: true });
       });
     });
   });

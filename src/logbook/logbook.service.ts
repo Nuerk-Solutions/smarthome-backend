@@ -37,8 +37,6 @@ export class LogbookService {
     if (lastLogbook) {
       const date1 = new Date(date);
       const date2 = new Date(lastLogbook.date);
-      console.log(date1);
-      console.log(date2);
       return date1 < date2;
     }
     return true;
@@ -47,7 +45,6 @@ export class LogbookService {
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
     // if (true) {
     if (await this.checkIfNewLogbookIsOlder(createLogbookDto.vehicleTyp, createLogbookDto.date)) {
-      console.log('A');
       const logbooksToUpdate: Logbook[] = await this.findAll({
         vehicleTyp: createLogbookDto.vehicleTyp,
         date: { $gt: createLogbookDto.date },
@@ -216,7 +213,7 @@ export class LogbookService {
 
   //
   // // <h1> TODO: Add exception handling for 404 of id </h1>
-  async remove(_id: string): Promise<{ success: boolean }> {
+  async remove(_id: string): Promise<boolean> {
     return await this.logbooksRepository.deleteOneById(_id);
   }
 

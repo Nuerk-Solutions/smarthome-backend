@@ -5,6 +5,7 @@ import {
   Get,
   Header,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   Patch,
@@ -134,6 +135,7 @@ export class LogbookController {
     return new StreamableFile(xlsx);
   }
 
+  // TODO: Convert to PUT request, its technically more correct
   @HttpCode(HttpStatus.OK)
   @Patch(':_id')
   async update(@Param('_id') _id: string, @Body() updateLogbookDto: UpdateLogbookDto) {
@@ -142,7 +144,10 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':_id')
-  async remove(@Param('_id') _id: string): Promise<{ success: boolean }> {
-    return await this._logbookService.remove(_id);
+  async remove(@Param('_id') _id: string): Promise<void> {
+    const successful = await this._logbookService.remove(_id);
+    if (!successful) {
+      throw new HttpException('Could not delete logbook entry', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

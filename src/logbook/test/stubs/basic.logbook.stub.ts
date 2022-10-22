@@ -5,7 +5,7 @@ import { VehicleTyp } from '../../core/enums/vehicle-typ.enum';
 import { AdditionalInformationTyp } from '../../core/enums/additional-information-typ.enum';
 
 // Return a new instance every time
-export const logbookStub = (): Logbook => {
+export const basicLogbookStub = (): Logbook => {
   return {
     _id: new Types.ObjectId('634ff77d18495f2dc3a8be80'),
     additionalInformation: 'Winterräder montiert. \n2 Winterreifen neu (Dunlop)',
@@ -24,7 +24,7 @@ export const logbookStub = (): Logbook => {
   };
 };
 
-export const logbookStubTypeless = (): any => {
+export const basicLogbookStubTypeless = (): any => {
   return {
     _id: '634ff77d18495f2dc3a8be80',
     additionalInformation: 'Winterräder montiert. \n2 Winterreifen neu (Dunlop)',

@@ -6,7 +6,8 @@ export class UpdateLogbookDto {
   @IsEnum(Driver, { each: true, message: 'Driver is not valid' })
   driver: Driver;
 
-  // TODO: Add safety check for update task. Currently only managed with UI lock
+  // TODO: CHECK => can only be changed if it is the last logbook entry
+  // TODO: Remove currentMileAge from dto and get it from the db
   @IsNotEmpty()
   @IsNumberString()
   currentMileAge: string;
@@ -21,4 +22,10 @@ export class UpdateLogbookDto {
 
   @IsOptional()
   driveReason: string;
+
+  @IsOptional()
+  additionalInformation: string;
+
+  @IsOptional()
+  additionalInformationCost: string;
 }

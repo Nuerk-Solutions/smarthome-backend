@@ -1,4 +1,4 @@
-import { logbookStub } from '../test/stubs/logbook.stub';
+import { basicLogbookStub } from '../test/stubs/basic.logbook.stub';
 
 /**
  * <h1>Reminder</h1>
@@ -7,10 +7,10 @@ import { logbookStub } from '../test/stubs/logbook.stub';
  */
 
 export const LogbookService = jest.fn().mockReturnValue({
-  findOne: jest.fn().mockResolvedValue(logbookStub()),
-  findAll: jest.fn().mockResolvedValue([logbookStub()]),
-  findLatest: jest.fn().mockResolvedValue([logbookStub()]),
-  update: jest.fn().mockResolvedValue(logbookStub()),
-  create: jest.fn().mockResolvedValue(logbookStub()),
+  findOne: jest.fn().mockResolvedValue(basicLogbookStub()),
+  findAll: jest.fn().mockResolvedValue([basicLogbookStub()]),
+  findLatest: jest.fn().mockResolvedValue([basicLogbookStub()]),
+  update: jest.fn().mockResolvedValue(basicLogbookStub()),
+  create: jest.fn().mockResolvedValue(basicLogbookStub()),
   remove: jest.fn().mockResolvedValue({ success: true }),
 });
