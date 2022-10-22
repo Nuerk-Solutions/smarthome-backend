@@ -1,16 +1,16 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
-import { LogbookService } from '../logbook.service';
-import { Logbook } from '../core/schemas/logbook.schema';
-import { Driver } from '../core/enums/driver.enum';
-import { VehicleTyp } from '../core/enums/vehicle-typ.enum';
-import { AdditionalInformationTyp } from '../core/enums/additional-information-typ.enum';
-import { MailService } from '../../core/mail/mail.service';
+import { LogbookService } from '../../logbook.service';
+import { Logbook } from '../../core/schemas/logbook.schema';
+import { Driver } from '../../core/enums/driver.enum';
+import { VehicleTyp } from '../../core/enums/vehicle-typ.enum';
+import { AdditionalInformationTyp } from '../../core/enums/additional-information-typ.enum';
+import { MailService } from '../../../core/mail/mail.service';
 import { forwardRef } from '@nestjs/common';
-import { MailModule } from '../../core/mail/mail.module';
-import { LogbookInvoice } from '../core/schemas/logbook-invoice.schema';
-import { LogbooksRepository } from '../logbooks.repository';
+import { MailModule } from '../../../core/mail/mail.module';
+import { LogbookInvoice } from '../../core/schemas/logbook-invoice.schema';
+import { LogbooksRepository } from '../../logbooks.repository';
 
 const date: Date = new Date();
 
@@ -133,33 +133,4 @@ describe('LogbookService', () => {
       total: 2,
     });
   });
-
-  // it('should create a new Logbook', async () => {
-  //   jest.spyOn(model, 'create').mockImplementationOnce(() =>
-  //     Promise.resolve({
-  //       driver: Driver.Andrea,
-  //       vehicleTyp: VehicleTyp.Ferrari,
-  //       currentMileAge: '123',
-  //       newMileAge: '456',
-  //       date: date,
-  //       driveReason: 'Drive Reason',
-  //       additionalInformationTyp: AdditionalInformationTyp.Getankt,
-  //       additionalInformation: '20',
-  //       additionalInformationCost: '40',
-  //     }),
-  //   );
-  //   const newLogbook = await service.create({
-  //     driver: Driver.Andrea,
-  //     vehicleTyp: VehicleTyp.Ferrari,
-  //     currentMileAge: '123',
-  //     newMileAge: '456',
-  //     date: date,
-  //     driveReason: 'Drive Reason',
-  //     additionalInformationTyp: AdditionalInformationTyp.Getankt,
-  //     additionalInformation: '20',
-  //     additionalInformationCost: '40',
-  //   });
-
-  //   expect(newLogbook).toEqual(mockLogbook);
-  // });
 });

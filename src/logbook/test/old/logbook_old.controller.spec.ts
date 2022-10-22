@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LogbookController } from '../logbook.controller';
-import { LogbookService } from '../logbook.service';
-import { CreateLogbookDto } from '../core/dto/create-logbook.dto';
-import { Driver } from '../core/enums/driver.enum';
-import { VehicleTyp } from '../core/enums/vehicle-typ.enum';
-import { AdditionalInformationTyp } from '../core/enums/additional-information-typ.enum';
+import { LogbookController } from '../../logbook.controller';
+import { LogbookService } from '../../logbook.service';
+import { CreateLogbookDto } from '../../core/dto/create-logbook.dto';
+import { Driver } from '../../core/enums/driver.enum';
+import { VehicleTyp } from '../../core/enums/vehicle-typ.enum';
+import { AdditionalInformationTyp } from '../../core/enums/additional-information-typ.enum';
 import { Types } from 'mongoose';
 
 describe('LogbookController', () => {
