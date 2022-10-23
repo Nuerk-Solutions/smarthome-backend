@@ -5,19 +5,8 @@ import { DatabaseService } from '../../../../database/database.service';
 import * as request from 'supertest';
 import { HttpStatus } from '@nestjs/common';
 import { Logbook } from '../../../core/schemas/logbook.schema';
-import {
-  complexLogbookStub_VW_0_0_F,
-  complexLogbookStub_VW_10_0_T,
-  complexLogbookStub_VW_1_0_F,
-  complexLogbookStub_VW_2_0_F,
-  complexLogbookStub_VW_3_0_T,
-  complexLogbookStub_VW_4_0_T,
-  complexLogbookStub_VW_5_0_F,
-  complexLogbookStub_VW_6_1_F,
-  complexLogbookStub_VW_7_0_F,
-  complexLogbookStub_VW_8_0_F,
-  complexLogbookStub_VW_9_2_F,
-} from '../../stubs/complex.logbook.stub';
+import * as stubs from '../../stubs/complex.logbook.stub';
+import { convertComplexLogbookStubToNoType } from '../../stubs/complex.logbook.stub';
 
 describe('Complex LogbookController Integration Test', () => {
   let dbConnection: Connection;
@@ -49,14 +38,14 @@ describe('Complex LogbookController Integration Test', () => {
    * Tests
    */
 
-  describe('create Logbooks', () => {
+  describe('create Logbooks VW', () => {
     it('complexLogbookStub_VW_0_0_F', async () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_0_0_F());
+        .send(stubs.complexLogbookStub_VW_0_0_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_0_0_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_0_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -74,14 +63,13 @@ describe('Complex LogbookController Integration Test', () => {
       //     });
       //   });
     });
-
     it('complexLogbookStub_VW_1_0_F', async () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_1_0_F());
+        .send(stubs.complexLogbookStub_VW_1_0_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_1_0_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_1_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -93,9 +81,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_2_0_F());
+        .send(stubs.complexLogbookStub_VW_2_0_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_2_0_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_2_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -107,9 +95,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_3_0_T());
+        .send(stubs.complexLogbookStub_VW_3_0_T());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_3_0_T();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_3_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -121,9 +109,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_4_0_T());
+        .send(stubs.complexLogbookStub_VW_4_0_T());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_4_0_T();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_4_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -135,9 +123,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_5_0_F());
+        .send(stubs.complexLogbookStub_VW_5_0_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_5_0_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_5_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -149,9 +137,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_6_1_F());
+        .send(stubs.complexLogbookStub_VW_6_1_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_6_1_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_6_1_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -163,9 +151,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_7_0_F());
+        .send(stubs.complexLogbookStub_VW_7_0_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_7_0_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_7_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -177,9 +165,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_8_0_F());
+        .send(stubs.complexLogbookStub_VW_8_0_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_8_0_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_8_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -191,9 +179,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_9_2_F());
+        .send(stubs.complexLogbookStub_VW_9_2_F());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_9_2_F();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_9_2_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -205,9 +193,9 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer)
         .post('/logbook')
         .set('Authorization', apiKey)
-        .send(complexLogbookStub_VW_10_0_T());
+        .send(stubs.complexLogbookStub_VW_10_0_T());
 
-      const newLogbook: Logbook = complexLogbookStub_VW_10_0_T();
+      const newLogbook: Logbook = stubs.complexLogbookStub_VW_10_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -217,15 +205,376 @@ describe('Complex LogbookController Integration Test', () => {
     });
   });
 
-  // describe('findLatest', () => {
-  //   it('should return an array of logbooks', async () => {
-  //     await dbConnection.collection('logbooks').insertOne(basicLogbookStub());
-  //     const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
-  //
-  //     expect(response.status).toBe(HttpStatus.OK);
-  //     expect(response.body).toMatchObject([logbookStubTypeless()]);
-  //   });
-  // });
+  describe('find latest_0', () => {
+    it('should return an array of logbooks', async () => {
+      const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
+
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toMatchObject([
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+      ]);
+    });
+  });
+
+  describe('create Logbooks Ferrari', () => {
+    it('complexLogbookStub_Ferrari_0_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_0_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_0_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+      //
+      // dbConnection
+      //   .collection('logbooks')
+      //   .findOne({ _id: new Types.ObjectId(response.body._id) })
+      //   .then((logbook) => {
+      //     expect(logbook).toMatchObject({
+      //       ...newLogbook,
+      //       date: newLogbook.date.toISOString(),
+      //     });
+      //   });
+    });
+    it('complexLogbookStub_Ferrari_1_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_1_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_1_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_2_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_2_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_2_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_3_0_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_3_0_T());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_3_0_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_4_0_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_4_0_T());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_4_0_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_5_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_5_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_5_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_6_1_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_6_1_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_6_1_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_7_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_7_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_7_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_8_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_8_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_8_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_9_2_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_9_2_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_9_2_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Ferrari_10_0_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_10_0_T());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_10_0_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+  });
+
+  describe('find latest_1', () => {
+    it('should return an array of logbooks', async () => {
+      const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
+
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toMatchObject([
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+      ]);
+    });
+  });
+
+  describe('create Logbooks Porsche', () => {
+    it('complexLogbookStub_Porsche_0_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_0_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_0_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+      //
+      // dbConnection
+      //   .collection('logbooks')
+      //   .findOne({ _id: new Types.ObjectId(response.body._id) })
+      //   .then((logbook) => {
+      //     expect(logbook).toMatchObject({
+      //       ...newLogbook,
+      //       date: newLogbook.date.toISOString(),
+      //     });
+      //   });
+    });
+    it('complexLogbookStub_Porsche_1_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_1_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_1_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_2_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_2_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_2_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_3_0_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_3_0_T());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_3_0_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_4_0_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_4_0_T());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_4_0_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_5_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_5_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_5_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_6_1_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_6_1_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_6_1_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_7_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_7_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_7_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_8_0_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_8_0_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_8_0_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_9_2_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_9_2_F());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_9_2_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+    it('complexLogbookStub_Porsche_10_0_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Porsche_10_0_T());
+
+      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_10_0_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+    });
+  });
+
+  describe('find latest_2', () => {
+    it('should return an array of logbooks', async () => {
+      const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
+
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toMatchObject([
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+      ]);
+    });
+  });
+
   //
   // describe('updateLogbook', () => {
   //   it('should update a logbook', async () => {

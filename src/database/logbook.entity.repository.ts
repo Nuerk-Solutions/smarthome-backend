@@ -28,6 +28,11 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
             newRoot: '$lastLogbook',
           },
         },
+        {
+          $sort: {
+            vehicleTyp: 1,
+          },
+        },
       ])
       .exec();
   }
