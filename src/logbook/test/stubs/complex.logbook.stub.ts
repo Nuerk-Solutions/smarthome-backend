@@ -658,3 +658,21 @@ export const convertComplexLogbookStubToNoType = (logbook: Logbook, id?: any) =>
     vehicleTyp: logbook.vehicleTyp,
   };
 };
+
+export const convertComplexLogbookStubToNoId = (logbook: Logbook) => {
+  return {
+    additionalInformation: logbook.additionalInformation,
+    additionalInformationCost: logbook.additionalInformationCost,
+    distanceSinceLastAdditionalInformation: logbook.distanceSinceLastAdditionalInformation,
+    additionalInformationTyp: logbook.additionalInformationTyp,
+    currentMileAge: logbook.currentMileAge,
+    newMileAge: logbook.newMileAge,
+    date: logbook.date,
+    distance: logbook.distance,
+    distanceCost: logbook.distanceCost,
+    driveReason: logbook.driveReason,
+    driver: logbook.driver,
+    forFree: logbook.forFree,
+    vehicleTyp: logbook.vehicleTyp,
+  };
+};

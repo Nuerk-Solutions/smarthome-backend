@@ -1,6 +1,7 @@
 import { EntityRepository } from './entity.repository';
 import { FilterQuery, Model, SortOrder } from 'mongoose';
 import { LogbookDocument } from '../logbook/core/schemas/logbook.schema';
+import { VehicleTyp } from '../logbook/core/enums/vehicle-typ.enum';
 
 export abstract class LogbookEntityRepository<T extends LogbookDocument> extends EntityRepository<T> {
   constructor(readonly entityModel: Model<T>) {
@@ -32,6 +33,26 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
           $sort: {
             vehicleTyp: 1,
           },
+        },
+      ])
+      .exec();
+  }
+
+  async findLastAddedLogbookForVehicle(vehicleTyp: VehicleTyp): Promise<T[]> {
+    return this.entityModel
+      .aggregate([
+        {
+          $sort: {
+            newMileAge: -1,
+          },
+        },
+        {
+          $match: {
+            vehicleTyp,
+          },
+        },
+        {
+          $limit: 1,
         },
       ])
       .exec();

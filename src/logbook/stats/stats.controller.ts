@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { DateParameter } from '../core/dto/parameters/date.parameter';
-import { ParseArray } from '../core/pipes/ParseEnumArray.pipe';
+import { ParseArray } from '../core/validation/pipes/ParseEnumArray.pipe';
 import { DriverParameter } from '../core/dto/parameters/driver.parameter';
 import { Driver } from '../core/enums/driver.enum';
 import { VehicleParameter } from '../core/dto/parameters/vehicle.parameter';

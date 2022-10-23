@@ -1,12 +1,17 @@
 import { AppModule } from '../../../../app.module';
 import { Test } from '@nestjs/testing';
-import { Connection } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { DatabaseService } from '../../../../database/database.service';
 import * as request from 'supertest';
 import { HttpStatus } from '@nestjs/common';
 import { Logbook } from '../../../core/schemas/logbook.schema';
 import * as stubs from '../../stubs/complex.logbook.stub';
-import { convertComplexLogbookStubToNoType } from '../../stubs/complex.logbook.stub';
+import {
+  complexLogbookStub_Ferrari_10_0_T,
+  convertComplexLogbookStubToNoId,
+  convertComplexLogbookStubToNoType,
+} from '../../stubs/complex.logbook.stub';
+import { basicLogbookStub } from '../../stubs/basic.logbook.stub';
 
 describe('Complex LogbookController Integration Test', () => {
   let dbConnection: Connection;
@@ -38,6 +43,15 @@ describe('Complex LogbookController Integration Test', () => {
    * Tests
    */
 
+  describe('find latest_0', () => {
+    it('should return an array of logbooks', async () => {
+      const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
+
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toMatchObject([]);
+    });
+  });
+
   describe('create Logbooks VW', () => {
     it('complexLogbookStub_VW_0_0_F', async () => {
       const response = await request(httpServer)
@@ -52,16 +66,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      //
-      // dbConnection
-      //   .collection('logbooks')
-      //   .findOne({ _id: new Types.ObjectId(response.body._id) })
-      //   .then((logbook) => {
-      //     expect(logbook).toMatchObject({
-      //       ...newLogbook,
-      //       date: newLogbook.date.toISOString(),
-      //     });
-      //   });
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_1_0_F', async () => {
       const response = await request(httpServer)
@@ -76,6 +83,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_2_0_F', async () => {
       const response = await request(httpServer)
@@ -90,6 +100,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_3_0_T', async () => {
       const response = await request(httpServer)
@@ -104,6 +117,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_4_0_T', async () => {
       const response = await request(httpServer)
@@ -118,6 +134,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_5_0_F', async () => {
       const response = await request(httpServer)
@@ -132,6 +151,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_6_1_F', async () => {
       const response = await request(httpServer)
@@ -146,6 +168,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_7_0_F', async () => {
       const response = await request(httpServer)
@@ -160,6 +185,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_8_0_F', async () => {
       const response = await request(httpServer)
@@ -174,6 +202,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_9_2_F', async () => {
       const response = await request(httpServer)
@@ -188,6 +219,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_VW_10_0_T', async () => {
       const response = await request(httpServer)
@@ -202,10 +236,13 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
   });
 
-  describe('find latest_0', () => {
+  describe('find latest_1', () => {
     it('should return an array of logbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
@@ -230,6 +267,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
       //
       // dbConnection
       //   .collection('logbooks')
@@ -254,6 +294,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_2_0_F', async () => {
       const response = await request(httpServer)
@@ -268,6 +311,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_3_0_T', async () => {
       const response = await request(httpServer)
@@ -282,6 +328,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_4_0_T', async () => {
       const response = await request(httpServer)
@@ -296,6 +345,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_5_0_F', async () => {
       const response = await request(httpServer)
@@ -310,6 +362,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_6_1_F', async () => {
       const response = await request(httpServer)
@@ -324,6 +379,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_7_0_F', async () => {
       const response = await request(httpServer)
@@ -338,6 +396,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_8_0_F', async () => {
       const response = await request(httpServer)
@@ -352,6 +413,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_9_2_F', async () => {
       const response = await request(httpServer)
@@ -366,6 +430,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Ferrari_10_0_T', async () => {
       const response = await request(httpServer)
@@ -380,10 +447,13 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
   });
 
-  describe('find latest_1', () => {
+  describe('find latest_2', () => {
     it('should return an array of logbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
@@ -409,6 +479,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
       //
       // dbConnection
       //   .collection('logbooks')
@@ -433,6 +506,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_2_0_F', async () => {
       const response = await request(httpServer)
@@ -447,6 +523,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_3_0_T', async () => {
       const response = await request(httpServer)
@@ -461,6 +540,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_4_0_T', async () => {
       const response = await request(httpServer)
@@ -475,6 +557,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_5_0_F', async () => {
       const response = await request(httpServer)
@@ -489,6 +574,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_6_1_F', async () => {
       const response = await request(httpServer)
@@ -503,6 +591,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_7_0_F', async () => {
       const response = await request(httpServer)
@@ -517,6 +608,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_8_0_F', async () => {
       const response = await request(httpServer)
@@ -531,6 +625,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_9_2_F', async () => {
       const response = await request(httpServer)
@@ -545,6 +642,9 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
     it('complexLogbookStub_Porsche_10_0_T', async () => {
       const response = await request(httpServer)
@@ -559,10 +659,13 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: response.body._id });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
   });
 
-  describe('find latest_2', () => {
+  describe('find latest_3', () => {
     it('should return an array of logbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
@@ -575,34 +678,71 @@ describe('Complex LogbookController Integration Test', () => {
     });
   });
 
-  //
-  // describe('updateLogbook', () => {
-  //   it('should update a logbook', async () => {
-  //     const logbook = await dbConnection.collection('logbooks').insertOne(basicLogbookStub());
-  //     const updateLogbookDto = {
-  //       currentMileAge: '168228',
-  //       newMileAge: '123457',
-  //       driveReason: 'TestReason',
-  //       driver: 'Andrea',
-  //       forFree: true,
-  //       additionalInformation: 'Test Information',
-  //       additionalInformationCost: '0018.75',
-  //     };
-  //     const response = await request(httpServer)
-  //       .patch('/logbook/' + logbook.insertedId)
-  //       .set('Authorization', apiKey)
-  //       .send(updateLogbookDto);
-  //
-  //     expect(response.body).toMatchObject(updateLogbookDto);
-  //     expect(response.status).toBe(HttpStatus.OK);
-  //
-  //     const updatedLogbook = await dbConnection
-  //       .collection('logbooks')
-  //       .findOne({ _id: new Types.ObjectId(response.body._id) });
-  //     expect(updatedLogbook).toMatchObject({ ...updateLogbookDto });
-  //   });
-  // });
-  //
+  describe('create logbook fails', () => {
+    it('should return an error Logbook already exists', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_10_0_T());
+
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body).toMatchObject({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Logbook already exists',
+      });
+    });
+
+    it('should return an error drive reason must be a not empty string', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send({ ...stubs.complexLogbookStub_Ferrari_1_0_F(), driveReason: '' });
+
+      // expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body).toMatchObject({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Internal server error',
+      });
+    });
+  });
+
+  describe('update logbook', () => {
+    it('update logbook with the same logbook', async () => {
+      const response = await request(httpServer)
+        .patch('/logbook/' + stubs.complexLogbookStub_Ferrari_10_0_T()._id)
+        .set('Authorization', apiKey)
+        .send(convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T()));
+
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toMatchObject(convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T()));
+    });
+
+    it('update logbook with different stats', async () => {
+      const logbook = await dbConnection.collection('logbooks').insertOne(basicLogbookStub());
+      const updateLogbookDto = {
+        currentMileAge: '10',
+        newMileAge: '20',
+        driveReason: 'TestReason',
+        driver: 'Andrea',
+        forFree: true,
+        additionalInformation: 'Test Information',
+        additionalInformationCost: '0018.75',
+      };
+      const response = await request(httpServer)
+        .patch('/logbook/' + logbook.insertedId)
+        .set('Authorization', apiKey)
+        .send(updateLogbookDto);
+
+      expect(response.body).toMatchObject(updateLogbookDto);
+      expect(response.status).toBe(HttpStatus.OK);
+
+      const updatedLogbook = await dbConnection
+        .collection('logbooks')
+        .findOne({ _id: new Types.ObjectId(response.body._id) });
+      expect(updatedLogbook).toMatchObject({ ...updateLogbookDto });
+    });
+  });
+
   // describe('deleteLogbook', () => {
   //   it('should delete a logbook', async () => {
   //     const logbook = await dbConnection.collection('logbooks').insertOne(basicLogbookStub());

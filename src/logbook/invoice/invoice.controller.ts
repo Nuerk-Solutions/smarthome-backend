@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateLogbookInvoiceDto } from '../core/dto/create-logbook-invoice.dto';
-import { ParseArray } from '../core/pipes/ParseEnumArray.pipe';
+import { ParseArray } from '../core/validation/pipes/ParseEnumArray.pipe';
 import { DriverParameter } from '../core/dto/parameters/driver.parameter';
 import { Driver } from '../core/enums/driver.enum';
 import { LogbookInvoice } from '../core/schemas/logbook-invoice.schema';
@@ -57,7 +57,11 @@ export class InvoiceController {
   @HttpCode(HttpStatus.OK)
   @Get('/summary')
   async sendInvoiceSummary(@Query() date: DateParameter, @Query('email') email: string): Promise<void> {
-    const invoiceStats = await this._statsService.calculateDriverStats([Driver.ANDREA, Driver.THOMAS], date.startDate, date.endDate);
+    const invoiceStats = await this._statsService.calculateDriverStats(
+      [Driver.ANDREA, Driver.THOMAS],
+      date.startDate,
+      date.endDate,
+    );
     const sumThomas = invoiceStats.find((item) => item.driver === Driver.THOMAS).distanceCost;
     const sumAndrea = invoiceStats.find((item) => item.driver === Driver.ANDREA).distanceCost;
 

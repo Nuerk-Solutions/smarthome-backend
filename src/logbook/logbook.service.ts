@@ -1,21 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import * as XLSX from 'xlsx';
-import { Logbook, LogbookDocument } from './core/schemas/logbook.schema';
+import { Logbook } from './core/schemas/logbook.schema';
 import { AdditionalInformationTyp } from './core/enums/additional-information-typ.enum';
 import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
 import { DriverParameter } from './core/dto/parameters/driver.parameter';
 import { LogbooksRepository } from './logbooks.repository';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { VehicleTyp } from './core/enums/vehicle-typ.enum';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
-import { InjectModel } from '@nestjs/mongoose';
+import { DISTANCE_COST } from '../core/utils/constatns';
 
 @Injectable()
 export class LogbookService {
   constructor(
-    @InjectModel(Logbook.name, 'logbook')
-    private readonly logbookModel: Model<LogbookDocument>,
+    // @InjectModel(Logbook.name, 'logbook')
+    // private readonly logbookModel: Model<LogbookDocument>,
     // @InjectModel(Logbook.name, 'logbook')
     private readonly logbooksRepository: LogbooksRepository,
   ) {}
@@ -86,8 +86,17 @@ export class LogbookService {
       }
     }
 
+    // Check if currentMileAge already exists for the vehicleTyp
+    const isContaining = await this.logbooksRepository.findOne({
+      vehicleTyp: createLogbookDto.vehicleTyp,
+      currentMileAge: createLogbookDto.currentMileAge,
+    });
+    if (isContaining) {
+      throw new BadRequestException('Logbook already exists');
+    }
+
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
-    const distanceCost = Number(+distance * 0.2).toFixed(2);
+    const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
     let distanceSinceLastAdditionalInformation = '';
 
     if (createLogbookDto.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
@@ -217,10 +226,30 @@ export class LogbookService {
     return await this.logbooksRepository.deleteOneById(_id);
   }
 
-  // TODO: Add safety check for update task. Currently only managed with UI lock
   async update(id: string, updateLogbookDto: UpdateLogbookDto): Promise<Logbook> {
     const distance = Number(+updateLogbookDto.newMileAge - +updateLogbookDto.currentMileAge).toFixed(2);
-    const distanceCost = Number(+distance * 0.2).toFixed(2);
+    const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
+    const lastAddedLogbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(updateLogbookDto.vehicleTyp);
+
+    if (lastAddedLogbook == null) {
+      throw new NotFoundException('No logbook found');
+    }
+
+    if (lastAddedLogbook[0]._id.toString() !== id) {
+      // TODO: Impl logger in tests
+      console.log('Logbook is not the last added logbook');
+      console.log(
+        "Removing newMilAge and currentMileAge from updateLogbookDto because it's not the last added logbook",
+      );
+      delete updateLogbookDto.newMileAge;
+      delete updateLogbookDto.currentMileAge;
+      return await this.logbooksRepository.findOneAndUpdate(
+        {
+          _id: new Types.ObjectId(id),
+        },
+        updateLogbookDto,
+      );
+    }
 
     return await this.logbooksRepository.findOneAndUpdate(
       {

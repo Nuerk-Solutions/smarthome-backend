@@ -36,7 +36,7 @@ export class Logbook {
   @Prop({ required: true })
   date: Date;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true, trim: true })
   driveReason: string;
 
   @Prop({ type: String, required: true, enum: AdditionalInformationTyp })

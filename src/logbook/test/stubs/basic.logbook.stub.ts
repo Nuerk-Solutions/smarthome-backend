@@ -12,6 +12,7 @@ export const basicLogbookStub = (): Logbook => {
     additionalInformationCost: '308.90',
     additionalInformationTyp: AdditionalInformationTyp.GEWARTET,
     currentMileAge: '168228',
+    newMileAge: '168251',
     date: new Date(1666192177399),
     distance: '23',
     distanceCost: '4.60',
@@ -19,7 +20,6 @@ export const basicLogbookStub = (): Logbook => {
     driveReason: 'Stadtfahrt & Reifen/Räderwechsel',
     driver: Driver.OLIVER,
     forFree: false,
-    newMileAge: '168251',
     vehicleTyp: VehicleTyp.VW,
   };
 };

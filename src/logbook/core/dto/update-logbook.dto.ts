@@ -1,5 +1,6 @@
 import { IsBoolean, IsEnum, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
 import { Driver } from '../enums/driver.enum';
+import { VehicleTyp } from '../enums/vehicle-typ.enum';
 
 export class UpdateLogbookDto {
   @IsOptional()
@@ -11,6 +12,9 @@ export class UpdateLogbookDto {
   @IsNotEmpty()
   @IsNumberString()
   currentMileAge: string;
+
+  @IsEnum(VehicleTyp, { each: true, message: 'VehicleTyp is not valid' })
+  vehicleTyp: VehicleTyp;
 
   @IsOptional()
   @IsNumberString()

@@ -5,10 +5,10 @@ export abstract class EntityRepository<T extends Document> {
 
   async findOne(
     entityFilterQuery: FilterQuery<T>,
-    options?: {
+    options: {
       sort?: string | { [key: string]: SortOrder | { $meta: 'textScore' } } | [string, SortOrder][] | undefined | null;
       limit?: number;
-    },
+    } = {},
     projection?: Record<string, unknown>,
   ): Promise<T | null> {
     return this.entityModel
