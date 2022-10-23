@@ -37,8 +37,7 @@ export abstract class EntityRepository<T extends Document> {
   }
 
   async create(createEntityData: unknown): Promise<T> {
-    const entity = new this.entityModel(createEntityData);
-    return entity.save();
+    return await this.entityModel.create(createEntityData);
   }
 
   async findOneAndUpdate(entityFilterQuery: FilterQuery<T>, updateEntityData: UpdateQuery<unknown>): Promise<T | null> {

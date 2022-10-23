@@ -2,6 +2,7 @@ import { EntityRepository } from './entity.repository';
 import { FilterQuery, Model, SortOrder } from 'mongoose';
 import { LogbookDocument } from '../logbook/core/schemas/logbook.schema';
 import { VehicleTyp } from '../logbook/core/enums/vehicle-typ.enum';
+import { AdditionalInformationTyp } from '../logbook/core/enums/additional-information-typ.enum';
 
 export abstract class LogbookEntityRepository<T extends LogbookDocument> extends EntityRepository<T> {
   constructor(readonly entityModel: Model<T>) {
@@ -35,6 +36,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
           },
         },
       ])
+      .collation({ locale: 'de', numericOrdering: true })
       .exec();
   }
 
@@ -55,6 +57,32 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
           $limit: 1,
         },
       ])
+      .collation({ locale: 'de', numericOrdering: true })
+      .exec();
+  }
+
+  async findLastAdditionalInformation(
+    vehicleTyp: VehicleTyp,
+    additionalInformationTyp: AdditionalInformationTyp,
+  ): Promise<T[]> {
+    return this.entityModel
+      .aggregate([
+        {
+          $match: {
+            vehicleTyp,
+            additionalInformationTyp,
+          },
+        },
+        {
+          $sort: {
+            newMileAge: -1,
+          },
+        },
+        {
+          $limit: 1,
+        },
+      ])
+      .collation({ locale: 'de', numericOrdering: true })
       .exec();
   }
 
