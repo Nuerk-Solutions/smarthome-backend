@@ -26,43 +26,50 @@ export class InvoiceService {
     emailDrivers: DriverParameter[],
   ): Promise<boolean> {
     const lastLogbookInvoiceDate = await this.logbookInvoiceModel.findOne().sort({ date: -1 }).exec();
-    const invoiceStats = await this._statsService.calculateDriverStats(drivers, lastLogbookInvoiceDate.date, createLogbookInvoiceDto.endDate);
+    const invoiceStats = await this._statsService.calculateDriverStats(
+      drivers,
+      lastLogbookInvoiceDate.date,
+      createLogbookInvoiceDto.endDate,
+    );
     const sumArrayThomas = invoiceStats.find((item) => item.driver === Driver.THOMAS);
     const sumArrayAndrea = invoiceStats.find((item) => item.driver === Driver.ANDREA);
     const sumThomas = (sumArrayThomas && sumArrayThomas.distanceCost) || 0;
     const sumAndrea = (sumArrayAndrea && sumArrayAndrea.distanceCost) || 0;
 
-    const driverEmailStatsMap: Map<Driver, { email: string; sum: number }> = new Map<Driver, { email: string; sum: number }>();
-    if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
-    }
-    if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.CLAUDIA, {
-        email: 'claudia_dresden@icloud.com',
-        sum: invoiceStats.find((item) => item.driver === Driver.CLAUDIA).distanceCost,
-      });
-    }
-    if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.OLIVER, {
-        email: 'oliver_dresden@freenet.de',
-        sum: invoiceStats.find((item) => item.driver === Driver.OLIVER).distanceCost,
-      });
-    }
+    const driverEmailStatsMap: Map<Driver, { email: string; sum: number }> = new Map<
+      Driver,
+      { email: string; sum: number }
+    >();
+    // if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
+    //   driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
+    // }
+    // if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
+    //   driverEmailStatsMap.set(Driver.CLAUDIA, {
+    //     email: 'claudia_dresden@icloud.com',
+    //     sum: invoiceStats.find((item) => item.driver === Driver.CLAUDIA).distanceCost,
+    //   });
+    // }
+    // if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
+    //   driverEmailStatsMap.set(Driver.OLIVER, {
+    //     email: 'oliver_dresden@freenet.de',
+    //     sum: invoiceStats.find((item) => item.driver === Driver.OLIVER).distanceCost,
+    //   });
+    // }
     if (emailDrivers.includes(Driver.THOMAS as DriverParameter)) {
       driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: sumThomas });
     }
 
-    await this.sendInvoiceSummary(
-      {
-        email: 'claudia_dresden@icloud.com',
-        driver: Driver.CLAUDIA,
-        startDate: lastLogbookInvoiceDate.date,
-        endDate: new Date(createLogbookInvoiceDto.endDate),
-      },
-      sumThomas,
-      sumAndrea,
-      sumAndrea + sumThomas,
-    );
+    // await this.sendInvoiceSummary(
+    //   {
+    //     email: 'claudia_dresden@icloud.com',
+    //     driver: Driver.CLAUDIA,
+    //     startDate: lastLogbookInvoiceDate.date,
+    //     endDate: new Date(createLogbookInvoiceDto.endDate),
+    //   },
+    //   sumThomas,
+    //   sumAndrea,
+    //   sumAndrea + sumThomas,
+    // );
 
     await this.sendInvoiceSummary(
       {
@@ -91,7 +98,12 @@ export class InvoiceService {
     return true;
   }
 
-  public async sendInvoiceSummary(invoiceParameter: InvoiceParameter, sumThomas: number, sumAndrea: number, sumAll: number) {
+  public async sendInvoiceSummary(
+    invoiceParameter: InvoiceParameter,
+    sumThomas: number,
+    sumAndrea: number,
+    sumAll: number,
+  ) {
     const mail: SendGrid.MailDataRequired = {
       to: invoiceParameter.email,
       from: 'Fahrtenbuch Abrechnung <abrechnung@nuerk-solutions.de>',
