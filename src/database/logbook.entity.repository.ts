@@ -93,14 +93,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
     sort: string | { [key: string]: SortOrder | { $meta: 'textScore' } } | [string, SortOrder][] | undefined | null = {
       date: -1,
     },
-  ): Promise<{
-    total: number;
-    pageCount: number;
-    data: T[];
-    length: number;
-    limit: number;
-    page: number;
-  }> {
+  ): Promise<PaginateResult<T>> {
     const total = await this.entityModel.countDocuments(filterQuery).exec();
     // eslint-disable-next-line max-len
     limit = limit <= 0 || limit >= total ? total : limit; // the limit can be not greater than the total (e.g @param) and must be minimum 1

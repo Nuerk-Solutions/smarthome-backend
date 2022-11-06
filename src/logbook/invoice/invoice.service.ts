@@ -1,7 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { LogbookInvoice, LogbookInvoiceDocument } from '../core/schemas/logbook-invoice.schema';
-import { Model } from 'mongoose';
+import { LogbookInvoice } from '../core/schemas/logbook-invoice.schema';
 import { MailService } from '../../core/mail/mail.service';
 import { CreateLogbookInvoiceDto } from '../core/dto/create-logbook-invoice.dto';
 import { DriverParameter } from '../core/dto/parameters/driver.parameter';
@@ -10,12 +8,12 @@ import { InvoiceParameter } from '../core/dto/parameters/invoice.parameter';
 import * as SendGrid from '@sendgrid/mail';
 import { convertToMonth } from '../../core/utils/date.util';
 import { StatsService } from '../stats/stats.service';
+import { LogbooksInvoiceRepository } from '../repositories/logbooksinvoice.repository';
 
 @Injectable()
 export class InvoiceService {
   constructor(
-    @InjectModel(LogbookInvoice.name, 'logbook')
-    private readonly logbookInvoiceModel: Model<LogbookInvoiceDocument>,
+    private readonly logbooksInvoiceRepository: LogbooksInvoiceRepository,
     private readonly _mailService: MailService,
     private readonly _statsService: StatsService,
   ) {}
@@ -25,7 +23,7 @@ export class InvoiceService {
     drivers: DriverParameter[],
     emailDrivers: DriverParameter[],
   ): Promise<boolean> {
-    const lastLogbookInvoiceDate = await this.logbookInvoiceModel.findOne().sort({ date: -1 }).exec();
+    const lastLogbookInvoiceDate = await this.logbooksInvoiceRepository.findOne({}, { sort: { date: -1 } });
     const invoiceStats = await this._statsService.calculateDriverStats(
       drivers,
       lastLogbookInvoiceDate.date,
@@ -40,36 +38,36 @@ export class InvoiceService {
       Driver,
       { email: string; sum: number }
     >();
-    // if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
-    //   driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
-    // }
-    // if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
-    //   driverEmailStatsMap.set(Driver.CLAUDIA, {
-    //     email: 'claudia_dresden@icloud.com',
-    //     sum: invoiceStats.find((item) => item.driver === Driver.CLAUDIA).distanceCost,
-    //   });
-    // }
-    // if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
-    //   driverEmailStatsMap.set(Driver.OLIVER, {
-    //     email: 'oliver_dresden@freenet.de',
-    //     sum: invoiceStats.find((item) => item.driver === Driver.OLIVER).distanceCost,
-    //   });
-    // }
+    if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
+    }
+    if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.CLAUDIA, {
+        email: 'claudia_dresden@icloud.com',
+        sum: invoiceStats.find((item) => item.driver === Driver.CLAUDIA).distanceCost,
+      });
+    }
+    if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
+      driverEmailStatsMap.set(Driver.OLIVER, {
+        email: 'oliver_dresden@freenet.de',
+        sum: invoiceStats.find((item) => item.driver === Driver.OLIVER).distanceCost,
+      });
+    }
     if (emailDrivers.includes(Driver.THOMAS as DriverParameter)) {
       driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: sumThomas });
     }
 
-    // await this.sendInvoiceSummary(
-    //   {
-    //     email: 'claudia_dresden@icloud.com',
-    //     driver: Driver.CLAUDIA,
-    //     startDate: lastLogbookInvoiceDate.date,
-    //     endDate: new Date(createLogbookInvoiceDto.endDate),
-    //   },
-    //   sumThomas,
-    //   sumAndrea,
-    //   sumAndrea + sumThomas,
-    // );
+    await this.sendInvoiceSummary(
+      {
+        email: 'claudia_dresden@icloud.com',
+        driver: Driver.CLAUDIA,
+        startDate: lastLogbookInvoiceDate.date,
+        endDate: new Date(createLogbookInvoiceDto.endDate),
+      },
+      sumThomas,
+      sumAndrea,
+      sumAndrea + sumThomas,
+    );
 
     await this.sendInvoiceSummary(
       {
@@ -93,7 +91,7 @@ export class InvoiceService {
       this.sendInvoiceMail(invoiceParameter, emailStats.sum);
     });
 
-    await this.logbookInvoiceModel.create({ date: createLogbookInvoiceDto.endDate });
+    await this.logbooksInvoiceRepository.create({ date: createLogbookInvoiceDto.endDate });
 
     return true;
   }
@@ -134,7 +132,7 @@ export class InvoiceService {
   }
 
   async getInvoiceHistory(): Promise<LogbookInvoice[]> {
-    return await this.logbookInvoiceModel.find().exec();
+    return await this.logbooksInvoiceRepository.find({});
   }
 
   private async sendInvoiceMail(invoiceParameter: InvoiceParameter, sum: number = 0) {

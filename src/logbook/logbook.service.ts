@@ -4,7 +4,7 @@ import { Logbook } from './core/schemas/logbook.schema';
 import { AdditionalInformationTyp } from './core/enums/additional-information-typ.enum';
 import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
 import { DriverParameter } from './core/dto/parameters/driver.parameter';
-import { LogbooksRepository } from './logbooks.repository';
+import { LogbooksRepository } from './repositories/logbooks.repository';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
 import { Types } from 'mongoose';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
@@ -115,7 +115,12 @@ export class LogbookService {
     return await this.logbooksRepository.create(submitLogbook);
   }
 
-  async findAll(filter?: object, sort?: StringSortParameter, page?: number, limit?: number): Promise<any> {
+  async findAll(
+    filter?: object,
+    sort?: StringSortParameter,
+    page?: number,
+    limit?: number,
+  ): Promise<PaginateResult<Logbook>> {
     // const total = await this.logbooksRepository.count().exec();
     // // Outbound protection
     // const protectedLimit = limit <= 0 || limit >= total ? 1 : limit;

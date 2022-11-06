@@ -1,4 +1,4 @@
-import { LogbooksRepository } from '../logbooks.repository';
+import { LogbooksRepository } from '../repositories/logbooks.repository';
 import { Test } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Logbook } from '../core/schemas/logbook.schema';

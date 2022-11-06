@@ -12,23 +12,22 @@ export class StatsService {
   constructor(private readonly _logbookService: LogbookService) {}
 
   async calculateVehicleStats(vehicles: VehicleParameter[], startDate?: Date, endDate?: Date) {
-    const logbooks: Logbook[] = [];
-    // const logbooks: Logbook[] = await this._logbookService.findAll(
-    //   {
-    //     vehicleTyp: vehicles,
-    //     date: {
-    //       ...(startDate && {
-    //         $gte: startDate,
-    //       }),
-    //       ...(endDate && {
-    //         $lte: endDate,
-    //       }),
-    //     },
-    //   },
-    //   'date',
-    // ); //NOTE: Sort need to be ASC in order to calculate the average consumption correctly
+    const paginateResult: PaginateResult<Logbook> = await this._logbookService.findAll(
+      {
+        vehicleTyp: vehicles,
+        date: {
+          ...(startDate && {
+            $gte: startDate,
+          }),
+          ...(endDate && {
+            $lte: endDate,
+          }),
+        },
+      },
+      '+date',
+    ); //NOTE: Sort need to be ASC in order to calculate the average consumption correctly
 
-    return logbooks
+    return paginateResult.data
       .map((item) => {
         return {
           ...vehicles,
@@ -118,22 +117,21 @@ export class StatsService {
       vehicles: [{ vehicleTyp: VehicleTyp; distance: number; distanceCost: number; drivesCostForFree?: number }];
     }[]
   > {
-    const logbooks: Logbook[] = [];
-    // const logbooks: Logbook[] = await this._logbookService.findAll({
-    //   vehicleTyp: vehicles || Object.values(VehicleTyp),
-    //   driver: drivers,
-    //   date: {
-    //     ...(startDate && {
-    //       $gte: startDate,
-    //     }),
-    //     ...(endDate && {
-    //       $lte: endDate,
-    //     }),
-    //   },
-    // });
+    const paginateResult: PaginateResult<Logbook> = await this._logbookService.findAll({
+      vehicleTyp: vehicles || Object.values(VehicleTyp),
+      driver: drivers,
+      date: {
+        ...(startDate && {
+          $gte: startDate,
+        }),
+        ...(endDate && {
+          $lte: endDate,
+        }),
+      },
+    });
 
     return (
-      logbooks
+      paginateResult.data
         // Map the values and transform cost into number
         .map((item) => {
           return {

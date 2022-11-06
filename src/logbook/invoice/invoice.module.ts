@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { LogbookInvoice, LogbookInvoiceSchema } from '../core/schemas/logbook-invoice.schema';
 import { MailModule } from '../../core/mail/mail.module';
 import { StatsModule } from '../stats/stats.module';
+import { LogbooksInvoiceRepository } from '../repositories/logbooksinvoice.repository';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { StatsModule } from '../stats/stats.module';
     StatsModule,
   ],
   controllers: [InvoiceController],
-  providers: [InvoiceService],
+  providers: [InvoiceService, LogbooksInvoiceRepository],
   exports: [InvoiceService],
 })
 export class InvoiceModule {}

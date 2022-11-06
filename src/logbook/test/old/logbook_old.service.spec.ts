@@ -10,7 +10,7 @@ import { MailService } from '../../../core/mail/mail.service';
 import { forwardRef } from '@nestjs/common';
 import { MailModule } from '../../../core/mail/mail.module';
 import { LogbookInvoice } from '../../core/schemas/logbook-invoice.schema';
-import { LogbooksRepository } from '../../logbooks.repository';
+import { LogbooksRepository } from '../../repositories/logbooks.repository';
 
 const date: Date = new Date();
 
