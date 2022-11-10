@@ -38,7 +38,7 @@ describe('Complex LogbookController Integration Test', () => {
   });
 
   afterAll(async () => {
-    // await dbConnection.collection('logbooks').deleteMany({});
+    await dbConnection.collection('logbooks').deleteMany({});
     await app.close();
   });
 
@@ -868,7 +868,7 @@ describe('Complex LogbookController Integration Test', () => {
   });
 
   describe('find latest_4', () => {
-    it('should return an array of logbooks', async () => {
+    it('should the latest logbooks after a modification', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       let updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: new Types.ObjectId(logbookId) });
@@ -888,19 +888,31 @@ describe('Complex LogbookController Integration Test', () => {
     });
   });
 
-  // describe('deleteLogbook', () => {
-  //   it('should delete a logbook', async () => {
-  //     const logbook = await dbConnection.collection('logbooks').insertOne(basicLogbookStub());
-  //     const response = await request(httpServer)
-  //       .delete('/logbook/' + logbook.insertedId)
-  //       .set('Authorization', apiKey);
-  //
-  //     expect(response.status).toBe(HttpStatus.NO_CONTENT);
-  //
-  //     const deletedLogbook = await dbConnection
-  //       .collection('logbooks')
-  //       .findOne({ _id: new Types.ObjectId(response.body._id) });
-  //     expect(deletedLogbook).toBeNull();
-  //   });
-  // });
+  describe('deleteLogbook', () => {
+    it('should delete a logbook', async () => {
+      const response = await request(httpServer)
+        .delete('/logbook/' + logbookId)
+        .set('Authorization', apiKey);
+
+      expect(response.status).toBe(HttpStatus.NO_CONTENT);
+
+      const deletedLogbook = await dbConnection
+        .collection('logbooks')
+        .findOne({ _id: new Types.ObjectId(response.body._id) });
+      expect(deletedLogbook).toBeNull();
+    });
+  });
+
+  describe('find latest_5', () => {
+    it('should the latest logbooks after the deletion of a logbook', async () => {
+      const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
+
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toMatchObject([
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_9_2_F(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+      ]);
+    });
+  });
 });
