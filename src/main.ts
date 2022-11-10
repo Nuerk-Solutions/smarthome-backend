@@ -38,7 +38,6 @@ async function bootstrap() {
       enableDebugMessages: true,
       skipMissingProperties: false,
       transform: true,
-      forbidNonWhitelisted: true,
     }),
   );
   // Todo: Check error

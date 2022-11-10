@@ -107,7 +107,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
       .exec();
 
     return {
-      data,
+      data: data,
       total,
       length: data.length,
       limit,

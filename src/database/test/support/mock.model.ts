@@ -38,10 +38,6 @@ export abstract class MockModel<T> {
     };
   }
 
-  async save(): Promise<T> {
-    return this.entityStub;
-  }
-
   async findOneAndUpdate(): Promise<T> {
     return this.entityStub;
   }

@@ -63,9 +63,10 @@ describe('LogbookController', () => {
   // Todo: Impl more cases
   describe('findAll', () => {
     describe('when findAll is called', () => {
-      let logbooks: Logbook[];
+      let paginationResult: PaginateResult<Logbook>;
       beforeEach(async () => {
-        logbooks = await logbookController.findAll();
+        paginationResult = await logbookController.findAll();
+        // IMPORTANT: The paginationResult returns for some reason a LogbookArray instead of a PaginationResult<Logbook>
       });
 
       test('then it should call logbookService', () => {
@@ -73,7 +74,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return a array of logbooks', () => {
-        expect(logbooks).toEqual([basicLogbookStub()]);
+        expect(paginationResult).toEqual([basicLogbookStub()]);
       });
     });
   });
@@ -117,7 +118,7 @@ describe('LogbookController', () => {
       beforeEach(async () => {
         updateLogbookDto = {
           driver: Driver.ANDREA,
-          currentMileAge: '2000',
+          // currentMileAge: '2000', -> checked now in the service
           newMileAge: '2002',
           forFree: true,
           driveReason: 'Updated drive reason',

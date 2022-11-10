@@ -36,8 +36,10 @@ export abstract class EntityRepository<T extends Document> {
     return this.entityModel.findById(new Types.ObjectId(id)).exec();
   }
 
-  async create(createEntityData: unknown): Promise<T> {
-    return await this.entityModel.create(createEntityData);
+  async create(createEntityData: any): Promise<T | null> {
+    // const entity = new this.entityModel(createEntityData);
+    // return entity.save();
+    return await this.entityModel.create(createEntityData); // use create to generate _id
   }
 
   async findOneAndUpdate(entityFilterQuery: FilterQuery<T>, updateEntityData: UpdateQuery<unknown>): Promise<T | null> {

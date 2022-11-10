@@ -59,7 +59,7 @@ export class LogbookController {
     sort?: StringSortParameter,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-  ) {
+  ): Promise<PaginateResult<Logbook>> {
     return await this._logbookService.findAll(
       {
         ...(drivers && {
