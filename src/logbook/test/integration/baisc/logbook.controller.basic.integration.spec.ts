@@ -27,6 +27,7 @@ describe('Basic LogbookController Integration Test', () => {
   });
 
   afterAll(async () => {
+    await dbConnection.collection('logbooks').deleteMany({});
     await app.close();
   });
 

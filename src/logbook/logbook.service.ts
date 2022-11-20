@@ -22,6 +22,15 @@ export class LogbookService {
     if (isContaining) {
       throw new BadRequestException('Logbook already exists');
     }
+
+    const lastLogbook: Logbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(
+      createLogbookDto.vehicleTyp,
+    );
+
+    if (lastLogbook != null && +createLogbookDto.currentMileAge != +lastLogbook.newMileAge) {
+      throw new BadRequestException('CurrentMileAge is not equal to last logbook newMileAge');
+    }
+
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
     const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
     let distanceSinceLastAdditionalInformation = '';
@@ -161,11 +170,11 @@ export class LogbookService {
     const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
 
     const lastAddedLogbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(targetLogbook.vehicleTyp);
-    if (lastAddedLogbook == null || lastAddedLogbook.length === 0) {
+    if (lastAddedLogbook == null) {
       throw new NotFoundException('No valid last added logbook found');
     }
 
-    if (lastAddedLogbook[0]._id.toString() !== targetLogbook._id.toString()) {
+    if (lastAddedLogbook._id.toString() !== targetLogbook._id.toString()) {
       console.log('Logbook is not the last added logbook');
       console.log(
         "Removing newMilAge and currentMileAge from updateLogbookDto because it's not the last added logbook",

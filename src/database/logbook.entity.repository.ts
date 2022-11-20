@@ -40,7 +40,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
       .exec();
   }
 
-  async findLastAddedLogbookForVehicle(vehicleTyp: VehicleTyp): Promise<T[]> {
+  async findLastAddedLogbookForVehicle(vehicleTyp: VehicleTyp): Promise<T> {
     return this.entityModel
       .aggregate([
         {
@@ -58,7 +58,13 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
         },
       ])
       .collation({ locale: 'de', numericOrdering: true })
-      .exec();
+      .exec()
+      .then((logbooks) => {
+        if (logbooks != null && logbooks.length > 0) {
+          return logbooks[0];
+        }
+        return null;
+      });
   }
 
   async findLastAdditionalInformation(
