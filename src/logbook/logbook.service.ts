@@ -12,80 +12,9 @@ import { DISTANCE_COST } from '../core/utils/constatns';
 
 @Injectable()
 export class LogbookService {
-  constructor(
-    // @InjectModel(Logbook.name, 'logbook')
-    // private readonly logbookModel: Model<LogbookDocument>,
-    // @InjectModel(Logbook.name, 'logbook')
-    private readonly logbooksRepository: LogbooksRepository,
-  ) {}
-
-  // eslint-disable-next-line max-len
-  // Create a function that checks if the data of the new logbook is older than the last logbook of the same vehicleTyp based on the date
-  async checkIfNewLogbookIsOlder(createLogbookDto: CreateLogbookDto): Promise<boolean> {
-    const lastLogbook: Logbook[] = await this.logbooksRepository.findLastAddedLogbookForVehicle(
-      createLogbookDto.vehicleTyp,
-    );
-    if (lastLogbook.length > 0) {
-      return createLogbookDto.date < lastLogbook[0].date;
-    }
-  }
-
-  async updatePastLogbooks(logbooksToUpdate: Logbook[], createLogbookDto: CreateLogbookDto): Promise<void> {
-    let lastUpdatedLogbook = createLogbookDto;
-    for (const logbook of logbooksToUpdate) {
-      logbook.currentMileAge = lastUpdatedLogbook.newMileAge;
-      logbook.newMileAge = Number(+lastUpdatedLogbook.newMileAge + +logbook.distance).toFixed(0);
-
-      // if (logbook.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
-      //   const distance = +createLogbookDto.newMileAge - +createLogbookDto.currentMileAge;
-      //   // let distanceSinceLastAdditionalInformation = '';
-      //   // const LastAdditionalInformation = await this.logbookModel
-      //   //   .findOne({
-      //   //     vehicleTyp: lastUpdatedLogbook.vehicleTyp,
-      //   //     additionalInformationTyp: lastUpdatedLogbook.additionalInformationTyp,
-      //   //     date: { $lt: logbook.date },
-      //   //   })
-      //   //   .sort({ date: -1 })
-      //   //   .limit(1)
-      //   //   .exec();
-      //   // if (LastAdditionalInformation) {
-      //   const newDistance = distance + +logbook.distanceSinceLastAdditionalInformation;
-      //   logbook.distanceSinceLastAdditionalInformation = newDistance.toFixed(2);
-      //   // }
-      // }
-      lastUpdatedLogbook = logbook;
-      await this.logbooksRepository.findOneAndUpdate(
-        {
-          _id: logbook._id,
-        },
-        {
-          ...logbook,
-        },
-      );
-    }
-  }
+  constructor(private readonly logbooksRepository: LogbooksRepository) {}
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
-    const isContaining = await this.logbooksRepository.findOne({
-      vehicleTyp: createLogbookDto.vehicleTyp,
-      currentMileAge: createLogbookDto.currentMileAge,
-    });
-
-    // TODO: CHECK THIS
-    if (isContaining) {
-      if (!(await this.checkIfNewLogbookIsOlder(createLogbookDto))) {
-        throw new BadRequestException('Logbook already exists');
-      }
-      const logbooksToUpdate: Logbook[] = await this.logbooksRepository.find({
-        vehicleTyp: createLogbookDto.vehicleTyp,
-        date: { $gt: createLogbookDto.date },
-      });
-
-      if (logbooksToUpdate != null && logbooksToUpdate.length > 0) {
-        await this.updatePastLogbooks(logbooksToUpdate, createLogbookDto);
-      }
-    }
-
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
     const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
     let distanceSinceLastAdditionalInformation = '';
