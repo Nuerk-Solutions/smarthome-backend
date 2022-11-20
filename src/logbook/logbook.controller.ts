@@ -8,8 +8,8 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  Patch,
   Post,
+  Put,
   Query,
   StreamableFile,
 } from '@nestjs/common';
@@ -135,9 +135,8 @@ export class LogbookController {
     return new StreamableFile(xlsx);
   }
 
-  // TODO: Convert to PUT request, its technically more correct
   @HttpCode(HttpStatus.OK)
-  @Patch(':_id')
+  @Put(':_id')
   async update(@Param('_id') _id: string, @Body() updateLogbookDto: UpdateLogbookDto) {
     return await this._logbookService.update(_id, updateLogbookDto);
   }

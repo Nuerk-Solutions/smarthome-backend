@@ -802,7 +802,7 @@ describe('Complex LogbookController Integration Test', () => {
   describe('update logbook', () => {
     it('update last logbook with the same logbook', async () => {
       const response = await request(httpServer)
-        .patch('/logbook/' + logbookId)
+        .put('/logbook/' + logbookId)
         .set('Authorization', apiKey)
         .send(convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T()));
 
@@ -830,7 +830,7 @@ describe('Complex LogbookController Integration Test', () => {
         additionalInformationCost: '0018.75',
       };
       const response = await request(httpServer)
-        .patch('/logbook/' + logbook.insertedId)
+        .put('/logbook/' + logbook.insertedId)
         .set('Authorization', apiKey)
         .send(updateLogbookDto);
 
@@ -853,7 +853,7 @@ describe('Complex LogbookController Integration Test', () => {
         additionalInformationCost: '0018.75',
       };
       const response = await request(httpServer)
-        .patch('/logbook/' + logbookId)
+        .put('/logbook/' + logbookId)
         .set('Authorization', apiKey)
         .send(updateLogbookDto);
 

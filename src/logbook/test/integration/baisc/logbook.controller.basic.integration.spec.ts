@@ -82,7 +82,7 @@ describe('Basic LogbookController Integration Test', () => {
         additionalInformationCost: '0018.75',
       };
       const response = await request(httpServer)
-        .patch('/logbook/' + logbook.insertedId)
+        .put('/logbook/' + logbook.insertedId)
         .set('Authorization', apiKey)
         .send(updateLogbookDto);
 
