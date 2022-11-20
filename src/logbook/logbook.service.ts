@@ -15,6 +15,13 @@ export class LogbookService {
   constructor(private readonly logbooksRepository: LogbooksRepository) {}
 
   async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
+    const isContaining = await this.logbooksRepository.findOne({
+      vehicleTyp: createLogbookDto.vehicleTyp,
+      currentMileAge: createLogbookDto.currentMileAge,
+    });
+    if (isContaining) {
+      throw new BadRequestException('Logbook already exists');
+    }
     const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
     const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
     let distanceSinceLastAdditionalInformation = '';
