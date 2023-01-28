@@ -85,8 +85,16 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/latest')
-  async findLatest(): Promise<Logbook[]> {
-    return this._logbookService.findLatest();
+  async findLatest(): Promise<PaginateResult<Logbook>> {
+    const data = await this._logbookService.findLatest();
+    return {
+      total: data.length,
+      pageCount: 1,
+      data,
+      length: data.length,
+      limit: data.length,
+      page: 1,
+    };
   }
 
   @HttpCode(HttpStatus.OK)
