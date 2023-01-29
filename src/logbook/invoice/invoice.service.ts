@@ -38,22 +38,22 @@ export class InvoiceService {
       Driver,
       { email: string; sum: number }
     >();
-    if (emailDrivers.includes(Driver.ANDREA as DriverParameter)) {
+    if (emailDrivers.includes(Driver.ANDREA as unknown as DriverParameter)) {
       driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
     }
-    if (emailDrivers.includes(Driver.CLAUDIA as DriverParameter)) {
+    if (emailDrivers.includes(Driver.CLAUDIA as unknown as DriverParameter)) {
       driverEmailStatsMap.set(Driver.CLAUDIA, {
         email: 'claudia_dresden@icloud.com',
         sum: invoiceStats.find((item) => item.driver === Driver.CLAUDIA).distanceCost,
       });
     }
-    if (emailDrivers.includes(Driver.OLIVER as DriverParameter)) {
+    if (emailDrivers.includes(Driver.OLIVER as unknown as DriverParameter)) {
       driverEmailStatsMap.set(Driver.OLIVER, {
         email: 'oliver_dresden@freenet.de',
         sum: invoiceStats.find((item) => item.driver === Driver.OLIVER).distanceCost,
       });
     }
-    if (emailDrivers.includes(Driver.THOMAS as DriverParameter)) {
+    if (emailDrivers.includes(Driver.THOMAS as unknown as DriverParameter)) {
       driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: sumThomas });
     }
 

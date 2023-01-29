@@ -871,9 +871,12 @@ describe('Complex LogbookController Integration Test', () => {
     it('should the latest logbooks after a modification', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
-      let updatedLogbook = await dbConnection.collection('logbooks').findOne({ _id: new Types.ObjectId(logbookId) });
+      let updatedLogbook: any = await dbConnection
+        .collection('logbooks')
+        .findOne({ _id: new Types.ObjectId(logbookId) });
       updatedLogbook = {
         ...updatedLogbook,
+        _id: updatedLogbook._id.toString(),
         date: updatedLogbook.date.toISOString(),
         createdAt: updatedLogbook.createdAt.toISOString(),
         updatedAt: updatedLogbook.updatedAt.toISOString(),
