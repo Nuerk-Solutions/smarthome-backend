@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         uses: Borales/actions-yarn@v3.0.0
         with:
-          cmd: install
+          cmd: install --ignore-engines
 
       - name: Build project
         uses: Borales/actions-yarn@v3.0.0
