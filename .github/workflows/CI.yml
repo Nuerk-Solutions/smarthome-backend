@@ -24,7 +24,7 @@ jobs:
       - name: Use Node.js 18
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: '16'
 
       - name: Install dependencies
         uses: Borales/actions-yarn@v3.0.0
