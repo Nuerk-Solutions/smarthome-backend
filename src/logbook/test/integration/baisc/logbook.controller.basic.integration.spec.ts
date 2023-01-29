@@ -44,7 +44,7 @@ describe('Basic LogbookController Integration Test', () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject([basicLogbookStubTypeless()]);
+      expect(response.body.data).toMatchObject([basicLogbookStubTypeless()]);
     });
   });
 

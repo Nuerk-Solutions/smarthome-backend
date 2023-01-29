@@ -51,7 +51,7 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject([]);
+      expect(response.body.data).toMatchObject([]);
     });
   });
 
@@ -286,7 +286,7 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject([
+      expect(response.body.data).toMatchObject([
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
       ]);
     });
@@ -531,7 +531,7 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject([
+      expect(response.body.data).toMatchObject([
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
       ]);
@@ -776,7 +776,7 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject([
+      expect(response.body.data).toMatchObject([
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
@@ -880,7 +880,7 @@ describe('Complex LogbookController Integration Test', () => {
       };
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject([
+      expect(response.body.data).toMatchObject([
         updatedLogbook,
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
@@ -908,7 +908,7 @@ describe('Complex LogbookController Integration Test', () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject([
+      expect(response.body.data).toMatchObject([
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_9_2_F(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),

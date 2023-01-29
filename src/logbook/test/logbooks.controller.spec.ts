@@ -45,7 +45,7 @@ describe('LogbookController', () => {
 
   describe('findLatest', () => {
     describe('when findLatest is called', () => {
-      let logbooks: Logbook[];
+      let logbooks: PaginateResult<Logbook>;
       beforeEach(async () => {
         logbooks = await logbookController.findLatest();
       });
@@ -55,7 +55,7 @@ describe('LogbookController', () => {
       });
 
       test('then it should return all latest logbooks', () => {
-        expect(logbooks).toEqual([basicLogbookStub()]);
+        expect(logbooks.data).toEqual([basicLogbookStub()]);
       });
     });
   });
