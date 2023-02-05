@@ -38,14 +38,14 @@ import { DatabaseModule } from './database/database.module';
     //   }),
     //   inject: [ConfigService],
     // }),
-    // MongooseModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   connectionName: 'youtube',
-    //   useFactory: async (configService: ConfigService) => ({
-    //     uri: configService.get<string>('MONGODB_URI_YOUTUBE'),
-    //   }),
-    //   inject: [ConfigService],
-    // }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      connectionName: 'youtube',
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI_YOUTUBE'),
+      }),
+      inject: [ConfigService],
+    }),
     LogbookModule,
     RouterModule.register([
       {
@@ -69,7 +69,7 @@ import { DatabaseModule } from './database/database.module';
     AuthenticationModule,
     MailModule,
     // FileModule,
-    // YoutubeModule,
+    YoutubeModule,
     DatabaseModule,
   ],
   controllers: [AppController],
