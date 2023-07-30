@@ -13,6 +13,7 @@ jobs:
         uses: SpicyPizza/create-envfile@v1.3.1
         with:
           envkey_MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
+          envkey_MONGODB_URI: ${{ secrets.MONGODB_TEST_URI }}
           envkey_JWT_ACCESS_TOKEN_SECRET: 'secret'
           envkey_JWT_VERIFICATION_TOKEN_SECRET: 'secret'
           envkey_JWT_REFRESH_TOKEN_SECRET: 'secret'
