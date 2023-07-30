@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { Types } from 'mongoose';
-import { ObjectID } from 'bson';
+import { ObjectId } from 'bson';
 import { Authentication, AuthenticationSchema } from '../../../authentication/core/schemas/authentication.schema';
 
 export type UserDocument = User & Document;
@@ -10,7 +10,7 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: { createdAt: true, updatedAt: true } })
 export class User {
-  @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectID() })
+  @Prop({ type: Types.ObjectId, required: true, default: () => new ObjectId() })
   _id: Types.ObjectId;
 
   @Prop({
