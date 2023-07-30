@@ -12,65 +12,40 @@ export class StatsService {
   constructor(private readonly _logbookService: LogbookService) {}
 
   async calculateVehicleStats(vehicles: VehicleParameter[], startDate?: Date, endDate?: Date) {
-    const paginateResult: PaginateResult<Logbook> = await this._logbookService.findAll(
+    const paginateResult = await this._logbookService.findAll(
       {
         vehicleTyp: vehicles,
         date: {
-          ...(startDate && {
-            $gte: startDate,
-          }),
-          ...(endDate && {
-            $lte: endDate,
-          }),
+          ...(startDate && { $gte: startDate }),
+          ...(endDate && { $lte: endDate }),
         },
       },
       '+date',
-    ); //NOTE: Sort need to be ASC in order to calculate the average consumption correctly
+    );
 
-    return paginateResult.data
-      .map((item) => {
-        return {
-          ...vehicles,
-          vehicle: item.vehicleTyp,
-          distance: +item.distance,
-          desc: item.driveReason,
-          distanceCost: +item.distanceCost,
-          additionalInformation: item.additionalInformation,
-          additionalInformationTyp: item.additionalInformationTyp,
-          additionalInformationCost: item.additionalInformationCost,
-          distanceSinceLastAdditionalInformation: item.distanceSinceLastAdditionalInformation,
-        };
-      })
-      .reduce((resultArray, currentValue) => {
-        const existingVehicle = resultArray.find((item) => item.vehicle === currentValue.vehicle);
+    const resultArray = paginateResult.data.reduce(
+      (result, item) => {
+        const existingVehicle = result.find((v) => v.vehicle === item.vehicleTyp);
 
         if (existingVehicle) {
-          existingVehicle.distance += currentValue.distance;
-          existingVehicle.distanceCost += currentValue.distanceCost;
-          if (
-            currentValue.additionalInformationTyp == AdditionalInformationTyp.GETANKT &&
-            +currentValue.distanceSinceLastAdditionalInformation !== 0
-          ) {
-            existingVehicle.averageConsumptionSinceLastRefuel =
-              (+currentValue.additionalInformation / +currentValue.distanceSinceLastAdditionalInformation) * 100;
-            existingVehicle.averageCostPerKmSinceLastRefuel =
-              +currentValue.additionalInformationCost / +currentValue.distanceSinceLastAdditionalInformation;
+          existingVehicle.distance += +item.distance;
+          existingVehicle.distanceCost += +item.distanceCost;
+
+          if (item.additionalInformationTyp === AdditionalInformationTyp.GETANKT && +item.distanceSinceLastAdditionalInformation !== 0) {
+            existingVehicle.averageConsumptionSinceLastRefuel = (+item.additionalInformation / +item.distanceSinceLastAdditionalInformation) * 100;
+            existingVehicle.averageCostPerKmSinceLastRefuel = +item.additionalInformationCost / +item.distanceSinceLastAdditionalInformation;
             existingVehicle.totalRefuels++;
             existingVehicle.averageCost += existingVehicle.averageCostPerKmSinceLastRefuel;
             existingVehicle.averageConsumption += existingVehicle.averageConsumptionSinceLastRefuel;
-          } else if (
-            currentValue.additionalInformationTyp === AdditionalInformationTyp.GEWARTET &&
-            +currentValue.distanceSinceLastAdditionalInformation !== 0 &&
-            +currentValue.additionalInformationCost !== 0
-          ) {
-            existingVehicle.totalMaintenanceCost += +currentValue.additionalInformationCost;
-            existingVehicle.totalMaintenancesDistance += +currentValue.distanceSinceLastAdditionalInformation;
+          } else if (item.additionalInformationTyp === AdditionalInformationTyp.GEWARTET && +item.distanceSinceLastAdditionalInformation !== 0 && +item.additionalInformationCost !== 0) {
+            existingVehicle.totalMaintenanceCost += +item.additionalInformationCost;
+            existingVehicle.totalMaintenancesDistance += +item.distanceSinceLastAdditionalInformation;
           }
         } else {
-          resultArray.push({
-            vehicle: currentValue.vehicle,
-            distance: currentValue.distance,
-            distanceCost: currentValue.distanceCost,
+          result.push({
+            vehicle: item.vehicleTyp,
+            distance: +item.distance,
+            distanceCost: +item.distanceCost,
             averageConsumptionSinceLastRefuel: -1,
             averageCostPerKmSinceLastRefuel: -1,
             averageConsumption: 0,
@@ -78,20 +53,34 @@ export class StatsService {
             totalRefuels: 0,
             totalMaintenancesDistance: 0,
             totalMaintenanceCost: 0,
+            averageMaintenanceCostPerKm: 0, // Default value for the new property
           });
         }
-        return resultArray;
-      }, [] as { vehicle: VehicleTyp; distance: number; distanceCost: number; averageConsumptionSinceLastRefuel: number; averageCostPerKmSinceLastRefuel: number; averageConsumption: number; averageCost: number; totalRefuels: number; totalMaintenancesDistance: number; totalMaintenanceCost: number }[])
-      .reduce((resultArray, currentValue) => {
-        resultArray.push({
-          ...currentValue,
-          averageConsumption: currentValue.averageConsumption / currentValue.totalRefuels,
-          averageCost: currentValue.averageCost / currentValue.totalRefuels,
-          averageMaintenanceCostPerKm: currentValue.totalMaintenanceCost / currentValue.totalMaintenancesDistance,
-        });
 
-        return resultArray;
-      }, [] as { vehicle: VehicleTyp; distance: number; distanceCost: number; averageConsumptionSinceLastRefuel: number; averageCostPerKmSinceLastRefuel: number; averageConsumption: number; averageCost: number; totalRefuels: number; averageMaintenanceCostPerKm: number }[]);
+        return result;
+      },
+      [] as {
+        vehicle: VehicleTyp;
+        distance: number;
+        distanceCost: number;
+        averageConsumptionSinceLastRefuel: number;
+        averageCostPerKmSinceLastRefuel: number;
+        averageMaintenanceCostPerKm: number;
+        averageConsumption: number;
+        averageCost: number;
+        totalRefuels: number;
+        totalMaintenancesDistance: number;
+        totalMaintenanceCost: number;
+      }[],
+    );
+
+    resultArray.forEach((currentValue) => {
+      currentValue.averageConsumption /= currentValue.totalRefuels;
+      currentValue.averageCost /= currentValue.totalRefuels;
+      currentValue.averageMaintenanceCostPerKm = currentValue.totalMaintenanceCost / currentValue.totalMaintenancesDistance;
+    });
+
+    return resultArray;
   }
 
   /**
@@ -146,10 +135,9 @@ export class StatsService {
         .reduce((previousValue, currentValue) => {
           let existingDriver = previousValue.find((item) => item.driver === currentValue.driver); // Check if driver already exists once in new array
 
-          // @ts-ignore
           if (currentValue.forFree && drivers.includes(Driver.CLAUDIA)) {
             // TODO: May add individual paying drivers and display them
-            let payingDriver = previousValue.find((item) => item.driver === Driver.CLAUDIA);
+            let payingDriver = previousValue.find((item) => item.driver === Driver.CLAUDIA); // Find previous entry to check if there are already costs for this driver
 
             if (!payingDriver) {
               previousValue.push({
@@ -173,7 +161,9 @@ export class StatsService {
               payingDriver.drivesCostForFree = (payingDriver.drivesCostForFree || 0) + currentValue.distanceCost;
               if (detailed) {
                 const vehicle = payingDriver.vehicles.find((item) => item.vehicleTyp === currentValue.vehicle);
-                vehicle.drivesCostForFree = (vehicle.drivesCostForFree || 0) + currentValue.distanceCost;
+                if (vehicle != undefined) {
+                  vehicle.drivesCostForFree = (vehicle.drivesCostForFree || 0) + currentValue.distanceCost;
+                }
               }
             }
           }

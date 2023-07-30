@@ -66,16 +66,6 @@ export class LogbookService {
     page?: number,
     limit?: number,
   ): Promise<PaginateResult<Logbook>> {
-    // const total = await this.logbooksRepository.count().exec();
-    // // Outbound protection
-    // const protectedLimit = limit <= 0 || limit >= total ? 1 : limit;
-    // const protectedPage = page < 0 ? 1 : page;
-    //
-    // // protectedSkip beware the query of any kind of outbound inputs
-    // const skip = protectedPage <= 0 ? 0 : protectedPage * protectedLimit;
-    // const protectedSkip = skip >= total ? total - (total % limit) : skip;
-    //
-    // return await this.logbooksRepository.find(filter).sort(sort).skip(protectedSkip).limit(limit).exec();
     return await this.logbooksRepository.getPagination(filter, page, limit, sort);
   }
 
@@ -116,13 +106,13 @@ export class LogbookService {
     const data = logbooks.map((logbook) => {
       // eslint-disable-next-line max-len
       // Calculate average consumption per 100km using additionalInformation as fuel and distanceSinceLastAdditionalInformation as distance
-      let fuelConsumption;
+      let fuelConsumption: string;
       if (
         logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT &&
         +logbook.distanceSinceLastAdditionalInformation !== 0
       ) {
         fuelConsumption = Number(
-          (+logbook.additionalInformation / +logbook.distanceSinceLastAdditionalInformation) * 100,
+          (Number(logbook.additionalInformation) / Number(logbook.distanceSinceLastAdditionalInformation)) * 100,
         ).toFixed(2);
       }
       return {

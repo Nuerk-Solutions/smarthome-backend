@@ -1,11 +1,11 @@
-import { IsDateString, IsOptional } from 'class-validator';
+import { IsDateString, IsOptional, ValidateIf } from 'class-validator';
 
 export class DateParameter {
-  @IsDateString()
-  @IsOptional()
-  startDate?: Date;
+  @ValidateIf((o) => o.endDate == null, {message: 'startDate or endDate must be a valid ISO 8601 date string'})
+  @IsDateString({strict: false}, {message: 'startDate or endDate must be a valid ISO 8601 date string'})
+  startDate: Date;
 
-  @IsDateString()
   @IsOptional()
+  @IsDateString({ strict: false }, { message: 'startDate or endDate must be a valid ISO 8601 date string' })
   endDate?: Date;
 }
