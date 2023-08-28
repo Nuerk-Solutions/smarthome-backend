@@ -50,7 +50,7 @@
     "helmet": "^7.0.0",
     "mongo-gridfs": "^1.1.0",
     "mongodb-memory-server": "^8.13.0",
-    "mongoose": "^7.4.1",
+    "mongoose": "^7.4.5",
     "multer-gridfs-storage": "^5.0.2",
     "nestjs-form-data": "^1.9.0",
     "npm-check-updates": "^16.10.17",
