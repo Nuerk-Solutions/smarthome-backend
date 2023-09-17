@@ -1,4 +1,4 @@
-FROM node:18 as build
+FROM node:20 as build
 
 WORKDIR /app
 COPY package.json .
@@ -7,7 +7,7 @@ RUN yarn install
 COPY . .
 RUN yarn run build
 
-FROM node:18
+FROM node:20
 WORKDIR /app
 COPY package.json .
 COPY logbookbackend-firebase-adminsdk-*.json .
