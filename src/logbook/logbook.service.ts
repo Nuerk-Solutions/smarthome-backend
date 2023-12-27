@@ -1,78 +1,63 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import * as XLSX from 'xlsx';
-import {Logbook} from './core/schemas/logbook.schema';
-import {AdditionalInformationTyp} from './core/enums/additional-information-typ.enum';
 import {VehicleParameter} from './core/dto/parameters/vehicle.parameter';
 import {DriverParameter} from './core/dto/parameters/driver.parameter';
-import {LogbooksRepository} from './repositories/logbooks.repository';
 import {UpdateLogbookDto} from './core/dto/update-logbook.dto';
 import {Types} from 'mongoose';
 import {CreateLogbookDto} from './core/dto/create-logbook.dto';
 import {DISTANCE_COST} from '../core/utils/constatns';
-import e from "express";
 import {DateParameter} from "./core/dto/parameters/date.parameter";
-import {Driver} from "./core/enums/driver.enum";
-import {NewLogbookRepository} from "./repositories/newLogbook.repository";
-import {NewLogbook} from "./core/schemas/newLogbook.schema";
-import {Decimal128, Double} from "bson";
+import {LogbookRepository} from "./repositories/logbook.repository";
+import {Logbook} from "./core/schemas/logbook.schema";
 
 @Injectable()
 export class LogbookService {
-    constructor(private readonly logbooksRepository: LogbooksRepository, private readonly newLogbooksRepository: NewLogbookRepository) {
+    constructor(private readonly logbooksRepository: LogbookRepository) {
     }
 
     async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
+        let submitLogbook: any = {
+            ...createLogbookDto,
+        }
         const isContaining = await this.logbooksRepository.findOne({
-            vehicleTyp: createLogbookDto.vehicleTyp,
-            currentMileAge: createLogbookDto.currentMileAge,
+            vehicle: createLogbookDto.vehicle, "mileAge.current": createLogbookDto.mileAge.current,
         });
         if (isContaining) {
             throw new BadRequestException('Logbook already exists');
         }
 
-        const lastLogbook: Logbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(
-            createLogbookDto.vehicleTyp,
-        );
+        const lastLogbook: Logbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(createLogbookDto.vehicle,);
 
-        if (lastLogbook != null && +createLogbookDto.currentMileAge != +lastLogbook.newMileAge) {
-            throw new BadRequestException('CurrentMileAge is not equal to last logbook newMileAge');
+        if (lastLogbook != null && createLogbookDto.mileAge.current != lastLogbook.mileAge.new) {
+            throw new BadRequestException('mileAge.current is not equal to last logbook mileAge.new');
         }
 
-        const distance = Number(+createLogbookDto.newMileAge - +createLogbookDto.currentMileAge).toFixed(2);
-        const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
-        let distanceSinceLastAdditionalInformation = '';
+        const difference = createLogbookDto.mileAge.new - createLogbookDto.mileAge.current;
 
-        if (createLogbookDto.additionalInformationTyp !== AdditionalInformationTyp.KEINE) {
-            // eslint-disable-next-line max-len
-            // Calculate the distance since the last additional information from the corresponding typ and from the same vehicleTyp
-            const LastAdditionalInformation = await this.logbooksRepository.findLastAdditionalInformation(
-                createLogbookDto.vehicleTyp,
-                createLogbookDto.additionalInformationTyp,
-            );
-
-            if (LastAdditionalInformation.length > 0) {
-                distanceSinceLastAdditionalInformation = Number(
-                    +createLogbookDto.newMileAge - +LastAdditionalInformation[0].newMileAge,
-                ).toFixed(2);
+        if (createLogbookDto.refuel) {
+            const lastRefuel = await this.logbooksRepository.findLastRefuel(createLogbookDto.vehicle);
+            const distanceDifference = createLogbookDto.mileAge.new - lastRefuel[0].mileAge.new;
+            let consumption = 0;
+            if (!createLogbookDto.refuel.isSpecial && distanceDifference != 0) {
+                consumption = createLogbookDto.refuel.liters / distanceDifference * 100;
             }
+            submitLogbook = {
+                ...submitLogbook, refuel: {
+                    distanceDifference, consumption, previousRecordId: lastRefuel[0]._id,
+                }
+            };
         }
 
-        const submitLogbook = {
-            ...createLogbookDto,
-            distance,
-            distanceCost,
-            distanceSinceLastAdditionalInformation,
+        submitLogbook = {
+            ...submitLogbook, mileAge: {
+                difference, cost: difference * DISTANCE_COST,
+            }
         };
 
         return await this.logbooksRepository.create(submitLogbook);
     }
 
-    async findAll(
-        filter?: object,
-        sort?: StringSortParameter,
-        page?: number,
-        limit?: number,
-    ): Promise<PaginateResult<Logbook>> {
+    async findAll(filter?: object, sort?: StringSortParameter, page?: number, limit?: number,): Promise<PaginateResult<Logbook>> {
         return await this.logbooksRepository.getPagination(filter, page, limit, sort);
     }
 
@@ -84,58 +69,32 @@ export class LogbookService {
         return this.logbooksRepository.findLastAddedLogbooks();
     }
 
-    async download(
-        drivers: DriverParameter[],
-        vehicles: VehicleParameter[],
-        date: DateParameter,
-    ): Promise<Buffer> {
-        const logbooks = await this.logbooksRepository.find(
-            {
-                vehicleTyp: vehicles,
-                driver: drivers,
-                date: {
-                    ...(date.startDate && {
-                        $gte: date.startDate,
-                    }),
-                    ...(date.endDate && {
-                        $lte: date.endDate,
-                    }),
-                },
+    async download(drivers: DriverParameter[], vehicles: VehicleParameter[], date: DateParameter,): Promise<Buffer> {
+        const logbooks = await this.logbooksRepository.find({
+            vehicle: vehicles, driver: drivers, date: {
+                ...(date.startDate && {
+                    $gte: date.startDate,
+                }), ...(date.endDate && {
+                    $lte: date.endDate,
+                }),
             },
-            {date: 1},
-        );
+        }, {date: 1},);
 
         if (!logbooks.length) {
             throw new NotFoundException('No logbooks found');
         }
 
         const data = logbooks.map((logbook) => {
-            // eslint-disable-next-line max-len
-            // Calculate average consumption per 100km using additionalInformation as fuel and distanceSinceLastAdditionalInformation as distance
-            let fuelConsumption: string;
-            if (
-                logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT &&
-                +logbook.distanceSinceLastAdditionalInformation !== 0
-            ) {
-                fuelConsumption = Number(
-                    (Number(logbook.additionalInformation) / Number(logbook.distanceSinceLastAdditionalInformation)) * 100,
-                ).toFixed(2);
-            }
             return {
                 Fahrer: logbook.driver,
-                Fahrzeug: logbook.vehicleTyp,
-                'Aktueller Kilometerstand': +logbook.currentMileAge,
-                'Neuer Kilometerstand': +logbook.newMileAge,
-                Uebernommen: logbook.forFree ? 'Ja' : 'Nein',
-                Strecke: +logbook.distance,
-                Kosten: logbook.distanceCost,
+                Fahrzeug: logbook.vehicle,
+                'Aktueller Kilometerstand': logbook.mileAge.current,
+                'Neuer Kilometerstand': logbook.mileAge.new,
+                Uebernommen: logbook.details.covered ? 'Ja' : 'Nein',
+                Strecke: logbook.mileAge.difference,
+                Kosten: logbook.mileAge.cost,
                 Datum: logbook.date,
-                Reiseziel: logbook.driveReason,
-                'Zusatzinformationen - Art': logbook.additionalInformationTyp,
-                'Zusatzinformationen - Inhalt': logbook.additionalInformation,
-                'Zusatzinformationen - Kosten': logbook.additionalInformationCost,
-                'Entfernung seit letzter Information': logbook.distanceSinceLastAdditionalInformation,
-                'Durchschnittlicher Verbrauch': fuelConsumption || '',
+                Reiseziel: logbook.reason,
             };
         });
 
@@ -145,8 +104,7 @@ export class LogbookService {
         XLSX.utils.book_append_sheet(workBook, workSheet, 'Fahrtenbuch');
         // Generate buffer
         return XLSX.write(workBook, {
-            bookType: 'xlsx',
-            type: 'buffer',
+            bookType: 'xlsx', type: 'buffer',
         });
     }
 
@@ -162,109 +120,99 @@ export class LogbookService {
         if (targetLogbook == null) {
             throw new NotFoundException('Logbook not found');
         }
-        const distance = Number(+updateLogbookDto.newMileAge - +targetLogbook.currentMileAge).toFixed(2);
-        const distanceCost = Number(+distance * DISTANCE_COST).toFixed(2);
+        const distance = updateLogbookDto.mileAge.new - targetLogbook.mileAge.current;
 
-        const lastAddedLogbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(targetLogbook.vehicleTyp);
+        const lastAddedLogbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(targetLogbook.vehicle);
         if (lastAddedLogbook == null) {
             throw new NotFoundException('No valid last added logbook found');
         }
 
         if (lastAddedLogbook._id.toString() !== targetLogbook._id.toString()) {
             console.log('Logbook is not the last added logbook');
-            console.log(
-                "Removing newMilAge and currentMileAge from updateLogbookDto because it's not the last added logbook",
-            );
-            delete updateLogbookDto.newMileAge;
-            // @ts-ignore
-            delete updateLogbookDto.currentMileAge;
-            return await this.logbooksRepository.findOneAndUpdate(
-                {
-                    _id: new Types.ObjectId(id),
-                },
-                updateLogbookDto,
-            );
-        }
-
-        return await this.logbooksRepository.findOneAndUpdate(
-            {
+            console.log("Removing newMilAge and mileAge.current from updateLogbookDto because it's not the last added logbook",);
+            delete updateLogbookDto.mileAge.new;
+            return await this.logbooksRepository.findOneAndUpdate({
                 _id: new Types.ObjectId(id),
-            },
-            {
-                distance,
-                distanceCost,
-                ...updateLogbookDto,
-            },
-        );
-    }
-
-    async migrate() {
-        let count = 0;
-        const logbooks = await this.findAll({});
-        for (const logbook of logbooks.data.reverse()) {
-            let refuel = null;
-            if (logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT) {
-                let consumption = parseFloat(logbook.additionalInformation) / parseFloat(logbook.distanceSinceLastAdditionalInformation) * 100;
-                if (parseFloat(logbook.distanceSinceLastAdditionalInformation) === 0)
-                    consumption = 0;
-
-                const previousRecord = await this.newLogbooksRepository.findLastRefuel(
-                    logbook.vehicleTyp,
-                );
-
-                refuel = {
-                    liters: Decimal128.fromString(parseFloat(logbook.additionalInformation).toFixed(2)),
-                    price: Decimal128.fromString(parseFloat(logbook.additionalInformationCost || "0.00").toFixed(2)),
-                    distanceDifference: Decimal128.fromString(parseFloat(logbook.distanceSinceLastAdditionalInformation).toFixed(2)),
-                    consumption: Decimal128.fromString(consumption.toFixed(2)),
-                    isSpecial: false,
-                    ...(previousRecord.length != 0 && {
-                        previousRecordId: previousRecord[0]._id,
-                    })
-                }
-                console.log("Linked refuel with id: " + refuel.previousRecordId)
-            }
-
-            let service = null;
-            if (logbook.additionalInformationTyp === AdditionalInformationTyp.GEWARTET) {
-                service = {
-                    message: logbook.additionalInformation,
-                    price: Decimal128.fromString(parseFloat(logbook.additionalInformationCost || "0.00").toFixed(2)),
-                }
-            }
-
-            const newLogbook = {
-                _id: logbook._id,
-                // @ts-ignore
-                createdAt: logbook.createdAt,
-                driver: logbook.driver,
-                vehicle: logbook.vehicleTyp,
-                date: logbook.date,
-                reason: logbook.driveReason,
-                mileAge: {
-                    current: parseInt(logbook.currentMileAge),
-                    new: parseInt(logbook.newMileAge),
-                    difference: parseInt(logbook.distance),
-                    cost: Decimal128.fromString(parseFloat(logbook.distanceCost).toFixed(2)),
-                },
-                details: {
-                    covered: logbook.forFree, // Driver is added only if covered is true
-                    ...logbook.forFree === true && {
-                        driver: Driver.CLAUDIA
-                    },
-                },
-                ...(logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT && {
-                    refuel: refuel,
-                }),
-                ...(logbook.additionalInformationTyp === AdditionalInformationTyp.GEWARTET && {
-                    service: service,
-                })
-            };
-
-            await this.newLogbooksRepository.create(newLogbook);
-            count++;
-            console.log("Migrated logbook #" + count + " with id: " + logbook._id + " successfully");
+            }, updateLogbookDto,);
         }
-        return true;
+
+        return await this.logbooksRepository.findOneAndUpdate({
+            _id: new Types.ObjectId(id),
+        }, {
+            mileAge: {
+                difference: distance, cost: distance * DISTANCE_COST,
+            }, ...updateLogbookDto,
+        },);
     }
+
+    // async migrate() {
+    //     let count = 0;
+    //     const logbooks = await this.findAll({});
+    //     for (const logbook of logbooks.data.reverse()) {
+    //         let refuel = null;
+    //         if (logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT) {
+    //             let consumption = parseFloat(logbook.additionalInformation) / parseFloat(logbook.distanceSinceLastAdditionalInformation) * 100;
+    //             if (parseFloat(logbook.distanceSinceLastAdditionalInformation) === 0)
+    //                 consumption = 0;
+    //
+    //             const previousRecord = await this.newLogbooksRepository.findLastRefuel(
+    //                 logbook.vehicle,
+    //             );
+    //
+    //             refuel = {
+    //                 liters: Decimal128.fromString(parseFloat(logbook.additionalInformation).toFixed(2)),
+    //                 price: Decimal128.fromString(parseFloat(logbook.additionalInformationCost || "0.00").toFixed(2)),
+    //                 distanceDifference: Decimal128.fromString(parseFloat(logbook.distanceSinceLastAdditionalInformation).toFixed(2)),
+    //                 consumption: Decimal128.fromString(consumption.toFixed(2)),
+    //                 isSpecial: false,
+    //                 ...(previousRecord.length != 0 && {
+    //                     previousRecordId: previousRecord[0]._id,
+    //                 })
+    //             }
+    //             console.log("Linked refuel with id: " + refuel.previousRecordId)
+    //         }
+    //
+    //         let service = null;
+    //         if (logbook.additionalInformationTyp === AdditionalInformationTyp.GEWARTET) {
+    //             service = {
+    //                 message: logbook.additionalInformation,
+    //                 price: Decimal128.fromString(parseFloat(logbook.additionalInformationCost || "0.00").toFixed(2)),
+    //             }
+    //         }
+    //
+    //         const newLogbook = {
+    //             _id: logbook._id,
+    //             // @ts-ignore
+    //             createdAt: logbook.createdAt,
+    //             driver: logbook.driver,
+    //             vehicle: logbook.vehicle,
+    //             date: logbook.date,
+    //             reason: logbook.driveReason,
+    //             mileAge: {
+    //                 current: parseInt(logbook.mileAge.current),
+    //                 new: parseInt(logbook.mileAge.new),
+    //                 difference: parseInt(logbook.distance),
+    //                 unit: logbook.vehicle === Vehicle.MX5 ? Unit.MILE : Unit.KM,
+    //                 cost: Decimal128.fromString(parseFloat(logbook.distanceCost).toFixed(2)),
+    //             },
+    //             details: {
+    //                 covered: logbook.forFree, // Driver is added only if covered is true
+    //                 ...logbook.forFree === true && {
+    //                     driver: Driver.CLAUDIA
+    //                 },
+    //             },
+    //             ...(logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT && {
+    //                 refuel: refuel,
+    //             }),
+    //             ...(logbook.additionalInformationTyp === AdditionalInformationTyp.GEWARTET && {
+    //                 service: service,
+    //             })
+    //         };
+    //
+    //         await this.newLogbooksRepository.create(newLogbook);
+    //         count++;
+    //         console.log("Migrated logbook #" + count + " with id: " + logbook._id + " successfully");
+    //     }
+    //     return true;
+    // }
 }

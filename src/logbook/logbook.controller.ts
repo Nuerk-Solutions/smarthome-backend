@@ -22,7 +22,7 @@ import { ParseArray } from './core/validation/pipes/ParseEnumArray.pipe';
 import { DateParameter } from './core/dto/parameters/date.parameter';
 import { ParseSortString } from './core/validation/pipes/ParseSortString.pipe';
 import { VehicleParameter } from './core/dto/parameters/vehicle.parameter';
-import { VehicleTyp } from './core/enums/vehicle-typ.enum';
+import { Vehicle } from './core/enums/vehicle-typ.enum';
 import { UpdateLogbookDto } from './core/dto/update-logbook.dto';
 import { CreateLogbookDto } from './core/dto/create-logbook.dto';
 
@@ -37,11 +37,11 @@ export class LogbookController {
     return this._logbookService.create(createLogbookDto);
   }
 
-  @HttpCode(HttpStatus.OK)
-  @Get('/migrate')
-  async migrate(): Promise<boolean> {
-    return await this._logbookService.migrate();
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @Get('/migrate')
+  // async migrate(): Promise<boolean> {
+  //   return await this._logbookService.migrate();
+  // }
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/all')
@@ -137,7 +137,7 @@ export class LogbookController {
           allow: true,
           allCases: true,
         },
-        type: VehicleTyp,
+        type: Vehicle,
         separator: ',',
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
       }),

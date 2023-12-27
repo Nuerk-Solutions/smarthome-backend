@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {VehicleParameter} from '../core/dto/parameters/vehicle.parameter';
 import {Logbook} from '../core/schemas/logbook.schema';
 import {AdditionalInformationTyp} from '../core/enums/additional-information-typ.enum';
-import {VehicleTyp} from '../core/enums/vehicle-typ.enum';
+import {Vehicle} from '../core/enums/vehicle-typ.enum';
 import {DriverParameter} from '../core/dto/parameters/driver.parameter';
 import {Driver} from '../core/enums/driver.enum';
 import {LogbookService} from '../logbook.service';
@@ -162,7 +162,7 @@ export class StatsService {
                 return result;
             },
             [] as {
-                vehicle: VehicleTyp;
+                vehicle: Vehicle;
                 distance: number;
                 distanceCost: number;
                 averageConsumptionSinceLastRefuel: number;
@@ -205,11 +205,11 @@ export class StatsService {
             distance: number;
             distanceCost: number;
             drivesCostForFree?: number;
-            vehicles: [{ vehicleTyp: VehicleTyp; distance: number; distanceCost: number; drivesCostForFree?: number }];
+            vehicles: [{ vehicleTyp: Vehicle; distance: number; distanceCost: number; drivesCostForFree?: number }];
         }[]
     > {
         const paginateResult: PaginateResult<Logbook> = await this._logbookService.findAll({
-            vehicleTyp: vehicles || Object.values(VehicleTyp),
+            vehicleTyp: vehicles || Object.values(Vehicle),
             driver: drivers,
             date: {
                 ...(startDate && {
@@ -314,7 +314,7 @@ export class StatsService {
                     distanceCost: number;
                     drivesCostForFree?: number;
                     vehicles: [{
-                        vehicleTyp: VehicleTyp;
+                        vehicleTyp: Vehicle;
                         distance: number;
                         distanceCost: number;
                         drivesCostForFree?: number

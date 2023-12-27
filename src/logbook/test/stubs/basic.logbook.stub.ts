@@ -1,7 +1,7 @@
 import { Logbook } from '../../core/schemas/logbook.schema';
 import { Types } from 'mongoose';
 import { Driver } from '../../core/enums/driver.enum';
-import { VehicleTyp } from '../../core/enums/vehicle-typ.enum';
+import { Vehicle } from '../../core/enums/vehicle-typ.enum';
 import { AdditionalInformationTyp } from '../../core/enums/additional-information-typ.enum';
 
 // Return a new instance every time
@@ -20,7 +20,7 @@ export const basicLogbookStub = (): Logbook => {
     driveReason: 'Stadtfahrt & Reifen/Räderwechsel',
     driver: Driver.OLIVER,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 

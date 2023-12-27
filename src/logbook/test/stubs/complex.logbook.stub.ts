@@ -1,7 +1,7 @@
 import { Logbook } from '../../core/schemas/logbook.schema';
 import { AdditionalInformationTyp } from '../../core/enums/additional-information-typ.enum';
 import { Driver } from '../../core/enums/driver.enum';
-import { VehicleTyp } from '../../core/enums/vehicle-typ.enum';
+import { Vehicle } from '../../core/enums/vehicle-typ.enum';
 
 /**
  * VW
@@ -20,7 +20,7 @@ export const complexLogbookStub_VW_0_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_0_0_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -38,7 +38,7 @@ export const complexLogbookStub_VW_1_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_1_0_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -56,7 +56,7 @@ export const complexLogbookStub_VW_2_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_2_0_F',
     driver: Driver.CLAUDIA,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -74,7 +74,7 @@ export const complexLogbookStub_VW_3_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_3_0_T',
     driver: Driver.ANDREA,
     forFree: true,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -92,7 +92,7 @@ export const complexLogbookStub_VW_4_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_4_0_T',
     driver: Driver.THOMAS,
     forFree: true,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -110,7 +110,7 @@ export const complexLogbookStub_VW_5_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_5_0_F',
     driver: Driver.OLIVER,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -128,7 +128,7 @@ export const complexLogbookStub_VW_6_1_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_6_1_F',
     driver: Driver.CLAUDIA,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -146,7 +146,7 @@ export const complexLogbookStub_VW_7_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_7_0_F',
     driver: Driver.THOMAS,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -164,7 +164,7 @@ export const complexLogbookStub_VW_8_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_8_0_F',
     driver: Driver.OLIVER,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -182,7 +182,7 @@ export const complexLogbookStub_VW_9_2_F = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_9_2_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -200,7 +200,7 @@ export const complexLogbookStub_VW_10_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_VW_10_0_T',
     driver: Driver.ANDREA,
     forFree: true,
-    vehicleTyp: VehicleTyp.VW,
+    vehicleTyp: Vehicle.VW,
   };
 };
 
@@ -221,7 +221,7 @@ export const complexLogbookStub_Ferrari_0_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_0_0_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -239,7 +239,7 @@ export const complexLogbookStub_Ferrari_1_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_1_0_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -257,7 +257,7 @@ export const complexLogbookStub_Ferrari_2_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_2_0_F',
     driver: Driver.CLAUDIA,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -275,7 +275,7 @@ export const complexLogbookStub_Ferrari_3_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_3_0_T',
     driver: Driver.ANDREA,
     forFree: true,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -293,7 +293,7 @@ export const complexLogbookStub_Ferrari_4_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_4_0_T',
     driver: Driver.THOMAS,
     forFree: true,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -311,7 +311,7 @@ export const complexLogbookStub_Ferrari_5_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_5_0_F',
     driver: Driver.OLIVER,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -329,7 +329,7 @@ export const complexLogbookStub_Ferrari_6_1_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_6_1_F',
     driver: Driver.CLAUDIA,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -347,7 +347,7 @@ export const complexLogbookStub_Ferrari_7_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_7_0_F',
     driver: Driver.THOMAS,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -365,7 +365,7 @@ export const complexLogbookStub_Ferrari_8_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_8_0_F',
     driver: Driver.OLIVER,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -383,7 +383,7 @@ export const complexLogbookStub_Ferrari_9_2_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_9_2_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -401,7 +401,7 @@ export const complexLogbookStub_Ferrari_10_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_Ferrari_10_0_T',
     driver: Driver.ANDREA,
     forFree: true,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
   };
 };
 
@@ -422,7 +422,7 @@ export const complexLogbookStub_Porsche_0_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_0_0_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -440,7 +440,7 @@ export const complexLogbookStub_Porsche_1_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_1_0_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -458,7 +458,7 @@ export const complexLogbookStub_Porsche_2_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_2_0_F',
     driver: Driver.CLAUDIA,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -476,7 +476,7 @@ export const complexLogbookStub_Porsche_3_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_3_0_T',
     driver: Driver.ANDREA,
     forFree: true,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -494,7 +494,7 @@ export const complexLogbookStub_Porsche_4_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_4_0_T',
     driver: Driver.THOMAS,
     forFree: true,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -512,7 +512,7 @@ export const complexLogbookStub_Porsche_5_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_5_0_F',
     driver: Driver.OLIVER,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -530,7 +530,7 @@ export const complexLogbookStub_Porsche_6_1_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_6_1_F',
     driver: Driver.CLAUDIA,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -548,7 +548,7 @@ export const complexLogbookStub_Porsche_7_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_7_0_F',
     driver: Driver.THOMAS,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -566,7 +566,7 @@ export const complexLogbookStub_Porsche_8_0_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_8_0_F',
     driver: Driver.OLIVER,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -584,7 +584,7 @@ export const complexLogbookStub_Porsche_9_2_F = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_9_2_F',
     driver: Driver.ANDREA,
     forFree: false,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 
@@ -602,7 +602,7 @@ export const complexLogbookStub_Porsche_10_0_T = (): Logbook => {
     driveReason: 'complexLogbookStub_Porsche_10_0_T',
     driver: Driver.ANDREA,
     forFree: true,
-    vehicleTyp: VehicleTyp.PORSCHE,
+    vehicleTyp: Vehicle.PORSCHE,
   };
 };
 

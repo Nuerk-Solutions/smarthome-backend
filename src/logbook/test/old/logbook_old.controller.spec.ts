@@ -3,7 +3,7 @@ import { LogbookController } from '../../logbook.controller';
 import { LogbookService } from '../../logbook.service';
 import { CreateLogbookDto } from '../../core/dto/create-logbook.dto';
 import { Driver } from '../../core/enums/driver.enum';
-import { VehicleTyp } from '../../core/enums/vehicle-typ.enum';
+import { Vehicle } from '../../core/enums/vehicle-typ.enum';
 import { AdditionalInformationTyp } from '../../core/enums/additional-information-typ.enum';
 import { Types } from 'mongoose';
 
@@ -17,7 +17,7 @@ describe('LogbookController', () => {
 
   const createLogbookDto: CreateLogbookDto = {
     driver: Driver.ANDREA,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
     currentMileAge: '123',
     newMileAge: '456',
     date: date1,
@@ -30,7 +30,7 @@ describe('LogbookController', () => {
 
   const mockLogbook = {
     driver: Driver.ANDREA,
-    vehicleTyp: VehicleTyp.FERRARI,
+    vehicleTyp: Vehicle.FERRARI,
     currentMileAge: '123',
     newMileAge: '456',
     date: date1,
@@ -57,7 +57,7 @@ describe('LogbookController', () => {
             findAll: jest.fn().mockResolvedValue([
               {
                 driver: Driver.ANDREA,
-                vehicleTyp: VehicleTyp.FERRARI,
+                vehicleTyp: Vehicle.FERRARI,
                 currentMileAge: '123',
                 newMileAge: '456',
                 date: date1,
@@ -68,7 +68,7 @@ describe('LogbookController', () => {
               },
               {
                 driver: Driver.CLAUDIA,
-                vehicleTyp: VehicleTyp.VW,
+                vehicleTyp: Vehicle.VW,
                 currentMileAge: '456',
                 newMileAge: '789',
                 date: date2,
@@ -79,7 +79,7 @@ describe('LogbookController', () => {
               },
               {
                 driver: Driver.THOMAS,
-                vehicleTyp: VehicleTyp.FERRARI,
+                vehicleTyp: Vehicle.FERRARI,
                 currentMileAge: '101112',
                 newMileAge: '131415',
                 date: date3,
@@ -118,7 +118,7 @@ describe('LogbookController', () => {
       await expect(controller.findAll()).resolves.toEqual([
         {
           driver: Driver.ANDREA,
-          vehicleTyp: VehicleTyp.FERRARI,
+          vehicleTyp: Vehicle.FERRARI,
           currentMileAge: '123',
           newMileAge: '456',
           date: date1,
@@ -129,7 +129,7 @@ describe('LogbookController', () => {
         },
         {
           driver: Driver.CLAUDIA,
-          vehicleTyp: VehicleTyp.VW,
+          vehicleTyp: Vehicle.VW,
           currentMileAge: '456',
           newMileAge: '789',
           date: date2,
@@ -140,7 +140,7 @@ describe('LogbookController', () => {
         },
         {
           driver: Driver.THOMAS,
-          vehicleTyp: VehicleTyp.FERRARI,
+          vehicleTyp: Vehicle.FERRARI,
           currentMileAge: '101112',
           newMileAge: '131415',
           date: date3,

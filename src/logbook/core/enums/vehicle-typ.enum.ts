@@ -1,4 +1,4 @@
-export enum VehicleTyp {
+export enum Vehicle {
   FERRARI = 'Ferrari',
   VW = 'VW',
   PORSCHE = 'Porsche',

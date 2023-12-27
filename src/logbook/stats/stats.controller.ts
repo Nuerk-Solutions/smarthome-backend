@@ -5,7 +5,7 @@ import {ParseArray} from '../core/validation/pipes/ParseEnumArray.pipe';
 import {DriverParameter} from '../core/dto/parameters/driver.parameter';
 import {Driver} from '../core/enums/driver.enum';
 import {VehicleParameter} from '../core/dto/parameters/vehicle.parameter';
-import {VehicleTyp} from '../core/enums/vehicle-typ.enum';
+import {Vehicle} from '../core/enums/vehicle-typ.enum';
 
 @Controller()
 export class StatsController {
@@ -36,7 +36,7 @@ export class StatsController {
             'vehicles',
             new ParseArray({
                 items: VehicleParameter,
-                type: VehicleTyp,
+                type: Vehicle,
                 emptyHandling: {
                     allow: true,
                     allCases: true,
@@ -59,7 +59,7 @@ export class StatsController {
             'vehicles',
             new ParseArray({
                 items: VehicleParameter,
-                type: VehicleTyp,
+                type: Vehicle,
                 emptyHandling: {
                     allow: true,
                     allCases: true,

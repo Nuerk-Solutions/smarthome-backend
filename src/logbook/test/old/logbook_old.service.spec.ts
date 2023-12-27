@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { LogbookService } from '../../logbook.service';
 import { Logbook } from '../../core/schemas/logbook.schema';
 import { Driver } from '../../core/enums/driver.enum';
-import { VehicleTyp } from '../../core/enums/vehicle-typ.enum';
+import { Vehicle } from '../../core/enums/vehicle-typ.enum';
 import { AdditionalInformationTyp } from '../../core/enums/additional-information-typ.enum';
 import { MailService } from '../../../core/mail/mail.service';
 import { forwardRef } from '@nestjs/common';
@@ -16,7 +16,7 @@ const date: Date = new Date();
 
 const mockLogbook = {
   driver: Driver.ANDREA,
-  vehicleTyp: VehicleTyp.FERRARI,
+  vehicleTyp: Vehicle.FERRARI,
   currentMileAge: '123',
   newMileAge: '456',
   date,
@@ -36,7 +36,7 @@ describe('LogbookService', () => {
   const logbookArray = [
     {
       driver: Driver.ANDREA,
-      vehicleTyp: VehicleTyp.FERRARI,
+      vehicleTyp: Vehicle.FERRARI,
       currentMileAge: '123',
       newMileAge: '456',
       date,
@@ -48,7 +48,7 @@ describe('LogbookService', () => {
     },
     {
       driver: Driver.CLAUDIA,
-      vehicleTyp: VehicleTyp.VW,
+      vehicleTyp: Vehicle.VW,
       currentMileAge: '456',
       newMileAge: '789',
       date,
