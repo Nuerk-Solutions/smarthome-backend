@@ -33,11 +33,11 @@ import { DatabaseModule } from './database/database.module';
         ],
       },
     ]),
+    DatabaseModule,
     StatsModule,
     InvoiceModule,
     AuthenticationModule,
     MailModule,
-    DatabaseModule,
   ],
   controllers: [AppController],
 })

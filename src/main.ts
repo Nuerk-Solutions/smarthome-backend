@@ -7,11 +7,6 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
-import * as admin from 'firebase-admin';
-import { ServiceAccount } from 'firebase-admin';
-
-const serviceAccount = require('./../logbookbackend-firebase-adminsdk-r4je1-19ebf548aa.json');
-
 async function bootstrap() {
   console.log('Server Ready!');
 
@@ -19,11 +14,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   // const reflector = app.get(Reflector);
   const port = +configService.get<number>('WEB_PORT');
-
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as ServiceAccount),
-    storageBucket: 'gs://logbookbackend.appspot.com',
-  });
 
   app.use(cookieParser());
   app.use(helmet());

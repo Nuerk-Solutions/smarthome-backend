@@ -4,6 +4,8 @@ import { LogbookController } from './logbook.controller';
 import { LogbookService } from './logbook.service';
 import { Logbook, LogbookSchema } from './core/schemas/logbook.schema';
 import { LogbooksRepository } from './repositories/logbooks.repository';
+import {NewLogbookRepository} from "./repositories/newLogbook.repository";
+import {NewLogbook, NewLogbookSchema} from "./core/schemas/newLogbook.schema";
 
 @Module({
   imports: [
@@ -13,6 +15,10 @@ import { LogbooksRepository } from './repositories/logbooks.repository';
           name: Logbook.name,
           useFactory: () => LogbookSchema,
         },
+        {
+          name: NewLogbook.name,
+          useFactory: () => NewLogbookSchema,
+        },
       ],
       'logbook',
     ),
@@ -20,7 +26,7 @@ import { LogbooksRepository } from './repositories/logbooks.repository';
     // forwardRef(() => InvoiceModule),
   ],
   controllers: [LogbookController],
-  providers: [LogbookService, LogbooksRepository],
+  providers: [LogbookService, LogbooksRepository, NewLogbookRepository],
   exports: [LogbookService],
 })
 export class LogbookModule {}

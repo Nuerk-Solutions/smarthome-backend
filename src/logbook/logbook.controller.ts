@@ -38,6 +38,12 @@ export class LogbookController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Get('/migrate')
+  async migrate(): Promise<boolean> {
+    return await this._logbookService.migrate();
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get('/find/all')
   async findAll(
     @Query() date?: DateParameter,
@@ -139,7 +145,7 @@ export class LogbookController {
     vehicles?: VehicleParameter[],
     @Query() date?: DateParameter,
   ): Promise<StreamableFile> {
-    const xlsx = await this._logbookService.download(drivers, vehicles, date.startDate, date.endDate);
+    const xlsx = await this._logbookService.download(drivers, vehicles, date);
     return new StreamableFile(xlsx);
   }
 
