@@ -13,6 +13,7 @@ import {
 } from '../../stubs/complex.logbook.stub';
 import { basicLogbookStub } from '../../stubs/basic.logbook.stub';
 import { DISTANCE_COST } from '../../../../core/utils/constatns';
+import {ObjectId} from "bson";
 
 describe('Complex LogbookController Integration Test', () => {
   let dbConnection: Connection;
@@ -69,8 +70,8 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
-      expect(response.body.distance).toEqual('1.00');
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
+      expect(response.body.mileAge.difference).toEqual(1);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -90,8 +91,8 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
-      expect(response.body.distance).toEqual('2.00');
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
+      expect(response.body.mileAge.difference).toEqual(2);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -106,13 +107,13 @@ describe('Complex LogbookController Integration Test', () => {
 
       const newLogbook: Logbook = stubs.complexLogbookStub_VW_2_0_F();
 
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
+      expect(response.body.mileAge.difference).toEqual(6);
       expect(response.body).toMatchObject({
         ...newLogbook,
         date: newLogbook.date.toISOString(),
       });
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
-      expect(response.body.distance).toEqual('6.00');
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -132,7 +133,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -145,14 +146,19 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_4_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_4_0_T();
+      let prevId = String(response.body.refuel.previousRecordId);
 
-      expect(response.body).toMatchObject({
+      let newLogbook: Logbook = stubs.complexLogbookStub_VW_4_0_T();
+
+      let shortResponse = response.body;
+      delete shortResponse.refuel.previousRecordId;
+
+      expect(shortResponse).toMatchObject({
         ...newLogbook,
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -172,7 +178,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -192,7 +198,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -212,7 +218,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -232,7 +238,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -252,7 +258,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -272,7 +278,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -285,9 +291,10 @@ describe('Complex LogbookController Integration Test', () => {
     it('should return an array of logbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
+      console.log(response.body.data)
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body.data).toMatchObject([
-        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id, response.body.date),
       ]);
     });
   });
@@ -306,7 +313,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -336,7 +343,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -356,7 +363,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -376,7 +383,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -396,7 +403,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -416,7 +423,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -436,7 +443,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -456,7 +463,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -476,7 +483,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -496,7 +503,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -516,7 +523,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -552,7 +559,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -582,7 +589,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -602,7 +609,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -622,7 +629,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -642,7 +649,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -662,7 +669,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -682,7 +689,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -702,7 +709,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -722,7 +729,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -742,7 +749,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -762,7 +769,7 @@ describe('Complex LogbookController Integration Test', () => {
         date: newLogbook.date.toISOString(),
       });
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.distanceCost).toEqual((+response.body.distance * DISTANCE_COST).toFixed(2));
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
@@ -823,7 +830,7 @@ describe('Complex LogbookController Integration Test', () => {
       const updateLogbookDto = {
         currentMileAge: '10',
         newMileAge: '20',
-        driveReason: 'TestReason',
+        reason: 'TestReason',
         driver: 'Andrea',
         forFree: true,
         additionalInformation: 'Test Information',
@@ -846,7 +853,7 @@ describe('Complex LogbookController Integration Test', () => {
     it('update last logbook with different stats', async () => {
       const updateLogbookDto = {
         newMileAge: '200001',
-        driveReason: 'TestReason',
+        reason: 'TestReason',
         driver: 'Andrea',
         forFree: true,
         additionalInformation: 'Test Information',

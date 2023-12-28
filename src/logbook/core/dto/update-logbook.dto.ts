@@ -34,7 +34,7 @@ export class UpdateLogbookDto {
 
   @IsNotEmpty()
   @IsString()
-  @IsNotBlank(null, {message: 'driveReason must be a string containing at least one alphabetic character'})
+  @IsNotBlank(null, {message: 'reason must be a string containing at least one alphabetic character'})
   reason: string;
 
   @IsOptional()

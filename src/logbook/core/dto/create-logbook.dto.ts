@@ -66,16 +66,16 @@ class MileAge {
     @IsNotEmpty()
     @IsNumberString()
     @IsLowerThan('new', {message: 'current must be lower than new mileage'})
-    readonly current: number;
+    current: number;
 
     @IsNotEmpty()
     @IsNumberString()
     @IsGreaterThan('current', {message: 'new must be greater than current mileage'})
-    readonly new: number;
+    new: number;
 
     @IsNotEmpty()
     @IsEnum(Unit, {message: 'Unit is not valid'})
-    readonly unit: Unit;
+    unit: Unit;
 }
 
 export class CreateLogbookDto {
@@ -95,7 +95,7 @@ export class CreateLogbookDto {
 
     @IsNotEmpty()
     @IsString()
-    @IsNotBlank(null, {message: 'driveReason must be a string containing at least one alphabetic character'})
+    @IsNotBlank(null, {message: 'reason must be a string containing at least one alphabetic character'})
     reason: string;
 
     @IsNotEmpty()

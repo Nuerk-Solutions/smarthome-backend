@@ -46,7 +46,7 @@ export class Refuel {
     isSpecial: boolean;
 
     @Prop({type: Types.ObjectId, required: false})
-    previousRecordId: ObjectId;
+    previousRecordId?: ObjectId;
 }
 
 export const RefuelSchema = SchemaFactory.createForClass(Refuel);

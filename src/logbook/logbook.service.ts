@@ -7,12 +7,12 @@ import {Types} from 'mongoose';
 import {CreateLogbookDto} from './core/dto/create-logbook.dto';
 import {DISTANCE_COST} from '../core/utils/constatns';
 import {DateParameter} from "./core/dto/parameters/date.parameter";
-import {LogbookRepository} from "./repositories/logbook.repository";
+import {LogbooksRepository} from "./repositories/logbooks.repository";
 import {Logbook} from "./core/schemas/logbook.schema";
 
 @Injectable()
 export class LogbookService {
-    constructor(private readonly logbooksRepository: LogbookRepository) {
+    constructor(private readonly logbooksRepository: LogbooksRepository) {
     }
 
     async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
@@ -26,7 +26,7 @@ export class LogbookService {
             throw new BadRequestException('Logbook already exists');
         }
 
-        const lastLogbook: Logbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(createLogbookDto.vehicle,);
+        const lastLogbook: Logbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(createLogbookDto.vehicle);
 
         if (lastLogbook != null && createLogbookDto.mileAge.current != lastLogbook.mileAge.new) {
             throw new BadRequestException('mileAge.current is not equal to last logbook mileAge.new');
@@ -36,23 +36,34 @@ export class LogbookService {
 
         if (createLogbookDto.refuel) {
             const lastRefuel = await this.logbooksRepository.findLastRefuel(createLogbookDto.vehicle);
-            const distanceDifference = createLogbookDto.mileAge.new - lastRefuel[0].mileAge.new;
+            let distanceDifference = 0;
             let consumption = 0;
+            if (lastRefuel.length != 0) {
+                distanceDifference = createLogbookDto.mileAge.new - lastRefuel[0].mileAge.new;
+            }
             if (!createLogbookDto.refuel.isSpecial && distanceDifference != 0) {
-                consumption = createLogbookDto.refuel.liters / distanceDifference * 100;
+                consumption = Math.round(createLogbookDto.refuel.liters / distanceDifference * 100 * 100) / 100;
             }
             submitLogbook = {
                 ...submitLogbook, refuel: {
-                    distanceDifference, consumption, previousRecordId: lastRefuel[0]._id,
+                    ...createLogbookDto.refuel,
+                    distanceDifference, consumption,
+                    ...(lastRefuel.length != 0 && {
+                        previousRecordId: lastRefuel[0]._id,
+                    }),
                 }
             };
         }
 
         submitLogbook = {
-            ...submitLogbook, mileAge: {
-                difference, cost: difference * DISTANCE_COST,
+            ...submitLogbook,
+            mileAge: {
+                ...submitLogbook.mileAge,
+                difference,
+                cost: Math.round((difference * DISTANCE_COST) * 100) / 100,
             }
         };
+        console.log(submitLogbook);
 
         return await this.logbooksRepository.create(submitLogbook);
     }
@@ -187,7 +198,7 @@ export class LogbookService {
     //             driver: logbook.driver,
     //             vehicle: logbook.vehicle,
     //             date: logbook.date,
-    //             reason: logbook.driveReason,
+    //             reason: logbook.reason,
     //             mileAge: {
     //                 current: parseInt(logbook.mileAge.current),
     //                 new: parseInt(logbook.mileAge.new),

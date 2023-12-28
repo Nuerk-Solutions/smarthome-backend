@@ -91,11 +91,11 @@ describe('LogbookController', () => {
           additionalInformationTyp: basicLogbookStub().additionalInformationTyp,
           currentMileAge: basicLogbookStub().currentMileAge,
           date: basicLogbookStub().date,
-          driveReason: basicLogbookStub().driveReason,
+          reason: basicLogbookStub().reason,
           driver: basicLogbookStub().driver,
           forFree: basicLogbookStub().forFree,
           newMileAge: basicLogbookStub().newMileAge,
-          vehicleTyp: basicLogbookStub().vehicleTyp,
+          vehicle: basicLogbookStub().vehicle,
         };
         logbook = await logbookController.create(createLogbookDto);
       });
@@ -121,7 +121,7 @@ describe('LogbookController', () => {
           // currentMileAge: '2000', -> checked now in the service
           newMileAge: '2002',
           forFree: true,
-          driveReason: 'Updated drive reason',
+          reason: 'Updated drive reason',
           additionalInformation: 'Updated additional information',
           additionalInformationCost: 'Updated additional information cost',
         };

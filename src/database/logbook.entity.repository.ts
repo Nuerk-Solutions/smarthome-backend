@@ -19,7 +19,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
                 },
                 {
                     $group: {
-                        _id: '$vehicleTyp',
+                        _id: '$vehicle',
                         lastLogbook: {
                             $first: '$$ROOT',
                         },
@@ -32,7 +32,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
                 },
                 {
                     $sort: {
-                        vehicleTyp: 1,
+                        vehicle: 1,
                     },
                 },
             ])
@@ -41,13 +41,13 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
     }
 
     async findLastRefuel(
-        vehicleTyp: Vehicle
+        vehicle: Vehicle
     ): Promise<T[]> {
         return this.entityModel
             .aggregate([
                 {
                     $match: {
-                        vehicle: vehicleTyp,
+                        vehicle: vehicle,
                         refuel: {
                             $exists: true,
                         },
@@ -66,17 +66,17 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
             .exec();
     }
 
-    async findLastAddedLogbookForVehicle(vehicleTyp: Vehicle): Promise<T> {
+    async findLastAddedLogbookForVehicle(vehicle: Vehicle): Promise<T> {
         return this.entityModel
             .aggregate([
                 {
                     $sort: {
-                        newMileAge: -1,
+                        "mileAge.new": -1,
                     },
                 },
                 {
                     $match: {
-                        vehicleTyp,
+                        vehicle,
                     },
                 },
                 {
@@ -130,17 +130,17 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
      */
     async findLastAddedLogbooksByMileage(): Promise<T[]> {
         const latestLogbookVw = await this.entityModel
-            .findOne({vehicleTyp: 'VW'})
+            .findOne({vehicle: 'VW'})
             .sort({newMileAge: -1})
             .limit(1)
             .exec();
         const latestLogbookFerrari = await this.entityModel
-            .findOne({vehicleTyp: 'Ferrari'})
+            .findOne({vehicle: 'Ferrari'})
             .sort({newMileAge: -1})
             .limit(1)
             .exec();
         const latestLogbookPorsche = await this.entityModel
-            .findOne({vehicleTyp: 'Porsche'})
+            .findOne({vehicle: 'Porsche'})
             .sort({newMileAge: -1})
             .limit(1)
             .exec();

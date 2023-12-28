@@ -12,11 +12,11 @@ export class StatsController {
     constructor(private readonly _statsService: StatsService) {
     }
 
-    @HttpCode(HttpStatus.OK)
-    @Get('/average')
-    async getAverageConsumption() {
-        return await this._statsService.getAverageVehicleConsumption();
-    }
+    // @HttpCode(HttpStatus.OK)
+    // @Get('/average')
+    // async getAverageConsumption() {
+    //     return await this._statsService.getAverageVehicleConsumption();
+    // }
 
     @HttpCode(HttpStatus.OK)
     @Get('/driver')
@@ -51,25 +51,25 @@ export class StatsController {
         return await this._statsService.calculateDriverStats(drivers, date.startDate, date.endDate, vehicles, detailed);
     }
 
-    @HttpCode(HttpStatus.OK)
-    @Get('/vehicle')
-    async getVehicleStats(
-        @Query() date: DateParameter,
-        @Query(
-            'vehicles',
-            new ParseArray({
-                items: VehicleParameter,
-                type: Vehicle,
-                emptyHandling: {
-                    allow: true,
-                    allCases: true,
-                },
-                separator: ',',
-                errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
-            }),
-        )
-            vehicles?: VehicleParameter[],
-    ) {
-        return await this._statsService.calculateVehicleStats(vehicles, date.startDate, date.endDate);
-    }
+    // @HttpCode(HttpStatus.OK)
+    // @Get('/vehicle')
+    // async getVehicleStats(
+    //     @Query() date: DateParameter,
+    //     @Query(
+    //         'vehicles',
+    //         new ParseArray({
+    //             items: VehicleParameter,
+    //             type: Vehicle,
+    //             emptyHandling: {
+    //                 allow: true,
+    //                 allCases: true,
+    //             },
+    //             separator: ',',
+    //             errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+    //         }),
+    //     )
+    //         vehicles?: VehicleParameter[],
+    // ) {
+    //     return await this._statsService.calculateVehicleStats(vehicles, date.startDate, date.endDate);
+    // }
 }

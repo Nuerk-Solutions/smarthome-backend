@@ -7,183 +7,182 @@ import {DriverParameter} from '../core/dto/parameters/driver.parameter';
 import {Driver} from '../core/enums/driver.enum';
 import {LogbookService} from '../logbook.service';
 
-
 @Injectable()
 export class StatsService {
     constructor(private readonly _logbookService: LogbookService) {
     }
 
-    async getAverageVehicleConsumption() {
-        const logbooks = await this._logbookService.findAll({
-            additionalInformationTyp: AdditionalInformationTyp.GETANKT,
-        });
-        const data = logbooks.data;
-        // const data = this.groupByVehicleAndMonth(logbooks.data);
-// Gruppierung nach vehicleTyp und Monaten
-        const groupedData = [];
-
-        data.forEach((entry) => {
-            const month = new Date(entry.date).toLocaleString('en-us', { month: 'long' });
-            const year = new Date(entry.date).getFullYear().toString();
-            const key = `${entry.vehicleTyp}-${year}-${month}`;
-
-            let vehicleGroup = groupedData.find((group) => group.vehicleTyp === entry.vehicleTyp);
-
-            if (!vehicleGroup) {
-                vehicleGroup = { vehicleTyp: entry.vehicleTyp, years: {} };
-                groupedData.push(vehicleGroup);
-            }
-
-            if (!vehicleGroup.years[year]) {
-                vehicleGroup.years[year] = {};
-            }
-
-            if (!vehicleGroup.years[year][key]) {
-                vehicleGroup.years[year][key] = [];
-            }
-
-            if (
-                entry.additionalInformation !== "" &&
-                entry.distanceSinceLastAdditionalInformation !== "" &&
-                parseFloat(entry.additionalInformation) !== 0 &&
-                parseFloat(entry.distanceSinceLastAdditionalInformation) !== 0
-            ) {
-                const consumption =
-                    parseFloat(entry.additionalInformation) /
-                    parseFloat(entry.distanceSinceLastAdditionalInformation);
-                vehicleGroup.years[year][key].push(consumption * 100);
-            }
-        });
-
-// Berechnung des Durchschnitts
-        groupedData.forEach((group) => {
-            Object.keys(group.years).forEach((year) => {
-                Object.keys(group.years[year]).forEach((key) => {
-                    const consumptions = group.years[year][key];
-                    const averageConsumption =
-                        consumptions.reduce((sum, value) => sum + value, 0) / consumptions.length;
-
-                    group.years[year][key] = averageConsumption;
-                });
-            });
-        });
-
-// Begrenzung auf maximal 12 Einträge pro Fahrzeug und Jahr
-        groupedData.forEach((group) => {
-            Object.keys(group.years).forEach((year) => {
-                Object.keys(group.years[year]).forEach((key) => {
-                    if (group.years[year][key] === undefined || isNaN(group.years[year][key])) {
-                        delete group.years[year][key];
-                    }
-                });
-
-                const sortedMonths = Object.keys(group.years[year]).sort(
-                    (a, b) => new Date(a).getTime() - new Date(b).getTime()
-                );
-
-                if (sortedMonths.length > 12) {
-                    const monthsToDelete = sortedMonths.slice(0, sortedMonths.length - 12);
-                    monthsToDelete.forEach((month) => {
-                        delete group.years[year][month];
-                    });
-                }
-            });
-        });
-        return groupedData;
-    }
-
-    groupByVehicleAndMonth(data: Logbook[]): Record<string, Record<string, Logbook[]>> {
-        const groupedData: Record<string, Record<string, Logbook[]>> = {};
-
-        data.forEach((data) => {
-            const vehicleType = data.vehicleTyp;
-            const month = new Date(data.date).toLocaleString('default', {month: 'short'});
-
-            if (!groupedData[vehicleType]) {
-                groupedData[vehicleType] = {};
-            }
-
-            if (!groupedData[vehicleType][month]) {
-                groupedData[vehicleType][month] = [];
-            }
-
-            groupedData[vehicleType][month].push(data);
-        });
-
-        return groupedData;
-    }
-
-    async calculateVehicleStats(vehicles: VehicleParameter[], startDate?: Date, endDate?: Date) {
-        const paginateResult = await this._logbookService.findAll(
-            {
-                vehicleTyp: vehicles,
-                date: {
-                    ...(startDate && {$gte: startDate}),
-                    ...(endDate && {$lte: endDate}),
-                },
-            },
-            '+date',
-        );
-
-        const resultArray = paginateResult.data.reduce(
-            (result, item) => {
-                const existingVehicle = result.find((v) => v.vehicle === item.vehicleTyp);
-
-                if (existingVehicle) {
-                    existingVehicle.distance += +item.distance;
-                    existingVehicle.distanceCost += +item.distanceCost;
-
-                    if (item.additionalInformationTyp === AdditionalInformationTyp.GETANKT && +item.distanceSinceLastAdditionalInformation !== 0) {
-                        existingVehicle.averageConsumptionSinceLastRefuel = (+item.additionalInformation / +item.distanceSinceLastAdditionalInformation) * 100;
-                        existingVehicle.averageCostPerKmSinceLastRefuel = +item.additionalInformationCost / +item.distanceSinceLastAdditionalInformation;
-                        existingVehicle.totalRefuels++;
-                        existingVehicle.averageCost += existingVehicle.averageCostPerKmSinceLastRefuel;
-                        existingVehicle.averageConsumption += existingVehicle.averageConsumptionSinceLastRefuel;
-                    } else if (item.additionalInformationTyp === AdditionalInformationTyp.GEWARTET && +item.distanceSinceLastAdditionalInformation !== 0 && +item.additionalInformationCost !== 0) {
-                        existingVehicle.totalMaintenanceCost += +item.additionalInformationCost;
-                        existingVehicle.totalMaintenancesDistance += +item.distanceSinceLastAdditionalInformation;
-                    }
-                } else {
-                    result.push({
-                        vehicle: item.vehicleTyp,
-                        distance: +item.distance,
-                        distanceCost: +item.distanceCost,
-                        averageConsumptionSinceLastRefuel: -1,
-                        averageCostPerKmSinceLastRefuel: -1,
-                        averageConsumption: 0,
-                        averageCost: 0,
-                        totalRefuels: 0,
-                        totalMaintenancesDistance: 0,
-                        totalMaintenanceCost: 0,
-                        averageMaintenanceCostPerKm: 0, // Default value for the new property
-                    });
-                }
-
-                return result;
-            },
-            [] as {
-                vehicle: Vehicle;
-                distance: number;
-                distanceCost: number;
-                averageConsumptionSinceLastRefuel: number;
-                averageCostPerKmSinceLastRefuel: number;
-                averageMaintenanceCostPerKm: number;
-                averageConsumption: number;
-                averageCost: number;
-                totalRefuels: number;
-                totalMaintenancesDistance: number;
-                totalMaintenanceCost: number;
-            }[],
-        );
-
-        resultArray.forEach((currentValue) => {
-            currentValue.averageConsumption /= currentValue.totalRefuels;
-            currentValue.averageCost /= currentValue.totalRefuels;
-            currentValue.averageMaintenanceCostPerKm = currentValue.totalMaintenanceCost / currentValue.totalMaintenancesDistance;
-        });
-
-        return resultArray;
-    }
+//     async getAverageVehicleConsumption() {
+//         const logbooks = await this._logbookService.findAll({
+//             additionalInformationTyp: AdditionalInformationTyp.GETANKT,
+//         });
+//         const data = logbooks.data;
+//         // const data = this.groupByVehicleAndMonth(logbooks.data);
+//         // Gruppierung nach vehicle und Monaten
+//         const groupedData = [];
+//
+//         data.forEach((entry) => {
+//             const month = new Date(entry.date).toLocaleString('en-us', { month: 'long' });
+//             const year = new Date(entry.date).getFullYear().toString();
+//             const key = `${entry.vehicle}-${year}-${month}`;
+//
+//             let vehicleGroup = groupedData.find((group) => group.vehicle === entry.vehicle);
+//
+//             if (!vehicleGroup) {
+//                 vehicleGroup = { vehicle: entry.vehicle, years: {} };
+//                 groupedData.push(vehicleGroup);
+//             }
+//
+//             if (!vehicleGroup.years[year]) {
+//                 vehicleGroup.years[year] = {};
+//             }
+//
+//             if (!vehicleGroup.years[year][key]) {
+//                 vehicleGroup.years[year][key] = [];
+//             }
+//
+//             if (
+//                 entry.additionalInformation !== "" &&
+//                 entry.distanceSinceLastAdditionalInformation !== "" &&
+//                 parseFloat(entry.additionalInformation) !== 0 &&
+//                 parseFloat(entry.distanceSinceLastAdditionalInformation) !== 0
+//             ) {
+//                 const consumption =
+//                     parseFloat(entry.additionalInformation) /
+//                     parseFloat(entry.distanceSinceLastAdditionalInformation);
+//                 vehicleGroup.years[year][key].push(consumption * 100);
+//             }
+//         });
+//
+//         // Berechnung des Durchschnitts
+//         groupedData.forEach((group) => {
+//             Object.keys(group.years).forEach((year) => {
+//                 Object.keys(group.years[year]).forEach((key) => {
+//                     const consumptions = group.years[year][key];
+//                     const averageConsumption =
+//                         consumptions.reduce((sum, value) => sum + value, 0) / consumptions.length;
+//
+//                     group.years[year][key] = averageConsumption;
+//                 });
+//             });
+//         });
+//
+// // Begrenzung auf maximal 12 Einträge pro Fahrzeug und Jahr
+//         groupedData.forEach((group) => {
+//             Object.keys(group.years).forEach((year) => {
+//                 Object.keys(group.years[year]).forEach((key) => {
+//                     if (group.years[year][key] === undefined || isNaN(group.years[year][key])) {
+//                         delete group.years[year][key];
+//                     }
+//                 });
+//
+//                 const sortedMonths = Object.keys(group.years[year]).sort(
+//                     (a, b) => new Date(a).getTime() - new Date(b).getTime()
+//                 );
+//
+//                 if (sortedMonths.length > 12) {
+//                     const monthsToDelete = sortedMonths.slice(0, sortedMonths.length - 12);
+//                     monthsToDelete.forEach((month) => {
+//                         delete group.years[year][month];
+//                     });
+//                 }
+//             });
+//         });
+//         return groupedData;
+//     }
+//
+//     groupByVehicleAndMonth(data: Logbook[]): Record<string, Record<string, Logbook[]>> {
+//         const groupedData: Record<string, Record<string, Logbook[]>> = {};
+//
+//         data.forEach((data) => {
+//             const vehiclee = data.vehicle;
+//             const month = new Date(data.date).toLocaleString('default', {month: 'short'});
+//
+//             if (!groupedData[vehiclee]) {
+//                 groupedData[vehiclee] = {};
+//             }
+//
+//             if (!groupedData[vehiclee][month]) {
+//                 groupedData[vehiclee][month] = [];
+//             }
+//
+//             groupedData[vehiclee][month].push(data);
+//         });
+//
+//         return groupedData;
+//     }
+//
+//     async calculateVehicleStats(vehicles: VehicleParameter[], startDate?: Date, endDate?: Date) {
+//         const paginateResult = await this._logbookService.findAll(
+//             {
+//                 vehicle: vehicles,
+//                 date: {
+//                     ...(startDate && {$gte: startDate}),
+//                     ...(endDate && {$lte: endDate}),
+//                 },
+//             },
+//             '+date',
+//         );
+//
+//         const resultArray = paginateResult.data.reduce(
+//             (result, item) => {
+//                 const existingVehicle = result.find((v) => v.vehicle === item.vehicle);
+//
+//                 if (existingVehicle) {
+//                     existingVehicle.distance += +item.distance;
+//                     existingVehicle.distanceCost += +item.distanceCost;
+//
+//                     if (item.additionalInformationTyp === AdditionalInformationTyp.GETANKT && +item.distanceSinceLastAdditionalInformation !== 0) {
+//                         existingVehicle.averageConsumptionSinceLastRefuel = (+item.additionalInformation / +item.distanceSinceLastAdditionalInformation) * 100;
+//                         existingVehicle.averageCostPerKmSinceLastRefuel = +item.additionalInformationCost / +item.distanceSinceLastAdditionalInformation;
+//                         existingVehicle.totalRefuels++;
+//                         existingVehicle.averageCost += existingVehicle.averageCostPerKmSinceLastRefuel;
+//                         existingVehicle.averageConsumption += existingVehicle.averageConsumptionSinceLastRefuel;
+//                     } else if (item.additionalInformationTyp === AdditionalInformationTyp.GEWARTET && +item.distanceSinceLastAdditionalInformation !== 0 && +item.additionalInformationCost !== 0) {
+//                         existingVehicle.totalMaintenanceCost += +item.additionalInformationCost;
+//                         existingVehicle.totalMaintenancesDistance += +item.distanceSinceLastAdditionalInformation;
+//                     }
+//                 } else {
+//                     result.push({
+//                         vehicle: item.vehicle,
+//                         distance: +item.distance,
+//                         distanceCost: +item.distanceCost,
+//                         averageConsumptionSinceLastRefuel: -1,
+//                         averageCostPerKmSinceLastRefuel: -1,
+//                         averageConsumption: 0,
+//                         averageCost: 0,
+//                         totalRefuels: 0,
+//                         totalMaintenancesDistance: 0,
+//                         totalMaintenanceCost: 0,
+//                         averageMaintenanceCostPerKm: 0, // Default value for the new property
+//                     });
+//                 }
+//
+//                 return result;
+//             },
+//             [] as {
+//                 vehicle: Vehicle;
+//                 distance: number;
+//                 distanceCost: number;
+//                 averageConsumptionSinceLastRefuel: number;
+//                 averageCostPerKmSinceLastRefuel: number;
+//                 averageMaintenanceCostPerKm: number;
+//                 averageConsumption: number;
+//                 averageCost: number;
+//                 totalRefuels: number;
+//                 totalMaintenancesDistance: number;
+//                 totalMaintenanceCost: number;
+//             }[],
+//         );
+//
+//         resultArray.forEach((currentValue) => {
+//             currentValue.averageConsumption /= currentValue.totalRefuels;
+//             currentValue.averageCost /= currentValue.totalRefuels;
+//             currentValue.averageMaintenanceCostPerKm = currentValue.totalMaintenanceCost / currentValue.totalMaintenancesDistance;
+//         });
+//
+//         return resultArray;
+//     }
 
     /**
      *
@@ -205,11 +204,11 @@ export class StatsService {
             distance: number;
             distanceCost: number;
             drivesCostForFree?: number;
-            vehicles: [{ vehicleTyp: Vehicle; distance: number; distanceCost: number; drivesCostForFree?: number }];
+            vehicles: [{ vehicle: Vehicle; distance: number; distanceCost: number; drivesCostForFree?: number }];
         }[]
     > {
         const paginateResult: PaginateResult<Logbook> = await this._logbookService.findAll({
-            vehicleTyp: vehicles || Object.values(Vehicle),
+            vehicle: vehicles || Object.values(Vehicle),
             driver: drivers,
             date: {
                 ...(startDate && {
@@ -227,10 +226,10 @@ export class StatsService {
                 .map((item) => {
                     return {
                         driver: item.driver,
-                        vehicle: item.vehicleTyp,
-                        distance: +item.distance,
-                        distanceCost: +item.distanceCost,
-                        forFree: item.forFree,
+                        vehicle: item.vehicle,
+                        distance: item.mileAge.difference,
+                        distanceCost: item.mileAge.cost,
+                        forFree: item.details.covered,
                     };
                 })
                 // sum the cost for every driver
@@ -251,7 +250,7 @@ export class StatsService {
                                 ...(detailed && {
                                     vehicles: [
                                         {
-                                            vehicleTyp: currentValue.vehicle,
+                                            vehicle: currentValue.vehicle,
                                             distance: 0,
                                             distanceCost: currentValue.distanceCost,
                                             drivesCostForFree: currentValue.distanceCost,
@@ -262,7 +261,7 @@ export class StatsService {
                         } else {
                             payingDriver.drivesCostForFree = (payingDriver.drivesCostForFree || 0) + currentValue.distanceCost;
                             if (detailed) {
-                                const vehicle = payingDriver.vehicles.find((item) => item.vehicleTyp === currentValue.vehicle);
+                                const vehicle = payingDriver.vehicles.find((item) => item.vehicle === currentValue.vehicle);
                                 if (vehicle != undefined) {
                                     vehicle.drivesCostForFree = (vehicle.drivesCostForFree || 0) + currentValue.distanceCost;
                                 }
@@ -277,7 +276,7 @@ export class StatsService {
 
                         if (!detailed) return previousValue;
 
-                        let existingVehicle = existingDriver.vehicles.find((item) => item.vehicleTyp === currentValue.vehicle);
+                        let existingVehicle = existingDriver.vehicles.find((item) => item.vehicle === currentValue.vehicle);
                         if (existingVehicle) {
                             // If vehicles contains the key of the vehicle keep going
                             existingVehicle.distance += currentValue.distance;
@@ -285,7 +284,7 @@ export class StatsService {
                         } else {
                             // Else add the missing vehicle to the vehicles array including the already containing ones
                             existingDriver.vehicles.push({
-                                vehicleTyp: currentValue.vehicle,
+                                vehicle: currentValue.vehicle,
                                 distance: currentValue.distance,
                                 distanceCost: currentValue.forFree ? 0 : currentValue.distanceCost,
                             });
@@ -299,7 +298,7 @@ export class StatsService {
                             ...(detailed && {
                                 vehicles: [
                                     {
-                                        vehicleTyp: currentValue.vehicle,
+                                        vehicle: currentValue.vehicle,
                                         distance: currentValue.distance,
                                         distanceCost: currentValue.forFree ? 0 : currentValue.distanceCost,
                                     },
@@ -314,7 +313,7 @@ export class StatsService {
                     distanceCost: number;
                     drivesCostForFree?: number;
                     vehicles: [{
-                        vehicleTyp: Vehicle;
+                        vehicle: Vehicle;
                         distance: number;
                         distanceCost: number;
                         drivesCostForFree?: number
