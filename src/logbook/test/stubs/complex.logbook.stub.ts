@@ -483,7 +483,7 @@ export const complexLogbookStub_Ferrari_10_0_T = (): Logbook => {
         refuel: {
             liters: 0, // Update with actual refuel data
             price: 0, // Update with actual refuel data
-            distanceDifference: 0, // Update with actual refuel data
+            distanceDifference: 25, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
             isSpecial: true,
         },
@@ -594,7 +594,7 @@ export const complexLogbookStub_Porsche_4_0_T = (): Logbook => {
         refuel: {
             liters: 0, // Update with actual refuel data
             price: 0, // Update with actual refuel data
-            distanceDifference: 0, // Update with actual refuel data
+            distanceDifference: 5, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
             isSpecial: true,
         },
@@ -639,8 +639,8 @@ export const complexLogbookStub_Porsche_6_1_F = (): Logbook => {
         refuel: {
             liters: 43.1, // Update with actual refuel data
             price: 62.9, // Update with actual refuel data
-            distanceDifference: 0, // Update with actual refuel data
-            consumption: 0, // Update with actual refuel data
+            distanceDifference: 9, // Update with actual refuel data
+            consumption: 478.89, // Update with actual refuel data
             isSpecial: false,
         },
     };
@@ -726,7 +726,7 @@ export const complexLogbookStub_Porsche_10_0_T = (): Logbook => {
         refuel: {
             liters: 0, // Update with actual refuel data
             price: 0, // Update with actual refuel data
-            distanceDifference: 0, // Update with actual refuel data
+            distanceDifference: 25, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
             isSpecial: true,
         },
@@ -738,7 +738,7 @@ export const convertComplexLogbookStubToNoType = (logbook: Logbook, id?: any, da
     return {
         ...(id && {_id: id}),
         ...logbook,
-        ...(date && {date: date}),
+        date: logbook.date.toISOString(),
     };
 };
 

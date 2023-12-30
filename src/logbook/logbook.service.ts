@@ -63,7 +63,6 @@ export class LogbookService {
                 cost: Math.round((difference * DISTANCE_COST) * 100) / 100,
             }
         };
-        console.log(submitLogbook);
 
         return await this.logbooksRepository.create(submitLogbook);
     }

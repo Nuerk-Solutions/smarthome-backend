@@ -2,7 +2,6 @@ import {EntityRepository} from './entity.repository';
 import {FilterQuery, Model, SortOrder} from 'mongoose';
 import {Vehicle} from '../logbook/core/enums/vehicle-typ.enum';
 import {LogbookDocument} from "../logbook/core/schemas/logbook.schema";
-import {AdditionalInformationTyp} from "../logbook/core/enums/additional-information-typ.enum";
 
 export abstract class LogbookEntityRepository<T extends LogbookDocument> extends EntityRepository<T> {
     constructor(readonly entityModel: Model<T>) {
@@ -14,7 +13,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
             .aggregate([
                 {
                     $sort: {
-                        newMileAge: -1,
+                        "mileAge.new": -1,
                     },
                 },
                 {
@@ -123,28 +122,5 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
             page,
             pageCount: Math.ceil(total / limit),
         };
-    }
-
-    /**
-     * @deprecated The method should not be used
-     */
-    async findLastAddedLogbooksByMileage(): Promise<T[]> {
-        const latestLogbookVw = await this.entityModel
-            .findOne({vehicle: 'VW'})
-            .sort({newMileAge: -1})
-            .limit(1)
-            .exec();
-        const latestLogbookFerrari = await this.entityModel
-            .findOne({vehicle: 'Ferrari'})
-            .sort({newMileAge: -1})
-            .limit(1)
-            .exec();
-        const latestLogbookPorsche = await this.entityModel
-            .findOne({vehicle: 'Porsche'})
-            .sort({newMileAge: -1})
-            .limit(1)
-            .exec();
-
-        return [latestLogbookVw, latestLogbookFerrari, latestLogbookPorsche];
     }
 }

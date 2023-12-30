@@ -34,7 +34,6 @@ export class LogbookController {
   @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(@Body() createLogbookDto: CreateLogbookDto): Promise<Logbook> {
-      console.log(createLogbookDto);
     return this._logbookService.create(createLogbookDto);
   }
 

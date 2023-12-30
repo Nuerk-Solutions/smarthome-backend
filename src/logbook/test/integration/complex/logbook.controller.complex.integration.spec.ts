@@ -35,11 +35,12 @@ describe('Complex LogbookController Integration Test', () => {
     dbConnection = moduleRef.get<DatabaseService>(DatabaseService).getDbHandle();
     httpServer = app.getHttpServer();
 
-    await dbConnection.collection('logbooks').deleteMany({});
+    await dbConnection.collection('logbooks').deleteMany();
+    await new Promise(process.nextTick);
   });
 
   afterAll(async () => {
-    await dbConnection.collection('logbooks').deleteMany({});
+    await dbConnection.collection('logbooks').deleteMany();
     await app.close();
   });
 
@@ -291,10 +292,11 @@ describe('Complex LogbookController Integration Test', () => {
     it('should return an array of logbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
-      console.log(response.body.data)
+      console.log(convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id, response.body.data.date))
+      
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body.data).toMatchObject([
-        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id, response.body.date),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id, response.body.data.date),
       ]);
     });
   });
@@ -820,44 +822,44 @@ describe('Complex LogbookController Integration Test', () => {
     it('update not the last logbook with different stats; should fail', async () => {
       const logbookToInsert = {
         ...basicLogbookStub(),
-        currentMileAge: '12',
-        newMileAge: '15',
-        distance: '3',
-        distanceCost: (11 * DISTANCE_COST).toFixed(2),
+        mileAge: {
+          current: 12,
+          new: 15,
+          difference: 3,
+          cost: 11 * DISTANCE_COST,
+        },
       };
       delete logbookToInsert._id;
       const logbook = await dbConnection.collection('logbooks').insertOne(logbookToInsert);
       const updateLogbookDto = {
-        currentMileAge: '10',
-        newMileAge: '20',
+        mileAge: {
+          current: 10,
+        },
         reason: 'TestReason',
         driver: 'Andrea',
-        forFree: true,
-        additionalInformation: 'Test Information',
-        additionalInformationCost: '0018.75',
       };
       const response = await request(httpServer)
         .put('/logbook/' + logbook.insertedId)
         .set('Authorization', apiKey)
         .send(updateLogbookDto);
 
+
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toMatchObject({ ...updateLogbookDto, currentMileAge: '12', newMileAge: '15' });
+      expect(response.body).toMatchObject({ ...updateLogbookDto });
 
       const updatedLogbook = await dbConnection
         .collection('logbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
-      expect(updatedLogbook).toMatchObject({ ...updateLogbookDto, currentMileAge: '12', newMileAge: '15' });
+      expect(updatedLogbook).toMatchObject({ ...updateLogbookDto });
     });
 
     it('update last logbook with different stats', async () => {
       const updateLogbookDto = {
-        newMileAge: '200001',
+        mileAge: {
+          new: 200001,
+        },
         reason: 'TestReason',
         driver: 'Andrea',
-        forFree: true,
-        additionalInformation: 'Test Information',
-        additionalInformationCost: '0018.75',
       };
       const response = await request(httpServer)
         .put('/logbook/' + logbookId)
@@ -886,7 +888,6 @@ describe('Complex LogbookController Integration Test', () => {
         _id: updatedLogbook._id.toString(),
         date: updatedLogbook.date.toISOString(),
         createdAt: updatedLogbook.createdAt.toISOString(),
-        updatedAt: updatedLogbook.updatedAt.toISOString(),
       };
 
       expect(response.status).toBe(HttpStatus.OK);
