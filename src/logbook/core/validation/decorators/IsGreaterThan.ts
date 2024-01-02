@@ -13,10 +13,7 @@ export function IsGreaterThan(property: string, validationOptions?: ValidationOp
           const [relatedPropertyName] = args.constraints;
           const relatedValue = (args.object as any)[relatedPropertyName];
           return (
-            typeof value === 'string' &&
-            typeof relatedValue === 'string' &&
-            +value > +relatedValue &&
-            +value != +relatedValue
+            value > relatedValue && value != relatedValue
           );
         },
       },

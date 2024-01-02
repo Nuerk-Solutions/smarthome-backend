@@ -13,10 +13,10 @@ export function IsLowerThan(property: string, validationOptions?: ValidationOpti
           const [relatedPropertyName] = args.constraints;
           const relatedValue = (args.object as any)[relatedPropertyName];
           return (
-            typeof value === 'string' &&
-            typeof relatedValue === 'string' &&
-            +value < +relatedValue &&
-            +value != +relatedValue
+            //typeof value === 'string' &&
+            //typeof relatedValue === 'string' &&
+            value < relatedValue &&
+            value != relatedValue
           );
         },
       },

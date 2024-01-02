@@ -64,12 +64,10 @@ class Details {
 
 class MileAge {
     @IsNotEmpty()
-    @IsNumberString()
     @IsLowerThan('new', {message: 'current must be lower than new mileage'})
     current: number;
 
     @IsNotEmpty()
-    @IsNumberString()
     @IsGreaterThan('current', {message: 'new must be greater than current mileage'})
     new: number;
 
