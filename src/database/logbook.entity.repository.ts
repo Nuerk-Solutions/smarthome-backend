@@ -1,7 +1,7 @@
 import {EntityRepository} from './entity.repository';
 import {FilterQuery, Model, SortOrder} from 'mongoose';
 import {Vehicle} from '../logbook/core/enums/vehicle-typ.enum';
-import {LogbookDocument} from "../logbook/core/schemas/logbook.schema";
+import {LogbookDocument, Refuel} from "../logbook/core/schemas/logbook.schema";
 
 export abstract class LogbookEntityRepository<T extends LogbookDocument> extends EntityRepository<T> {
     constructor(readonly entityModel: Model<T>) {
@@ -59,6 +59,44 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
                 },
                 {
                     $limit: 1,
+                },
+            ])
+            .collation({ locale: 'de', numericOrdering: true })
+            .exec();
+    }
+
+    async findLastRefuels(limit: number): Promise<Array<{vehicle: Vehicle, refuels: Refuel[]}>> {
+        return this.entityModel.aggregate(
+            [
+                {
+                    $match: {
+                        'refuel': {
+                            $exists: true,
+                        },
+                    },
+                },
+                {
+                    $sort: {
+                        'mileAge.new': -1,
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$vehicle',
+                        refuels: {
+                            $push: {
+                                date: '$date',
+                                refuel: '$refuel',
+                            },
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        vehicle: '$_id',
+                        refuels: { $slice: ['$refuels', limit] },
+                    },
                 },
             ])
             .collation({ locale: 'de', numericOrdering: true })
