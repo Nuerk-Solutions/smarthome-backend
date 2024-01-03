@@ -1,9 +1,10 @@
 import {
+    IS_NUMBER,
     IsBoolean,
     IsDateString, IsDecimal,
     IsEnum,
     IsISO8601,
-    IsNotEmpty,
+    IsNotEmpty, IsNumber,
     IsNumberString,
     IsOptional,
     IsString,
@@ -20,11 +21,11 @@ import {Type} from "class-transformer";
 
 class Refuel {
     @IsNotEmpty()
-    @IsDecimal()
+    @IsNumber({allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2})
     readonly liters: number;
 
     @IsNotEmpty()
-    @IsDecimal()
+    @IsNumber({allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2})
     readonly price: number;
 
     @IsOptional()
@@ -39,7 +40,7 @@ class Service {
     readonly message: string;
 
     @IsNotEmpty()
-    @IsDecimal()
+    @IsNumber({allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2})
     readonly price: number;
 }
 
@@ -49,7 +50,7 @@ class Details {
 
     @IsOptional()
     @IsEnum(Driver, {each: true, message: 'Driver is not valid'})
-    readonly driver: Driver = Driver.CLAUDIA;
+    readonly driver?: Driver;
 
     @IsString()
     @IsOptional()
