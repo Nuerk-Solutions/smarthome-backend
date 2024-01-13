@@ -1,7 +1,7 @@
 import { LogbooksRepository } from '../repositories/logbooks.repository';
 import { Test } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { Logbook } from '../core/schemas/logbook.schema';
+import { NewLogbook } from '../core/schemas/logbook.schema';
 import { LogbookModel } from './support/logbook.model';
 import { FilterQuery } from 'mongoose';
 import { basicLogbookStub } from './stubs/basic.logbook.stub';
@@ -11,28 +11,28 @@ describe('LogbooksRepository', () => {
 
   describe('findOperations', () => {
     let logbookModel: LogbookModel;
-    let logbookFilterQuery: FilterQuery<Logbook>;
+    let logbookFilterQuery: FilterQuery<NewLogbook>;
 
     beforeEach(async () => {
       const moduleRef = await Test.createTestingModule({
         providers: [
           LogbooksRepository,
           {
-            provide: getModelToken(Logbook.name, 'logbook'),
+            provide: getModelToken(NewLogbook.name, 'logbook'),
             useClass: LogbookModel,
           },
         ],
       }).compile();
 
       logbookRepository = moduleRef.get<LogbooksRepository>(LogbooksRepository);
-      logbookModel = moduleRef.get<LogbookModel>(getModelToken(Logbook.name, 'logbook'));
+      logbookModel = moduleRef.get<LogbookModel>(getModelToken(NewLogbook.name, 'logbook'));
       logbookFilterQuery = { _id: basicLogbookStub()._id };
       jest.clearAllMocks();
     });
 
     describe('findOne', () => {
       describe('when findOne is called', () => {
-        let logbook: Logbook;
+        let logbook: NewLogbook;
 
         beforeEach(async () => {
           jest.spyOn(logbookModel, 'findOne');
@@ -54,7 +54,7 @@ describe('LogbooksRepository', () => {
 
     describe('find', () => {
       describe('when find is called', () => {
-        let logbooks: Logbook[];
+        let logbooks: NewLogbook[];
 
         beforeEach(async () => {
           jest.spyOn(logbookModel, 'find');
@@ -74,7 +74,7 @@ describe('LogbooksRepository', () => {
 
     describe('findOneAndUpdate', () => {
       describe('when findOneAndUpdate is called', () => {
-        let logbook: Logbook;
+        let logbook: NewLogbook;
 
         beforeEach(async () => {
           jest.spyOn(logbookModel, 'findOneAndUpdate');

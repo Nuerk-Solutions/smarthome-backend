@@ -14,7 +14,7 @@ import {
   StreamableFile,
 } from '@nestjs/common';
 import { LogbookService } from './logbook.service';
-import { Logbook } from './core/schemas/logbook.schema';
+import { NewLogbook } from './core/schemas/logbook.schema';
 import { ApiKey } from '../authentication/core/decorators/apikey.decorator';
 import { DriverParameter } from './core/dto/parameters/driver.parameter';
 import { Driver } from './core/enums/driver.enum';
@@ -33,7 +33,7 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async create(@Body() createLogbookDto: CreateLogbookDto): Promise<Logbook> {
+  async create(@Body() createLogbookDto: CreateLogbookDto): Promise<NewLogbook> {
     return this._logbookService.create(createLogbookDto);
   }
 
@@ -65,7 +65,7 @@ export class LogbookController {
     sort?: StringSortParameter,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-  ): Promise<PaginateResult<Logbook>> {
+  ): Promise<PaginateResult<NewLogbook>> {
     return await this._logbookService.findAll(
       {
         ...(drivers && {
@@ -91,7 +91,7 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/latest')
-  async findLatest(): Promise<PaginateResult<Logbook>> {
+  async findLatest(): Promise<PaginateResult<NewLogbook>> {
     const data = await this._logbookService.findLatest();
     return {
       total: data.length,
@@ -105,7 +105,7 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/find/:_id')
-  async findOne(@Param('_id') _id: string): Promise<Logbook> {
+  async findOne(@Param('_id') _id: string): Promise<NewLogbook> {
     return await this._logbookService.findOne(_id);
   }
 
@@ -163,4 +163,10 @@ export class LogbookController {
       throw new HttpException('Could not delete logbook entry', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+    @HttpCode(HttpStatus.OK)
+    @Get('/refuels/last')
+    async refuels(@Query('limit') limit: number = 10) {
+      return this._logbookService.findLastRefuels(limit);
+    }
 }

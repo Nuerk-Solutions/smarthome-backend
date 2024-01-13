@@ -8,14 +8,15 @@ import {CreateLogbookDto} from './core/dto/create-logbook.dto';
 import {DISTANCE_COST} from '../core/utils/constatns';
 import {DateParameter} from "./core/dto/parameters/date.parameter";
 import {LogbooksRepository} from "./repositories/logbooks.repository";
-import {Logbook} from "./core/schemas/logbook.schema";
+import {NewLogbook, Refuel} from "./core/schemas/logbook.schema";
+import {Vehicle} from "./core/enums/vehicle-typ.enum";
 
 @Injectable()
 export class LogbookService {
     constructor(private readonly logbooksRepository: LogbooksRepository) {
     }
 
-    async create(createLogbookDto: CreateLogbookDto): Promise<Logbook> {
+    async create(createLogbookDto: CreateLogbookDto): Promise<NewLogbook> {
         let submitLogbook: any = {
             ...createLogbookDto,
         }
@@ -26,7 +27,7 @@ export class LogbookService {
             throw new BadRequestException('Logbook already exists');
         }
 
-        const lastLogbook: Logbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(createLogbookDto.vehicle);
+        const lastLogbook: NewLogbook = await this.logbooksRepository.findLastAddedLogbookForVehicle(createLogbookDto.vehicle);
 
         if (lastLogbook != null && createLogbookDto.mileAge.current != lastLogbook.mileAge.new) {
             throw new BadRequestException('mileAge.current is not equal to last logbook mileAge.new');
@@ -67,16 +68,20 @@ export class LogbookService {
         return await this.logbooksRepository.create(submitLogbook);
     }
 
-    async findAll(filter?: object, sort?: StringSortParameter, page?: number, limit?: number,): Promise<PaginateResult<Logbook>> {
+    async findAll(filter?: object, sort?: StringSortParameter, page?: number, limit?: number,): Promise<PaginateResult<NewLogbook>> {
         return await this.logbooksRepository.getPagination(filter, page, limit, sort);
     }
 
-    async findOne(id: string): Promise<Logbook> {
+    async findOne(id: string): Promise<NewLogbook> {
         return await this.logbooksRepository.findById(id);
     }
 
-    async findLatest(): Promise<Logbook[]> {
+    async findLatest(): Promise<NewLogbook[]> {
         return this.logbooksRepository.findLastAddedLogbooks();
+    }
+
+    async findLastRefuels(limit: number): Promise<NewLogbook[]> {
+        return await this.logbooksRepository.findLastRefuels(limit);
     }
 
     async download(drivers: DriverParameter[], vehicles: VehicleParameter[], date: DateParameter,): Promise<Buffer> {
@@ -124,7 +129,7 @@ export class LogbookService {
         return await this.logbooksRepository.deleteOneById(_id);
     }
 
-    async update(id: string, updateLogbookDto: UpdateLogbookDto): Promise<Logbook> {
+    async update(id: string, updateLogbookDto: UpdateLogbookDto): Promise<NewLogbook> {
         const targetLogbook = await this.logbooksRepository.findById(id);
 
         if (targetLogbook == null) {

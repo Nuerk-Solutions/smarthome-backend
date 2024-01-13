@@ -1,11 +1,11 @@
-import {Logbook} from '../../core/schemas/logbook.schema';
+import {NewLogbook} from '../../core/schemas/logbook.schema';
 import {Types} from 'mongoose';
 import {Driver} from '../../core/enums/driver.enum';
 import {Vehicle} from '../../core/enums/vehicle-typ.enum';
 import {Unit} from "../../core/enums/unit.enum";
 
 // Return a new instance every time
-export const basicLogbookStub = (): Logbook => {
+export const basicLogbookStub = (): NewLogbook => {
     return {
         _id: new Types.ObjectId('634ff77d18495f2dc3a8be80'),
         service: {

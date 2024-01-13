@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { LogbookController } from '../logbook.controller';
 import { LogbookService } from '../logbook.service';
 import { basicLogbookStub } from './stubs/basic.logbook.stub';
-import { Logbook } from '../core/schemas/logbook.schema';
+import { NewLogbook } from '../core/schemas/logbook.schema';
 import { CreateLogbookDto } from '../core/dto/create-logbook.dto';
 import { UpdateLogbookDto } from '../core/dto/update-logbook.dto';
 import { Driver } from '../core/enums/driver.enum';
@@ -28,7 +28,7 @@ describe('LogbookController', () => {
 
   describe('findOne', () => {
     describe('when findOne is called', () => {
-      let logbook: Logbook;
+      let logbook: NewLogbook;
       beforeEach(async () => {
         logbook = await logbookController.findOne(basicLogbookStub()._id.toString());
       });
@@ -45,7 +45,7 @@ describe('LogbookController', () => {
 
   describe('findLatest', () => {
     describe('when findLatest is called', () => {
-      let logbooks: PaginateResult<Logbook>;
+      let logbooks: PaginateResult<NewLogbook>;
       beforeEach(async () => {
         logbooks = await logbookController.findLatest();
       });
@@ -63,7 +63,7 @@ describe('LogbookController', () => {
   // Todo: Impl more cases
   describe('findAll', () => {
     describe('when findAll is called', () => {
-      let paginationResult: PaginateResult<Logbook>;
+      let paginationResult: PaginateResult<NewLogbook>;
       beforeEach(async () => {
         paginationResult = await logbookController.findAll();
         // IMPORTANT: The paginationResult returns for some reason a LogbookArray instead of a PaginationResult<Logbook>
@@ -81,7 +81,7 @@ describe('LogbookController', () => {
 
   describe('create', () => {
     describe('when create is called', () => {
-      let logbook: Logbook;
+      let logbook: NewLogbook;
       let createLogbookDto: CreateLogbookDto;
 
       beforeEach(async () => {
@@ -112,7 +112,7 @@ describe('LogbookController', () => {
 
   describe('update', () => {
     describe('when update is called', () => {
-      let logbook: Logbook;
+      let logbook: NewLogbook;
       let updateLogbookDto: UpdateLogbookDto;
 
       beforeEach(async () => {

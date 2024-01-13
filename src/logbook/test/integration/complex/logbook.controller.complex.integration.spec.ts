@@ -4,7 +4,7 @@ import { Connection, Types } from 'mongoose';
 import { DatabaseService } from '../../../../database/database.service';
 import * as request from 'supertest';
 import { HttpStatus } from '@nestjs/common';
-import { Logbook } from '../../../core/schemas/logbook.schema';
+import { NewLogbook } from '../../../core/schemas/logbook.schema';
 import * as stubs from '../../stubs/complex.logbook.stub';
 import {
   complexLogbookStub_Ferrari_10_0_T,
@@ -64,7 +64,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_0_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_0_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_0_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -85,7 +85,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_1_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_1_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_1_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -106,7 +106,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_2_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_2_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_2_0_F();
 
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
@@ -127,7 +127,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_3_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_3_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_3_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -149,7 +149,7 @@ describe('Complex LogbookController Integration Test', () => {
 
       let prevId = String(response.body.refuel.previousRecordId);
 
-      let newLogbook: Logbook = stubs.complexLogbookStub_VW_4_0_T();
+      let newLogbook: NewLogbook = stubs.complexLogbookStub_VW_4_0_T();
 
       let shortResponse = response.body;
       delete shortResponse.refuel.previousRecordId;
@@ -172,7 +172,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_5_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_5_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_5_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -192,7 +192,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_6_1_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_6_1_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_6_1_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -212,7 +212,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_7_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_7_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_7_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -232,7 +232,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_8_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_8_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_8_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -252,7 +252,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_9_2_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_9_2_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_9_2_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -272,7 +272,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_VW_10_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_VW_10_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_10_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -308,7 +308,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_0_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_0_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_0_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -338,7 +338,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_1_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_1_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_1_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -358,7 +358,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_2_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_2_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_2_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -378,7 +378,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_3_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_3_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_3_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -398,7 +398,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_4_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_4_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_4_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -418,7 +418,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_5_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_5_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_5_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -438,7 +438,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_6_1_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_6_1_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_6_1_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -458,7 +458,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_7_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_7_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_7_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -478,7 +478,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_8_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_8_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_8_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -498,7 +498,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_9_2_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_9_2_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_9_2_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -518,7 +518,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Ferrari_10_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Ferrari_10_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_10_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -554,7 +554,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_0_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_0_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_0_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -584,7 +584,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_1_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_1_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_1_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -604,7 +604,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_2_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_2_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_2_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -624,7 +624,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_3_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_3_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_3_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -644,7 +644,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_4_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_4_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_4_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -664,7 +664,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_5_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_5_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_5_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -684,7 +684,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_6_1_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_6_1_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_6_1_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -704,7 +704,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_7_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_7_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_7_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -724,7 +724,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_8_0_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_8_0_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_8_0_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -744,7 +744,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_9_2_F());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_9_2_F();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_9_2_F();
 
       expect(response.body).toMatchObject({
         ...newLogbook,
@@ -764,7 +764,7 @@ describe('Complex LogbookController Integration Test', () => {
         .set('Authorization', apiKey)
         .send(stubs.complexLogbookStub_Porsche_10_0_T());
 
-      const newLogbook: Logbook = stubs.complexLogbookStub_Porsche_10_0_T();
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Porsche_10_0_T();
 
       expect(response.body).toMatchObject({
         ...newLogbook,

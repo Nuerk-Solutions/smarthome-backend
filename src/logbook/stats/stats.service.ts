@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {VehicleParameter} from '../core/dto/parameters/vehicle.parameter';
-import {Logbook} from '../core/schemas/logbook.schema';
+import {NewLogbook} from '../core/schemas/logbook.schema';
 import {AdditionalInformationTyp} from '../core/enums/additional-information-typ.enum';
 import {Vehicle} from '../core/enums/vehicle-typ.enum';
 import {DriverParameter} from '../core/dto/parameters/driver.parameter';
@@ -207,7 +207,7 @@ export class StatsService {
             vehicles: [{ vehicle: Vehicle; distance: number; distanceCost: number; drivesCostForFree?: number }];
         }[]
     > {
-        const paginateResult: PaginateResult<Logbook> = await this._logbookService.findAll({
+        const paginateResult: PaginateResult<NewLogbook> = await this._logbookService.findAll({
             vehicle: vehicles || Object.values(Vehicle),
             driver: drivers,
             date: {

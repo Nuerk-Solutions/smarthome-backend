@@ -2,7 +2,7 @@ import {getModelToken} from '@nestjs/mongoose';
 import {Test, TestingModule} from '@nestjs/testing';
 import {Model} from 'mongoose';
 import {LogbookService} from '../../logbook.service';
-import {Logbook} from '../../core/schemas/logbook.schema';
+import {NewLogbook} from '../../core/schemas/logbook.schema';
 import {Driver} from '../../core/enums/driver.enum';
 import {Vehicle} from '../../core/enums/vehicle-typ.enum';
 import {MailService} from '../../../core/mail/mail.service';
@@ -34,7 +34,7 @@ const mockLogbook = {
 describe('LogbookService', () => {
     let service: LogbookService;
     let mailService: MailService;
-    let model: Model<Logbook>;
+    let model: Model<NewLogbook>;
     let invoiceModel: Model<LogbookInvoice>;
     let logbookRepository: LogbooksRepository;
 
@@ -78,7 +78,7 @@ describe('LogbookService', () => {
                 LogbookService,
                 LogbooksRepository,
                 {
-                    provide: getModelToken(Logbook.name, 'logbook'),
+                    provide: getModelToken(NewLogbook.name, 'logbook'),
                     useValue: {
                         new: jest.fn().mockResolvedValue(mockLogbook),
                         constructor: jest.fn().mockResolvedValue(mockLogbook),
@@ -108,7 +108,7 @@ describe('LogbookService', () => {
         logbookRepository = module.get<LogbooksRepository>(LogbooksRepository);
         service = module.get<LogbookService>(LogbookService);
         mailService = module.get<MailService>(MailService);
-        model = module.get<Model<Logbook>>(getModelToken(Logbook.name, 'logbook'));
+        model = module.get<Model<NewLogbook>>(getModelToken(NewLogbook.name, 'logbook'));
         invoiceModel = module.get<Model<LogbookInvoice>>(getModelToken(LogbookInvoice.name, 'logbook'));
         jest.clearAllMocks();
     });

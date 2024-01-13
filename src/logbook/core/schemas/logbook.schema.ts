@@ -6,7 +6,7 @@ import {Int32, ObjectId} from 'bson';
 import * as mongoose from "mongoose";
 import {Unit} from "../enums/unit.enum";
 
-export type LogbookDocument = Logbook & Document;
+export type LogbookDocument = NewLogbook & Document;
 
 @Schema({_id: false})
 export class MileAge {
@@ -80,7 +80,7 @@ export class Details {
 export const DetailsSchema = SchemaFactory.createForClass(Details);
 
 @Schema({timestamps: {createdAt: true, updatedAt: false}, _id: true, versionKey: false, strict: true})
-export class Logbook {
+export class NewLogbook {
     @Prop({type: Types.ObjectId, required: true, default: () => new ObjectId()})
     _id?: Types.ObjectId;
 
@@ -109,4 +109,4 @@ export class Logbook {
     service?: Service
 }
 
-export const LogbookSchema = SchemaFactory.createForClass(Logbook);
+export const LogbookSchema = SchemaFactory.createForClass(NewLogbook);

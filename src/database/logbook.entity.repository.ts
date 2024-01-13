@@ -65,39 +65,61 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
             .exec();
     }
 
-    async findLastRefuels(limit: number): Promise<Array<{vehicle: Vehicle, refuels: Refuel[]}>> {
+    async findLastRefuels(limit: number): Promise<T[]> {
         return this.entityModel.aggregate(
             [
-                {
-                    $match: {
-                        'refuel': {
-                            $exists: true,
-                        },
-                    },
-                },
-                {
-                    $sort: {
-                        'mileAge.new': -1,
-                    },
-                },
-                {
-                    $group: {
-                        _id: '$vehicle',
-                        refuels: {
-                            $push: {
-                                date: '$date',
-                                refuel: '$refuel',
+                    {
+                        $match: {
+                            'refuel': {
+                                $exists: true,
                             },
                         },
                     },
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        vehicle: '$_id',
-                        refuels: { $slice: ['$refuels', limit] },
+                    {
+                        $sort: {
+                            'mileAge.new': -1,
+                        },
                     },
-                },
+                    {
+                        $group: {
+                            _id: "$vehicle",
+                            entries: {
+                                $push: "$$ROOT"
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            entries: {
+                                $slice: ["$entries", limit ?? 10]
+                            }
+                        }
+                    },
+                    {
+                        $unwind: "$entries"
+                    },
+                    {
+                        $replaceRoot: { newRoot: "$entries" }
+                    }
+
+                // {
+                //     $group: {
+                //         _id: '$vehicle',
+                //         refuels: {
+                //             $push: {
+                //                 date: '$date',
+                //                 refuel: '$refuel',
+                //             },
+                //         },
+                //     },
+                // },
+                // {
+                //     $project: {
+                //         _id: 0,
+                //         vehicle: '$_id',
+                //         refuels: { $slice: ['$refuels', limit] },
+                //     },
+                // },
             ])
             .collation({ locale: 'de', numericOrdering: true })
             .exec();

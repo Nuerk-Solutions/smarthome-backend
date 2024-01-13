@@ -1,4 +1,4 @@
-import {Logbook} from '../../core/schemas/logbook.schema';
+import {NewLogbook} from '../../core/schemas/logbook.schema';
 import {Driver} from '../../core/enums/driver.enum';
 import {Vehicle} from '../../core/enums/vehicle-typ.enum';
 import {Unit} from "../../core/enums/unit.enum";
@@ -6,7 +6,7 @@ import {Unit} from "../../core/enums/unit.enum";
 /**
  * VW
  */
-export const complexLogbookStub_VW_0_0_F = (): Logbook => {
+export const complexLogbookStub_VW_0_0_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.VW,
@@ -25,7 +25,7 @@ export const complexLogbookStub_VW_0_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_1_0_F = (): Logbook => {
+export const complexLogbookStub_VW_1_0_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.VW,
@@ -44,7 +44,7 @@ export const complexLogbookStub_VW_1_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_2_0_F = (): Logbook => {
+export const complexLogbookStub_VW_2_0_F = (): NewLogbook => {
     return {
         driver: Driver.CLAUDIA,
         vehicle: Vehicle.VW,
@@ -63,7 +63,7 @@ export const complexLogbookStub_VW_2_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_3_0_T = (): Logbook => {
+export const complexLogbookStub_VW_3_0_T = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.VW,
@@ -89,7 +89,7 @@ export const complexLogbookStub_VW_3_0_T = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_4_0_T = (): Logbook => {
+export const complexLogbookStub_VW_4_0_T = (): NewLogbook => {
     return {
         driver: Driver.THOMAS,
         vehicle: Vehicle.VW,
@@ -115,7 +115,7 @@ export const complexLogbookStub_VW_4_0_T = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_5_0_F = (): Logbook => {
+export const complexLogbookStub_VW_5_0_F = (): NewLogbook => {
     return {
         driver: Driver.OLIVER,
         vehicle: Vehicle.VW,
@@ -134,7 +134,7 @@ export const complexLogbookStub_VW_5_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_6_1_F = (): Logbook => {
+export const complexLogbookStub_VW_6_1_F = (): NewLogbook => {
     return {
         driver: Driver.CLAUDIA,
         vehicle: Vehicle.VW,
@@ -160,7 +160,7 @@ export const complexLogbookStub_VW_6_1_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_7_0_F = (): Logbook => {
+export const complexLogbookStub_VW_7_0_F = (): NewLogbook => {
     return {
         driver: Driver.THOMAS,
         vehicle: Vehicle.VW,
@@ -179,7 +179,7 @@ export const complexLogbookStub_VW_7_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_8_0_F = (): Logbook => {
+export const complexLogbookStub_VW_8_0_F = (): NewLogbook => {
     return {
         driver: Driver.OLIVER,
         vehicle: Vehicle.VW,
@@ -198,7 +198,7 @@ export const complexLogbookStub_VW_8_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_9_2_F = (): Logbook => {
+export const complexLogbookStub_VW_9_2_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.VW,
@@ -221,7 +221,7 @@ export const complexLogbookStub_VW_9_2_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_VW_10_0_T = (): Logbook => {
+export const complexLogbookStub_VW_10_0_T = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.VW,
@@ -249,7 +249,7 @@ export const complexLogbookStub_VW_10_0_T = (): Logbook => {
 /**
  * FERRARI
  */
-export const complexLogbookStub_Ferrari_0_0_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_0_0_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.FERRARI,
@@ -268,7 +268,7 @@ export const complexLogbookStub_Ferrari_0_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_1_0_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_1_0_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.FERRARI,
@@ -287,7 +287,7 @@ export const complexLogbookStub_Ferrari_1_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_2_0_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_2_0_F = (): NewLogbook => {
     return {
         driver: Driver.CLAUDIA,
         vehicle: Vehicle.FERRARI,
@@ -306,7 +306,7 @@ export const complexLogbookStub_Ferrari_2_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_3_0_T = (): Logbook => {
+export const complexLogbookStub_Ferrari_3_0_T = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.FERRARI,
@@ -332,7 +332,7 @@ export const complexLogbookStub_Ferrari_3_0_T = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_4_0_T = (): Logbook => {
+export const complexLogbookStub_Ferrari_4_0_T = (): NewLogbook => {
     return {
         driver: Driver.THOMAS,
         vehicle: Vehicle.FERRARI,
@@ -358,7 +358,7 @@ export const complexLogbookStub_Ferrari_4_0_T = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_5_0_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_5_0_F = (): NewLogbook => {
     return {
         driver: Driver.OLIVER,
         vehicle: Vehicle.FERRARI,
@@ -377,7 +377,7 @@ export const complexLogbookStub_Ferrari_5_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_6_1_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_6_1_F = (): NewLogbook => {
     return {
         driver: Driver.CLAUDIA,
         vehicle: Vehicle.FERRARI,
@@ -403,7 +403,7 @@ export const complexLogbookStub_Ferrari_6_1_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_7_0_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_7_0_F = (): NewLogbook => {
     return {
         driver: Driver.THOMAS,
         vehicle: Vehicle.FERRARI,
@@ -422,7 +422,7 @@ export const complexLogbookStub_Ferrari_7_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_8_0_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_8_0_F = (): NewLogbook => {
     return {
         driver: Driver.OLIVER,
         vehicle: Vehicle.FERRARI,
@@ -441,7 +441,7 @@ export const complexLogbookStub_Ferrari_8_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_9_2_F = (): Logbook => {
+export const complexLogbookStub_Ferrari_9_2_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.FERRARI,
@@ -464,7 +464,7 @@ export const complexLogbookStub_Ferrari_9_2_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Ferrari_10_0_T = (): Logbook => {
+export const complexLogbookStub_Ferrari_10_0_T = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.FERRARI,
@@ -492,7 +492,7 @@ export const complexLogbookStub_Ferrari_10_0_T = (): Logbook => {
 /**
  * PORSCHE
  */
-export const complexLogbookStub_Porsche_0_0_F = (): Logbook => {
+export const complexLogbookStub_Porsche_0_0_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.PORSCHE,
@@ -511,7 +511,7 @@ export const complexLogbookStub_Porsche_0_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_1_0_F = (): Logbook => {
+export const complexLogbookStub_Porsche_1_0_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.PORSCHE,
@@ -530,7 +530,7 @@ export const complexLogbookStub_Porsche_1_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_2_0_F = (): Logbook => {
+export const complexLogbookStub_Porsche_2_0_F = (): NewLogbook => {
     return {
         driver: Driver.CLAUDIA,
         vehicle: Vehicle.PORSCHE,
@@ -549,7 +549,7 @@ export const complexLogbookStub_Porsche_2_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_3_0_T = (): Logbook => {
+export const complexLogbookStub_Porsche_3_0_T = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.PORSCHE,
@@ -575,7 +575,7 @@ export const complexLogbookStub_Porsche_3_0_T = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_4_0_T = (): Logbook => {
+export const complexLogbookStub_Porsche_4_0_T = (): NewLogbook => {
     return {
         driver: Driver.THOMAS,
         vehicle: Vehicle.PORSCHE,
@@ -601,7 +601,7 @@ export const complexLogbookStub_Porsche_4_0_T = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_5_0_F = (): Logbook => {
+export const complexLogbookStub_Porsche_5_0_F = (): NewLogbook => {
     return {
         driver: Driver.OLIVER,
         vehicle: Vehicle.PORSCHE,
@@ -620,7 +620,7 @@ export const complexLogbookStub_Porsche_5_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_6_1_F = (): Logbook => {
+export const complexLogbookStub_Porsche_6_1_F = (): NewLogbook => {
     return {
         driver: Driver.CLAUDIA,
         vehicle: Vehicle.PORSCHE,
@@ -646,7 +646,7 @@ export const complexLogbookStub_Porsche_6_1_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_7_0_F = (): Logbook => {
+export const complexLogbookStub_Porsche_7_0_F = (): NewLogbook => {
     return {
         driver: Driver.THOMAS,
         vehicle: Vehicle.PORSCHE,
@@ -665,7 +665,7 @@ export const complexLogbookStub_Porsche_7_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_8_0_F = (): Logbook => {
+export const complexLogbookStub_Porsche_8_0_F = (): NewLogbook => {
     return {
         driver: Driver.OLIVER,
         vehicle: Vehicle.PORSCHE,
@@ -684,7 +684,7 @@ export const complexLogbookStub_Porsche_8_0_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_9_2_F = (): Logbook => {
+export const complexLogbookStub_Porsche_9_2_F = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.PORSCHE,
@@ -707,7 +707,7 @@ export const complexLogbookStub_Porsche_9_2_F = (): Logbook => {
     };
 };
 
-export const complexLogbookStub_Porsche_10_0_T = (): Logbook => {
+export const complexLogbookStub_Porsche_10_0_T = (): NewLogbook => {
     return {
         driver: Driver.ANDREA,
         vehicle: Vehicle.PORSCHE,
@@ -734,7 +734,7 @@ export const complexLogbookStub_Porsche_10_0_T = (): Logbook => {
 };
 
 
-export const convertComplexLogbookStubToNoType = (logbook: Logbook, id?: any, date?: any) => {
+export const convertComplexLogbookStubToNoType = (logbook: NewLogbook, id?: any, date?: any) => {
     return {
         ...(id && {_id: id}),
         ...logbook,
@@ -742,7 +742,7 @@ export const convertComplexLogbookStubToNoType = (logbook: Logbook, id?: any, da
     };
 };
 
-export const convertComplexLogbookStubToNoId = (logbook: Logbook) => {
+export const convertComplexLogbookStubToNoId = (logbook: NewLogbook) => {
     delete logbook._id;
     if (logbook.refuel)
         if (logbook.refuel.previousRecordId)
