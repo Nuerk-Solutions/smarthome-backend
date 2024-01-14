@@ -1,0 +1,133 @@
+Subject: [PATCH] migrate logbook on 965612a2
+---
+Index: src/logbook/logbook.service.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logbook/logbook.service.ts b/src/logbook/logbook.service.ts
+--- a/src/logbook/logbook.service.ts	(revision 965612a24349289cee194c393ced2fe078e26e63)
++++ b/src/logbook/logbook.service.ts	(date 1705228572928)
+@@ -15,6 +15,8 @@
+ import {NewLogbookRepository} from "./repositories/newLogbook.repository";
+ import {NewLogbook} from "./core/schemas/newLogbook.schema";
+ import {Decimal128, Double} from "bson";
++import {VehicleTyp} from "./core/enums/vehicle-typ.enum";
++import {UnitEnum} from "./core/enums/unit.enum";
+ 
+ @Injectable()
+ export class LogbookService {
+@@ -205,7 +207,7 @@
+             let refuel = null;
+             if (logbook.additionalInformationTyp === AdditionalInformationTyp.GETANKT) {
+                 let consumption = parseFloat(logbook.additionalInformation) / parseFloat(logbook.distanceSinceLastAdditionalInformation) * 100;
+-                if (parseFloat(logbook.distanceSinceLastAdditionalInformation) === 0)
++                if (parseFloat(logbook.distanceSinceLastAdditionalInformation) == 0)
+                     consumption = 0;
+ 
+                 const previousRecord = await this.newLogbooksRepository.findLastRefuel(
+@@ -213,10 +215,10 @@
+                 );
+ 
+                 refuel = {
+-                    liters: Decimal128.fromString(parseFloat(logbook.additionalInformation).toFixed(2)),
+-                    price: Decimal128.fromString(parseFloat(logbook.additionalInformationCost || "0.00").toFixed(2)),
+-                    distanceDifference: Decimal128.fromString(parseFloat(logbook.distanceSinceLastAdditionalInformation).toFixed(2)),
+-                    consumption: Decimal128.fromString(consumption.toFixed(2)),
++                    liters: parseFloat(logbook.additionalInformation) || 0.00,
++                    price: parseFloat(logbook.additionalInformationCost) || 0.00,
++                    distanceDifference: parseFloat(logbook.distanceSinceLastAdditionalInformation) || 0.00,
++                    consumption: consumption || 0.00,
+                     isSpecial: false,
+                     ...(previousRecord.length != 0 && {
+                         previousRecordId: previousRecord[0]._id,
+@@ -229,7 +231,7 @@
+             if (logbook.additionalInformationTyp === AdditionalInformationTyp.GEWARTET) {
+                 service = {
+                     message: logbook.additionalInformation,
+-                    price: Decimal128.fromString(parseFloat(logbook.additionalInformationCost || "0.00").toFixed(2)),
++                    price: parseFloat(logbook.additionalInformationCost) || 0.00,
+                 }
+             }
+ 
+@@ -245,7 +247,8 @@
+                     current: parseInt(logbook.currentMileAge),
+                     new: parseInt(logbook.newMileAge),
+                     difference: parseInt(logbook.distance),
+-                    cost: Decimal128.fromString(parseFloat(logbook.distanceCost).toFixed(2)),
++                    unit: logbook.vehicleTyp === VehicleTyp.MX5 ? UnitEnum.MILE : UnitEnum.KM,
++                    cost: parseFloat(logbook.distanceCost),
+                 },
+                 details: {
+                     covered: logbook.forFree, // Driver is added only if covered is true
+Index: src/logbook/core/schemas/newLogbook.schema.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logbook/core/schemas/newLogbook.schema.ts b/src/logbook/core/schemas/newLogbook.schema.ts
+--- a/src/logbook/core/schemas/newLogbook.schema.ts	(revision 965612a24349289cee194c393ced2fe078e26e63)
++++ b/src/logbook/core/schemas/newLogbook.schema.ts	(date 1705228489346)
+@@ -4,6 +4,7 @@
+ import {VehicleTyp} from '../enums/vehicle-typ.enum';
+ import {Decimal128, Int32, ObjectId} from 'bson';
+ import * as mongoose from "mongoose";
++import {UnitEnum} from "../enums/unit.enum";
+ 
+ require('mongoose-double')(mongoose);
+ const Double = mongo.Double;
+@@ -21,24 +22,27 @@
+     @Prop({type: Int32, required: true, min: 1})
+     difference: number;
+ 
+-    @Prop({type: mongoose.Types.Decimal128, required: true})
++    @Prop({type: Double, required: true})
+     cost: number;
++
++    @Prop({type: String, required: true, enum: UnitEnum})
++    unit: UnitEnum
+ }
+ 
+ export const MileAgeSchema = SchemaFactory.createForClass(MileAge);
+ 
+ @Schema({_id: false})
+ export class Refuel {
+-    @Prop({type: mongoose.Types.Decimal128, required: true})
++    @Prop({type: Double, required: true})
+     liters: number;
+ 
+-    @Prop({type: mongoose.Types.Decimal128, required: true})
++    @Prop({type: Double, required: true})
+     price: number;
+ 
+     @Prop({type: Int32, required: true})
+     distanceDifference: number;
+ 
+-    @Prop({type: mongoose.Types.Decimal128, required: true})
++    @Prop({type: Double, required: true})
+     consumption: number;
+ 
+     @Prop({type: Boolean, required: true, default: false})
+@@ -55,7 +59,7 @@
+     @Prop({type: String, required: true})
+     message: string;
+ 
+-    @Prop({type: mongoose.Types.Decimal128, required: true})
++    @Prop({type: Double, required: true})
+     price: number;
+ }
+ 
+Index: src/logbook/core/enums/unit.enum.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logbook/core/enums/unit.enum.ts b/src/logbook/core/enums/unit.enum.ts
+new file mode 100644
+--- /dev/null	(date 1705228489341)
++++ b/src/logbook/core/enums/unit.enum.ts	(date 1705228489341)
+@@ -0,0 +1,4 @@
++export enum UnitEnum {
++    KM = 'km',
++    MILE = 'mile',
++}
