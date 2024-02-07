@@ -28,22 +28,24 @@ describe('Basic LogbookController Integration Test', () => {
     });
 
     afterAll(async () => {
-        await dbConnection.collection('logbooks').deleteMany();
+        await dbConnection.collection('newlogbooks').deleteMany({});
         await app.close();
     });
 
     beforeEach(async () => {
-        await dbConnection.collection('logbooks').deleteMany({});
+        await dbConnection.collection('newlogbooks').deleteMany({});
     });
 
     /*
      * Tests
      */
     describe('findLatest', () => {
-        it('should return an array of logbooks', async () => {
-            await dbConnection.collection('logbooks').insertOne(basicLogbookStub());
+        it('should return an array of newlogbooks', async () => {
+            await dbConnection.collection('newlogbooks').insertOne(basicLogbookStub());
+            console.log("Test")
             const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
-
+            console.log(response.body.data);
+            console.log(response.status)
             expect(response.status).toBe(HttpStatus.OK);
             expect(response.body.data).toMatchObject([basicLogbookStubTypeless()]);
         });
@@ -70,14 +72,14 @@ describe('Basic LogbookController Integration Test', () => {
             expect(response.body).toMatchObject(createLogbookDto);
             expect(response.status).toBe(HttpStatus.CREATED);
 
-            const logbook = await dbConnection.collection('logbooks').findOne({_id: new Types.ObjectId(response.body._id)});
+            const logbook = await dbConnection.collection('newlogbooks').findOne({_id: new Types.ObjectId(response.body._id)});
             expect(logbook).toMatchObject({...createLogbookDto, date: new Date(createLogbookDto.date)});
         });
     });
 
     describe('updateLogbook', () => {
         it('should update a logbook', async () => {
-            const logbook = await dbConnection.collection('logbooks').insertOne(basicLogbookStub());
+            const logbook = await dbConnection.collection('newlogbooks').insertOne(basicLogbookStub());
             const updateLogbookDto = {
                 mileAge: {
                     current: '168228',
@@ -100,7 +102,7 @@ describe('Basic LogbookController Integration Test', () => {
             expect(response.status).toBe(HttpStatus.OK);
 
             const updatedLogbook = await dbConnection
-                .collection('logbooks')
+                .collection('newlogbooks')
                 .findOne({_id: new Types.ObjectId(response.body._id)});
             expect(updatedLogbook).toMatchObject({...updateLogbookDto});
         });
@@ -108,7 +110,7 @@ describe('Basic LogbookController Integration Test', () => {
 
     describe('deleteLogbook', () => {
         it('should delete a logbook', async () => {
-            const logbook = await dbConnection.collection('logbooks').insertOne(basicLogbookStub());
+            const logbook = await dbConnection.collection('newlogbooks').insertOne(basicLogbookStub());
             const response = await request(httpServer)
                 .delete('/logbook/' + logbook.insertedId)
                 .set('Authorization', apiKey);
@@ -116,7 +118,7 @@ describe('Basic LogbookController Integration Test', () => {
             expect(response.status).toBe(HttpStatus.NO_CONTENT);
 
             const deletedLogbook = await dbConnection
-                .collection('logbooks')
+                .collection('newlogbooks')
                 .findOne({_id: new Types.ObjectId(response.body._id)});
             expect(deletedLogbook).toBeNull();
         });

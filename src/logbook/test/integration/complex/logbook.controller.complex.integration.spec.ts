@@ -13,7 +13,6 @@ import {
 } from '../../stubs/complex.logbook.stub';
 import { basicLogbookStub } from '../../stubs/basic.logbook.stub';
 import { DISTANCE_COST } from '../../../../core/utils/constatns';
-import {ObjectId} from "bson";
 
 describe('Complex LogbookController Integration Test', () => {
   let dbConnection: Connection;
@@ -35,12 +34,12 @@ describe('Complex LogbookController Integration Test', () => {
     dbConnection = moduleRef.get<DatabaseService>(DatabaseService).getDbHandle();
     httpServer = app.getHttpServer();
 
-    await dbConnection.collection('logbooks').deleteMany();
+    await dbConnection.collection('newlogbooks').deleteMany();
     await new Promise(process.nextTick);
   });
 
   afterAll(async () => {
-    await dbConnection.collection('logbooks').deleteMany();
+    await dbConnection.collection('newlogbooks').deleteMany();
     await app.close();
   });
 
@@ -49,7 +48,7 @@ describe('Complex LogbookController Integration Test', () => {
    */
 
   describe('find latest_0', () => {
-    it('should return an array of logbooks', async () => {
+    it('should return an array of newlogbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
@@ -75,7 +74,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.difference).toEqual(1);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -96,7 +95,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.difference).toEqual(2);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -117,7 +116,7 @@ describe('Complex LogbookController Integration Test', () => {
       });
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -137,7 +136,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -162,7 +161,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -182,7 +181,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -202,7 +201,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -222,7 +221,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -242,7 +241,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -262,7 +261,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -282,14 +281,14 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
   });
 
   describe('find latest_1', () => {
-    it('should return an array of logbooks', async () => {
+    it('should return an array of newlogbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       console.log(convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id, response.body.data.date))
@@ -318,12 +317,12 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
       //
       // dbConnection
-      //   .collection('logbooks')
+      //   .collection('newlogbooks')
       //   .findOne({ _id: new Types.ObjectId(response.body._id) })
       //   .then((logbook) => {
       //     expect(logbook).toMatchObject({
@@ -348,7 +347,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -368,7 +367,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -388,7 +387,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -408,7 +407,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -428,7 +427,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -448,7 +447,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -468,7 +467,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -488,7 +487,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -508,7 +507,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -528,7 +527,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
       logbookId = response.body._id;
@@ -536,7 +535,7 @@ describe('Complex LogbookController Integration Test', () => {
   });
 
   describe('find latest_2', () => {
-    it('should return an array of logbooks', async () => {
+    it('should return an array of newlogbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
@@ -564,12 +563,12 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
       //
       // dbConnection
-      //   .collection('logbooks')
+      //   .collection('newlogbooks')
       //   .findOne({ _id: new Types.ObjectId(response.body._id) })
       //   .then((logbook) => {
       //     expect(logbook).toMatchObject({
@@ -594,7 +593,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -614,7 +613,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -634,7 +633,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -654,7 +653,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -674,7 +673,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -694,7 +693,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -714,7 +713,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -734,7 +733,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -754,7 +753,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
@@ -774,14 +773,14 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
   });
 
   describe('find latest_3', () => {
-    it('should return an array of logbooks', async () => {
+    it('should return an array of newlogbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);
@@ -830,7 +829,7 @@ describe('Complex LogbookController Integration Test', () => {
         },
       };
       delete logbookToInsert._id;
-      const logbook = await dbConnection.collection('logbooks').insertOne(logbookToInsert);
+      const logbook = await dbConnection.collection('newlogbooks').insertOne(logbookToInsert);
       const updateLogbookDto = {
         mileAge: {
           current: 10,
@@ -848,7 +847,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body).toMatchObject({ ...updateLogbookDto });
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject({ ...updateLogbookDto });
     });
@@ -870,18 +869,18 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body).toMatchObject(updateLogbookDto);
 
       const updatedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(updatedLogbook);
     });
   });
 
   describe('find latest_4', () => {
-    it('should the latest logbooks after a modification', async () => {
+    it('should the latest newlogbooks after a modification', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       let updatedLogbook: any = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(logbookId) });
       updatedLogbook = {
         ...updatedLogbook,
@@ -908,14 +907,14 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.status).toBe(HttpStatus.NO_CONTENT);
 
       const deletedLogbook = await dbConnection
-        .collection('logbooks')
+        .collection('newlogbooks')
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(deletedLogbook).toBeNull();
     });
   });
 
   describe('find latest_5', () => {
-    it('should the latest logbooks after the deletion of a logbook', async () => {
+    it('should the latest newlogbooks after the deletion of a logbook', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
       expect(response.status).toBe(HttpStatus.OK);

@@ -8,8 +8,7 @@ import {CreateLogbookDto} from './core/dto/create-logbook.dto';
 import {DISTANCE_COST} from '../core/utils/constatns';
 import {DateParameter} from "./core/dto/parameters/date.parameter";
 import {LogbooksRepository} from "./repositories/logbooks.repository";
-import {NewLogbook, Refuel} from "./core/schemas/logbook.schema";
-import {Vehicle} from "./core/enums/vehicle-typ.enum";
+import {NewLogbook} from "./core/schemas/logbook.schema";
 
 @Injectable()
 export class LogbookService {
