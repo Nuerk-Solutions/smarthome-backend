@@ -1,6 +1,6 @@
 import * as bodyParser from 'body-parser';
 import helmet from 'helmet';
-import {ValidationPipe} from '@nestjs/common';
+import {ValidationPipe, VersioningType} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {ConfigService} from '@nestjs/config';
 import {AppModule} from './app.module';
@@ -17,6 +17,11 @@ async function bootstrap() {
     app.use(bodyParser.json({limit: '1mb'}));
     app.use(bodyParser.urlencoded({extended: true}));
     app.enableCors();
+
+    app.enableVersioning({
+        type: VersioningType.URI,
+        defaultVersion: '2',
+    });
 
     app.useGlobalPipes(
         new ValidationPipe({
