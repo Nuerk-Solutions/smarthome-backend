@@ -111,7 +111,7 @@ export class LogbookController {
 
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-  @Header('Content-disposition', 'attachment;filename=Fahrtenbuch_' + new Date().toISOString() + '.xlsx')
+  @Header('Content-disposition', 'attachment;filename="Fahrtenbuch_' + new Date().toISOString() + '.xlsx"')
   @Header('Access-Control-Expose-Headers', 'Content-Disposition')
   @Get('/download')
   async download(
