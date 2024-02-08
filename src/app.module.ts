@@ -9,6 +9,7 @@ import { RouterModule } from '@nestjs/core';
 import { StatsModule } from './logbook/stats/stats.module';
 import { InvoiceModule } from './logbook/invoice/invoice.module';
 import { DatabaseModule } from './database/database.module';
+import { VoucherModule } from './logbook/voucher/voucher.module';
 
 @Module({
   imports: [
@@ -30,12 +31,17 @@ import { DatabaseModule } from './database/database.module';
             path: 'invoice',
             module: InvoiceModule,
           },
+          {
+            path: 'voucher',
+            module: VoucherModule,
+          },
         ],
       },
     ]),
     DatabaseModule,
     StatsModule,
     InvoiceModule,
+    VoucherModule,
     AuthenticationModule,
     MailModule,
   ],
