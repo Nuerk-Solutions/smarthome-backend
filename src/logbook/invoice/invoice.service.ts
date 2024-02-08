@@ -1,8 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { LogbookInvoice } from '../core/schemas/logbook-invoice.schema';
 import { MailService } from '../../core/mail/mail.service';
-import { CreateLogbookInvoiceDto } from '../core/dto/create-logbook-invoice.dto';
-import { DriverParameter } from '../core/dto/parameters/driver.parameter';
 import { Driver } from '../core/enums/driver.enum';
 import { InvoiceParameter } from '../core/dto/parameters/invoice.parameter';
 import * as SendGrid from '@sendgrid/mail';
@@ -16,82 +14,75 @@ export class InvoiceService {
     private readonly logbooksInvoiceRepository: LogbooksInvoiceRepository,
     private readonly _mailService: MailService,
     private readonly _statsService: StatsService,
-  ) {}
+  ) {
+  }
 
-  async executeInvoice(
-    createLogbookInvoiceDto: CreateLogbookInvoiceDto,
-    drivers: DriverParameter[],
-    emailDrivers: DriverParameter[],
-  ): Promise<boolean> {
+
+  async findNewInvoiceDate(): Promise<Date> {
     const lastLogbookInvoiceDate = await this.logbooksInvoiceRepository.findOne({}, { sort: { date: -1 } });
-    const invoiceStats = await this._statsService.calculateDriverStats(
-      drivers,
-      lastLogbookInvoiceDate.date,
-      createLogbookInvoiceDto.endDate,
-    );
-    const sumArrayThomas = invoiceStats.find((item) => item.driver === Driver.THOMAS);
-    const sumArrayAndrea = invoiceStats.find((item) => item.driver === Driver.ANDREA);
-    const sumThomas = (sumArrayThomas && sumArrayThomas.distanceCost) || 0;
-    const sumAndrea = (sumArrayAndrea && sumArrayAndrea.distanceCost) || 0;
+    return new Date(Date.UTC(lastLogbookInvoiceDate.date.getUTCFullYear(), lastLogbookInvoiceDate.date.getUTCMonth() + 2, 0));
+  }
 
-    const driverEmailStatsMap: Map<Driver, { email: string; sum: number }> = new Map<
-      Driver,
-      { email: string; sum: number }
-    >();
-    if (emailDrivers.includes(Driver.ANDREA as unknown as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.ANDREA, { email: 'andrea@nuerkler.de', sum: sumAndrea });
-    }
-    if (emailDrivers.includes(Driver.CLAUDIA as unknown as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.CLAUDIA, {
-        email: 'claudia_dresden@icloud.com',
-        sum: invoiceStats.find((item) => item.driver === Driver.CLAUDIA).distanceCost,
-      });
-    }
-    if (emailDrivers.includes(Driver.OLIVER as unknown as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.OLIVER, {
-        email: 'oliver_dresden@freenet.de',
-        sum: invoiceStats.find((item) => item.driver === Driver.OLIVER).distanceCost,
-      });
-    }
-    if (emailDrivers.includes(Driver.THOMAS as unknown as DriverParameter)) {
-      driverEmailStatsMap.set(Driver.THOMAS, { email: 'thomas@nuerkler.de', sum: sumThomas });
-    }
+  async executeInvoice(): Promise<boolean> {
+    const newInvoiceDate = await this.findNewInvoiceDate();
+    const lastInvoiceDate = (await this.logbooksInvoiceRepository.findOne({}, { sort: { date: -1 } })).date;
 
-    await this.sendInvoiceSummary(
-      {
-        email: 'claudia_dresden@icloud.com',
-        driver: Driver.CLAUDIA,
-        startDate: lastLogbookInvoiceDate.date,
-        endDate: new Date(createLogbookInvoiceDto.endDate),
-      },
-      sumThomas,
-      sumAndrea,
-      sumAndrea + sumThomas,
+    const invoiceStats = await this._statsService.getDriverStats(
+      [Driver.THOMAS, Driver.ANDREA],
+      lastInvoiceDate,
+      newInvoiceDate,
     );
+
+    // Hard coded email addresses
+    const driverMailMap: Map<Driver, string> = new Map([
+      [Driver.ANDREA, 'andrea@nuerkler.de'],
+      [Driver.CLAUDIA, 'claudia_dresden@icloud.com'],
+      [Driver.THOMAS, 'thomas@nuerkler.de'],
+    ]);
+
+    invoiceStats.forEach(item => {
+      const driver = item.driver as Driver;
+
+      if (driver === Driver.CLAUDIA) {
+        return;
+      }
+
+      const mail = driverMailMap.get(driver);
+      const invoiceParameter: InvoiceParameter = {
+        email: mail,
+        driver,
+        startDate: lastInvoiceDate,
+        endDate: newInvoiceDate,
+      };
+      this.sendInvoiceMail(invoiceParameter, item.totalCost);
+    });
+
 
     await this.sendInvoiceSummary(
       {
         email: 'thomas@nuerkler.de',
-        driver: Driver.CLAUDIA,
-        startDate: lastLogbookInvoiceDate.date,
-        endDate: new Date(createLogbookInvoiceDto.endDate),
+        driver: Driver.THOMAS,
+        startDate: lastInvoiceDate,
+        endDate: newInvoiceDate,
       },
-      sumThomas,
-      sumAndrea,
-      sumAndrea + sumThomas,
+      invoiceStats[1].totalCost, // works because of the prev sort | Thomas
+      invoiceStats[0].totalCost, // Andrea
+      invoiceStats[0].totalCost + invoiceStats[1].totalCost,
     );
 
-    driverEmailStatsMap.forEach((emailStats, driver) => {
-      const invoiceParameter: InvoiceParameter = {
-        email: emailStats.email,
-        driver,
-        startDate: lastLogbookInvoiceDate.date,
-        endDate: new Date(createLogbookInvoiceDto.endDate),
-      };
-      this.sendInvoiceMail(invoiceParameter, emailStats.sum);
-    });
+    await this.sendInvoiceSummary(
+      {
+        email: 'claudia_dresden@icloud.com',
+        driver: Driver.THOMAS,
+        startDate: lastInvoiceDate,
+        endDate: newInvoiceDate,
+      },
+      invoiceStats[1].totalCost, // works because of the prev sort | Thomas
+      invoiceStats[0].totalCost, // Andrea
+      invoiceStats[0].totalCost + invoiceStats[1].totalCost,
+    );
 
-    await this.logbooksInvoiceRepository.create({ date: createLogbookInvoiceDto.endDate });
+    await this.logbooksInvoiceRepository.create({ date: newInvoiceDate });
 
     return true;
   }

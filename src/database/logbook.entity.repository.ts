@@ -1,7 +1,9 @@
 import {EntityRepository} from './entity.repository';
-import {FilterQuery, Model, SortOrder} from 'mongoose';
+import { FilterQuery, Model, Schema, SortOrder } from 'mongoose';
 import {Vehicle} from '../logbook/core/enums/vehicle-typ.enum';
-import {LogbookDocument, Refuel} from "../logbook/core/schemas/logbook.schema";
+import {LogbookDocument} from "../logbook/core/schemas/logbook.schema";
+import { Driver } from '../logbook/core/enums/driver.enum';
+import { DriverParameter } from '../logbook/core/dto/parameters/driver.parameter';
 
 export abstract class LogbookEntityRepository<T extends LogbookDocument> extends EntityRepository<T> {
     constructor(readonly entityModel: Model<T>) {
@@ -65,6 +67,9 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
             .exec();
     }
 
+    /*
+    Used for statistics page in the app
+     */
     async findLastRefuels(limit: number): Promise<T[]> {
         return this.entityModel.aggregate(
             [
@@ -101,28 +106,75 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
                     {
                         $replaceRoot: { newRoot: "$entries" }
                     }
-
-                // {
-                //     $group: {
-                //         _id: '$vehicle',
-                //         refuels: {
-                //             $push: {
-                //                 date: '$date',
-                //                 refuel: '$refuel',
-                //             },
-                //         },
-                //     },
-                // },
-                // {
-                //     $project: {
-                //         _id: 0,
-                //         vehicle: '$_id',
-                //         refuels: { $slice: ['$refuels', limit] },
-                //     },
-                // },
             ])
             .collation({ locale: 'de', numericOrdering: true })
             .exec();
+    }
+
+    async getDriverStats(drivers: DriverParameter[] | Driver[], startDate: Date = new Date(0), endDate: Date = new Date()): Promise<DriverStats[]> {
+      return this.entityModel.aggregate(
+        [
+          {
+            $match: {
+              date: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate),
+              }
+            }
+          },
+          // Group by driver and vehicle, calculate total distance and distanceCost for each vehicle
+          {
+            $group: {
+              _id: { driver: "$driver", vehicle: "$vehicle" },
+              distance: { $sum: "$mileAge.difference" },
+              cost: {
+                $sum: {
+                  $cond: {
+                    if: "$details.covered",
+                    then: 0,
+                    else: "$mileAge.cost"
+                  }
+                }
+              }
+            }
+          },
+
+          // Group by driver, calculate total distance and distanceCost for all vehicles
+          {
+            $group: {
+              _id: "$_id.driver",
+              totalDistance: { $sum: "$distance" },
+              totalCost: { $sum: "$cost" },
+              vehicles: {
+                $push: {
+                  vehicle: "$_id.vehicle",
+                  distance: "$distance",
+                  cost: "$cost"
+                }
+              }
+            }
+          },
+
+          // Filter the result based on specific drivers (e.g., Andrea and Thomas)
+          {
+            $match: {
+              _id: { $in: drivers }
+            }
+          },
+
+          // Project the final structure
+          {
+            $project: {
+              _id: 0,
+              driver: "$_id",
+              totalDistance: 1,
+              totalCost: 1,
+              vehicles: 1
+            }
+          }
+        ])
+        .collation({ locale: 'de', numericOrdering: true })
+        .exec();
     }
 
     async findLastAddedLogbookForVehicle(vehicle: Vehicle): Promise<T> {
@@ -164,7 +216,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
     ): Promise<PaginateResult<T>> {
         const total = await this.entityModel.countDocuments(filterQuery).exec();
         // eslint-disable-next-line max-len
-        limit = limit <= 0 || limit >= total ? total : limit; // the limit can be not greater than the total (e.g @param) and must be minimum 1
+        limit = limit <= 0 || limit >= total ? total : limit; // the limit can be not greater than the total (e.g. @param) and must be minimum 1
         page = page < 0 ? 1 : page; // the page cannot be negative be must be minimum 1
 
         const data = await this.entityModel

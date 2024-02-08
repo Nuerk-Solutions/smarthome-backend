@@ -1,18 +1,15 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogbookController } from './logbook.controller';
 import { LogbookService } from './logbook.service';
 import { NewLogbook, LogbookSchema } from './core/schemas/logbook.schema';
 import { LogbooksRepository } from './repositories/logbooks.repository';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
     MongooseModule.forFeatureAsync(
       [
-        {
-          name: NewLogbook.name,
-          useFactory: () => LogbookSchema,
-        },
         {
           name: NewLogbook.name,
           useFactory: () => LogbookSchema,
@@ -24,7 +21,7 @@ import { LogbooksRepository } from './repositories/logbooks.repository';
     // forwardRef(() => InvoiceModule),
   ],
   controllers: [LogbookController],
-  providers: [LogbookService, LogbooksRepository, LogbooksRepository],
-  exports: [LogbookService],
+  providers: [LogbookService, LogbooksRepository],
+  exports: [LogbookService, LogbooksRepository],
 })
 export class LogbookModule {}

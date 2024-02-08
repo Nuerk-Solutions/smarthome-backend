@@ -8,3 +8,16 @@ type PaginateResult<T> = {
   limit: number;
   page: number;
 };
+
+type DriverStats = {
+  driver: string;
+  totalDistance: number;
+  totalCost: number;
+  vehicles: [
+    {
+      vehicle: string;
+      distance: number;
+      cost: number
+    }
+  ];
+}
