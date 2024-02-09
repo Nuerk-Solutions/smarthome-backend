@@ -1,9 +1,8 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { InvoiceController } from './invoice.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogbookInvoice, LogbookInvoiceSchema } from '../core/schemas/logbook-invoice.schema';
-import { MailModule } from '../../core/mail/mail.module';
 import { StatsModule } from '../stats/stats.module';
 import { LogbooksInvoiceRepository } from '../repositories/logbooksinvoice.repository';
 
@@ -18,7 +17,6 @@ import { LogbooksInvoiceRepository } from '../repositories/logbooksinvoice.repos
       ],
       'logbook',
     ),
-    forwardRef(() => MailModule),
     StatsModule,
   ],
   controllers: [InvoiceController],

@@ -4,7 +4,7 @@ import { LogbookController } from './logbook.controller';
 import { LogbookService } from './logbook.service';
 import { NewLogbook, LogbookSchema } from './core/schemas/logbook.schema';
 import { LogbooksRepository } from './repositories/logbooks.repository';
-import { StatsModule } from './stats/stats.module';
+import { VoucherModule } from './voucher/voucher.module';
 
 @Module({
   imports: [
@@ -17,8 +17,7 @@ import { StatsModule } from './stats/stats.module';
       ],
       'logbook',
     ),
-    // forwardRef(() => StatsModule),
-    // forwardRef(() => InvoiceModule),
+    forwardRef(() => VoucherModule),
   ],
   controllers: [LogbookController],
   providers: [LogbookService, LogbooksRepository],

@@ -14,8 +14,14 @@ export class VoucherService {
   }
 
   async create(voucher: VoucherCreateDto) {
+    let code = this.generateVoucherCode(10);
+    while (await this.voucherRepository.findOne({ code })) {
+      code = this.generateVoucherCode(10);
+    }
+
     const newVoucher = {
       ...voucher,
+      code,
       distance: voucher.value / DISTANCE_COST,
       isExpired: false,
       redeemed: false,
@@ -27,22 +33,20 @@ export class VoucherService {
 
   async redeem(voucherDto: VoucherDto) {
     const voucher = await this.voucherRepository.findOne({ code: voucherDto.code });
-    if (!voucher) {
-      return new BadRequestException('Voucher not found');
-    }
+    if (!voucher)
+      throw new BadRequestException('Voucher not found');
 
-    if (voucher.isExpired) {
-      return new BadRequestException('Voucher is expired');
-    }
+    if (voucher.redeemed)
+      throw new BadRequestException('Voucher already redeemed');
+
+    if (voucher.isExpired)
+      throw new BadRequestException('Voucher is expired');
 
     if (voucher.expiration < new Date()) {
       await this._updateVoucher({ code: voucherDto.code, isExpired: true });
-      return new BadRequestException('Voucher is expired');
+      throw new BadRequestException('Voucher is expired');
     }
 
-    if (voucher.redeemed) {
-      return new BadRequestException('Voucher already redeemed');
-    }
     return await this.voucherRepository.findOneAndUpdate({ code: voucherDto.code }, { redeemed: true });
   }
 
@@ -54,6 +58,18 @@ export class VoucherService {
     const voucher = await this.getVoucherByCode(code);
     const newDistance = Math.max(0, voucher.remainingDistance - distance);
     return await this._updateVoucher({ code, remainingDistance: newDistance });
+  }
+
+  private generateVoucherCode(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let voucherCode = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      voucherCode += characters.charAt(randomIndex);
+    }
+
+    return voucherCode;
   }
 
   private async _updateVoucher(voucherUpdateDto: VoucherUpdateDto) {

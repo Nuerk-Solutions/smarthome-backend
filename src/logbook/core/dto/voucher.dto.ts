@@ -7,7 +7,7 @@ export class VoucherDto {
   readonly code: string;
 }
 
-export class VoucherCreateDto extends VoucherDto {
+export class VoucherCreateDto {
   @IsNotEmpty()
   @IsNumber()
   readonly value: number;
@@ -17,7 +17,7 @@ export class VoucherCreateDto extends VoucherDto {
   readonly expiration: string;
 
   @IsNotEmpty()
-  @IsEnum(Driver, {each: true, message: 'Creator is not valid'})
+  @IsEnum(Driver, {each: true, message: 'creator is not valid'})
   readonly creator: Driver;
 }
 

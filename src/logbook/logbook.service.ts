@@ -9,10 +9,12 @@ import {DISTANCE_COST} from '../core/utils/constatns';
 import {DateParameter} from "./core/dto/parameters/date.parameter";
 import {LogbooksRepository} from "./repositories/logbooks.repository";
 import {NewLogbook} from "./core/schemas/logbook.schema";
+import { VoucherService } from './voucher/voucher.service';
 
 @Injectable()
 export class LogbookService {
-    constructor(private readonly logbooksRepository: LogbooksRepository) {
+    constructor(
+      private readonly logbooksRepository: LogbooksRepository, private readonly _voucherService: VoucherService) {
     }
 
     async create(createLogbookDto: CreateLogbookDto): Promise<NewLogbook> {
@@ -33,6 +35,13 @@ export class LogbookService {
         }
 
         const difference = createLogbookDto.mileAge.new - createLogbookDto.mileAge.current;
+
+        if(createLogbookDto.details.code) {
+            const voucher = await this._voucherService.getVoucherByCode(createLogbookDto.details.code);
+            if(voucher.remainingDistance > 0)
+                if(voucher.remainingDistance < difference)
+                    throw new BadRequestException('Voucher distance is not enough');
+        }
 
         if (createLogbookDto.refuel) {
             const lastRefuel = await this.logbooksRepository.findLastRefuel(createLogbookDto.vehicle);
