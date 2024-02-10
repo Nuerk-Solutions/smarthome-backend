@@ -63,6 +63,17 @@ export class Service {
 export const ServiceSchema = SchemaFactory.createForClass(Service);
 
 @Schema({_id: false, strict: true})
+export class Voucher {
+    @Prop({type: String, required: true})
+    code: string;
+
+    @Prop({type: mongoose.Types.Decimal128, required: true})
+    usedValue: number;
+}
+
+export const VoucherSchema = SchemaFactory.createForClass(Voucher);
+
+@Schema({_id: false, strict: true})
 export class Details {
     @Prop({type: Boolean, required: true, default: false})
     covered: boolean;
@@ -70,14 +81,15 @@ export class Details {
     @Prop({type: String, enum: Driver, required: false})
     driver?: Driver;
 
-    @Prop({type: String, required: false})
-    code?: string;
+    @Prop({type: VoucherSchema, required: false})
+    voucher?: Voucher;
 
     @Prop({type: String, required: false})
     notes?: string;
 }
 
 export const DetailsSchema = SchemaFactory.createForClass(Details);
+
 
 @Schema({timestamps: {createdAt: true, updatedAt: false}, _id: true, versionKey: false, strict: true})
 export class NewLogbook {

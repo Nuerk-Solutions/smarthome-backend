@@ -8,7 +8,7 @@ import {CreateLogbookDto} from './core/dto/create-logbook.dto';
 import {DISTANCE_COST} from '../core/utils/constatns';
 import {DateParameter} from "./core/dto/parameters/date.parameter";
 import {LogbooksRepository} from "./repositories/logbooks.repository";
-import {NewLogbook} from "./core/schemas/logbook.schema";
+import { NewLogbook } from './core/schemas/logbook.schema';
 import { VoucherService } from './voucher/voucher.service';
 
 @Injectable()
@@ -36,11 +36,30 @@ export class LogbookService {
 
         const difference = createLogbookDto.mileAge.new - createLogbookDto.mileAge.current;
 
-        if(createLogbookDto.details.code) {
-            const voucher = await this._voucherService.getVoucherByCode(createLogbookDto.details.code);
-            if(voucher.remainingDistance > 0)
-                if(voucher.remainingDistance < difference)
-                    throw new BadRequestException('Voucher distance is not enough');
+        submitLogbook = {
+            ...submitLogbook,
+            mileAge: {
+                ...submitLogbook.mileAge,
+                difference,
+                cost: Math.round((difference * DISTANCE_COST) * 100) / 100,
+            }
+        };
+
+        if(createLogbookDto.details.voucher) {
+            if(!await this._voucherService.isVoucherValid(createLogbookDto.details.voucher.code))
+                throw new BadRequestException('Voucher is not valid');
+
+          const voucher = await this._voucherService.getVoucherByCode(createLogbookDto.details.voucher.code);
+          const coveredDistance= await this._voucherService.getCoveredDistance(voucher.code, difference);
+
+          submitLogbook.details.voucher.usedValue = Math.round((coveredDistance * voucher.costPerKm) * 100) / 100;
+          await this._voucherService.subtractDistance(createLogbookDto.details.voucher.code, coveredDistance);
+
+            if(coveredDistance == difference) {
+                submitLogbook.details.covered = true;
+                submitLogbook.details.driver = voucher.creator;
+            }
+            submitLogbook.mileAge.cost = Math.round((difference * DISTANCE_COST) * 100) / 100;
         }
 
         if (createLogbookDto.refuel) {
@@ -54,24 +73,17 @@ export class LogbookService {
                 consumption = Math.round(createLogbookDto.refuel.liters / distanceDifference * 100 * 100) / 100;
             }
             submitLogbook = {
-                ...submitLogbook, refuel: {
+                ...submitLogbook,
+                refuel: {
                     ...createLogbookDto.refuel,
-                    distanceDifference, consumption,
+                    distanceDifference,
+                    consumption,
                     ...(lastRefuel.length != 0 && {
                         previousRecordId: lastRefuel[0]._id,
                     }),
                 }
             };
         }
-
-        submitLogbook = {
-            ...submitLogbook,
-            mileAge: {
-                ...submitLogbook.mileAge,
-                difference,
-                cost: Math.round((difference * DISTANCE_COST) * 100) / 100,
-            }
-        };
 
         return await this.logbooksRepository.create(submitLogbook);
     }

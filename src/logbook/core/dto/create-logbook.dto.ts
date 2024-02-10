@@ -44,6 +44,17 @@ class Service {
     readonly price: number;
 }
 
+class Voucher {
+
+    @IsNotEmpty()
+    @IsString()
+    readonly code: string;
+
+    @IsNotEmpty()
+    @IsNumber({allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2})
+    readonly usedValue: number;
+}
+
 class Details {
     @IsBoolean()
     readonly covered: boolean;
@@ -52,10 +63,10 @@ class Details {
     @IsEnum(Driver, {each: true, message: 'Driver is not valid'})
     readonly driver?: Driver;
 
-    @IsString()
     @IsOptional()
-    @IsNotEmpty()
-    readonly code?: string;
+    @Type(() => Voucher)
+    @ValidateNested()
+    readonly voucher: Voucher;
 
     @IsString()
     @IsOptional()

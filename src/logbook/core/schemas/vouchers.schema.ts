@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Driver } from '../enums/driver.enum';
 import { ObjectId } from 'bson';
+import { DISTANCE_COST } from '../../../core/utils/constatns';
 
 export type VoucherDocument = Voucher & Document;
 
@@ -16,6 +17,9 @@ export class Voucher {
 
   @Prop({ required: true })
   value: number;
+
+  @Prop({ required: false, default: DISTANCE_COST })
+  costPerKm?: number;
 
   @Prop({ required: false })
   distance?: number;

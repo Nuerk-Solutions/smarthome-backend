@@ -32,22 +32,8 @@ export class VoucherService {
   }
 
   async redeem(voucherDto: VoucherDto) {
-    const voucher = await this.voucherRepository.findOne({ code: voucherDto.code });
-    if (!voucher)
-      throw new BadRequestException('Voucher not found');
-
-    if (voucher.redeemed)
-      throw new BadRequestException('Voucher already redeemed');
-
-    if (voucher.isExpired)
-      throw new BadRequestException('Voucher is expired');
-
-    if (voucher.expiration < new Date()) {
-      await this._updateVoucher({ code: voucherDto.code, isExpired: true });
-      throw new BadRequestException('Voucher is expired');
-    }
-
-    return await this.voucherRepository.findOneAndUpdate({ code: voucherDto.code }, { redeemed: true });
+    if (await this.isVoucherValid(voucherDto.code))
+      return await this.voucherRepository.findOneAndUpdate({ code: voucherDto.code }, { redeemed: true });
   }
 
   async getVoucherByCode(code: string) {
@@ -58,6 +44,32 @@ export class VoucherService {
     const voucher = await this.getVoucherByCode(code);
     const newDistance = Math.max(0, voucher.remainingDistance - distance);
     return await this._updateVoucher({ code, remainingDistance: newDistance });
+  }
+
+  async getCoveredDistance(code: string, distance: number) {
+    const voucher = await this.getVoucherByCode(code);
+    const diff = voucher.remainingDistance - distance;
+    if (diff < 0)
+      return voucher.remainingDistance;
+    return distance;
+  }
+
+  async isVoucherValid(code: string): Promise<boolean> {
+    const voucher = await this.voucherRepository.findOne({ code: code });
+    if (!voucher)
+      throw new BadRequestException('Voucher not found');
+
+    if (voucher.redeemed)
+      throw new BadRequestException('Voucher already redeemed');
+
+    if (voucher.isExpired)
+      throw new BadRequestException('Voucher is expired');
+
+    if (voucher.expiration < new Date()) {
+      await this._updateVoucher({ code: code, isExpired: true });
+      throw new BadRequestException('Voucher is expired');
+    }
+    return true;
   }
 
   private generateVoucherCode(length: number): string {
