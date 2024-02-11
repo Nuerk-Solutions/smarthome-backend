@@ -1,11 +1,9 @@
 import {
-    IS_NUMBER,
     IsBoolean,
-    IsDateString, IsDecimal,
+    IsDateString,
     IsEnum,
     IsISO8601,
     IsNotEmpty, IsNumber,
-    IsNumberString,
     IsOptional,
     IsString,
     ValidateNested,
@@ -66,7 +64,7 @@ class Details {
     @IsOptional()
     @Type(() => Voucher)
     @ValidateNested()
-    readonly voucher: Voucher;
+    readonly voucher?: Voucher;
 
     @IsString()
     @IsOptional()
