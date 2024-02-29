@@ -28,6 +28,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.3",
     "@sendgrid/mail": "^8.1.0",
+    "add": "^2.0.6",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "helmet": "^7.1.0",
@@ -36,7 +37,8 @@
     "passport-headerapikey": "^1.2.2",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz",
+    "yarn": "^1.22.21"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.3.2",
