@@ -15,9 +15,8 @@ export class VoucherController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('/create')
-  async create(@Body() voucher: VoucherCreateDto): Promise<boolean> {
-    const result = await this._voucherService.create(voucher);
-    return result != null && result.isExpired == false;
+  async create(@Body() voucher: VoucherCreateDto) {
+    return await this._voucherService.create(voucher);
   }
 
   @HttpCode(HttpStatus.OK)
