@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { VoucherService } from './voucher.service';
 import { VoucherCreateDto, VoucherDto } from '../core/dto/voucher.dto';
+import {Voucher} from "../core/schemas/vouchers.schema";
 
 @Controller()
 export class VoucherController {
@@ -8,7 +9,7 @@ export class VoucherController {
   }
   @HttpCode(HttpStatus.OK)
   @Get('/list')
-  async list() {
+  async list(): Promise<Voucher[]> {
     return await this._voucherService.list();
   }
 
@@ -20,7 +21,8 @@ export class VoucherController {
 
   @HttpCode(HttpStatus.OK)
   @Post('/redeem')
-  async redeem(@Body() code: VoucherDto) {
-    return await this._voucherService.redeem(code);
+  async redeem(@Body() code: VoucherDto): Promise<boolean> {
+    const result = await this._voucherService.redeem(code);
+    return result.redeemed;
   }
 }
