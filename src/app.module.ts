@@ -38,6 +38,8 @@ import { VoucherModule } from './logbook/voucher/voucher.module';
         ],
       },
     ]),
+    StatsModule,
+    InvoiceModule,
     DatabaseModule,
     AuthenticationModule,
     MailModule,
