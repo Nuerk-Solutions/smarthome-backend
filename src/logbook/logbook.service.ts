@@ -46,7 +46,7 @@ export class LogbookService {
         };
 
         if(createLogbookDto.details.voucher) {
-            if(!await this._voucherService.isVoucherValid(createLogbookDto.details.voucher.code))
+            if(!await this._voucherService.isVoucherValid(createLogbookDto.details.voucher.code, true))
                 throw new BadRequestException('Voucher is not valid');
 
           const voucher = await this._voucherService.getVoucherByCode(createLogbookDto.details.voucher.code);
@@ -87,7 +87,7 @@ export class LogbookService {
         return await this.logbooksRepository.create(submitLogbook);
     }
 
-    async findAll(filter?: object, sort?: StringSortParameter, page?: number, limit?: number,): Promise<PaginateResult<NewLogbook>> {
+    async findAll(filter?: object, sort?: StringSortParameter, page?: number, limit?: number): Promise<PaginateResult<NewLogbook>> {
         return await this.logbooksRepository.getPagination(filter, page, limit, sort);
     }
 

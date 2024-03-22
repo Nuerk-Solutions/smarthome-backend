@@ -11,7 +11,13 @@ export class VoucherService {
   }
 
   async list(redeemer: Driver) {
-    return await this.voucherRepository.find({redeemer: redeemer});
+    return await this.voucherRepository.find(
+        {
+          redeemer: redeemer,
+          remainingDistance: {
+            $gt: 0,
+          }
+        });
   }
 
   async create(voucher: VoucherCreateDto) {
@@ -55,12 +61,12 @@ export class VoucherService {
     return distance;
   }
 
-  async isVoucherValid(code: string): Promise<boolean> {
+  async isVoucherValid(code: string, ignoreRedeemCheck: Boolean = false): Promise<boolean> {
     const voucher = await this.voucherRepository.findOne({ code: code });
     if (!voucher)
       throw new BadRequestException('Voucher not found');
 
-    if (voucher.redeemed)
+    if (voucher.redeemed && !ignoreRedeemCheck)
       throw new BadRequestException('Voucher already redeemed');
 
     if (voucher.isExpired)
