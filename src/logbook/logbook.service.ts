@@ -50,16 +50,15 @@ export class LogbookService {
                 throw new BadRequestException('Voucher is not valid');
 
           const voucher = await this._voucherService.getVoucherByCode(createLogbookDto.details.voucher.code);
-          const coveredDistance= await this._voucherService.getCoveredDistance(voucher.code, difference);
+          const remainingCoveredDistance= await this._voucherService.getRemainingCoveredDistance(voucher.code, difference);
 
-          submitLogbook.details.voucher.usedValue = Math.round((coveredDistance * voucher.costPerKm) * 100) / 100;
-          await this._voucherService.subtractDistance(createLogbookDto.details.voucher.code, coveredDistance);
+          submitLogbook.details.voucher.usedValue = Math.round((remainingCoveredDistance * voucher.costPerKm) * 100) / 100;
+          await this._voucherService.subtractDistance(createLogbookDto.details.voucher.code, remainingCoveredDistance);
 
-            if(coveredDistance == difference) {
-                submitLogbook.details.covered = true;
-                submitLogbook.details.driver = voucher.creator;
-            }
-            submitLogbook.mileAge.cost = Math.round((difference * DISTANCE_COST) * 100) / 100;
+            //if(remainingCoveredDistance == difference) {
+                //submitLogbook.details.covered = true;
+                //submitLogbook.details.driver = voucher.creator;
+            //}
         }
 
         if (createLogbookDto.refuel) {

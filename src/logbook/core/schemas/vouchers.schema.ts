@@ -39,6 +39,9 @@ export class Voucher {
   @Prop({ default: false })
   redeemed?: boolean;
 
+  @Prop({required: false})
+  redeemer: Driver
+
 }
 
 export const VoucherSchema = SchemaFactory.createForClass(Voucher);

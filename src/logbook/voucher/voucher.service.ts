@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { VoucherRepository } from '../repositories/voucher.repository';
 import { VoucherCreateDto, VoucherDto, VoucherUpdateDto } from '../core/dto/voucher.dto';
 import { DISTANCE_COST } from '../../core/utils/constatns';
+import {Driver} from "../core/enums/driver.enum";
 
 @Injectable()
 export class VoucherService {
@@ -9,8 +10,8 @@ export class VoucherService {
     private readonly voucherRepository: VoucherRepository) {
   }
 
-  async list() {
-    return await this.voucherRepository.find({});
+  async list(redeemer: Driver) {
+    return await this.voucherRepository.find({redeemer: redeemer});
   }
 
   async create(voucher: VoucherCreateDto) {
@@ -31,9 +32,9 @@ export class VoucherService {
     return await this.voucherRepository.create(newVoucher);
   }
 
-  async redeem(voucherDto: VoucherDto) {
+  async redeem(voucherDto: VoucherDto, redeemer: Driver) {
     if (await this.isVoucherValid(voucherDto.code))
-      return await this.voucherRepository.findOneAndUpdate({ code: voucherDto.code }, { redeemed: true });
+      return await this.voucherRepository.findOneAndUpdate({ code: voucherDto.code }, { redeemed: true, redeemer: redeemer });
   }
 
   async getVoucherByCode(code: string) {
@@ -46,7 +47,7 @@ export class VoucherService {
     return await this._updateVoucher({ code, remainingDistance: newDistance });
   }
 
-  async getCoveredDistance(code: string, distance: number) {
+  async getRemainingCoveredDistance(code: string, distance: number) {
     const voucher = await this.getVoucherByCode(code);
     const diff = voucher.remainingDistance - distance;
     if (diff < 0)
@@ -86,5 +87,13 @@ export class VoucherService {
 
   private async _updateVoucher(voucherUpdateDto: VoucherUpdateDto) {
     return await this.voucherRepository.findOneAndUpdate({ code: voucherUpdateDto.code }, voucherUpdateDto);
+  }
+
+  async deleteVoucher(code: string) {
+    const voucherCode = await this.voucherRepository.findOne({code: code})
+    if (voucherCode.redeemed) {
+      throw new BadRequestException("Voucher code is redeemed and cannot be deleted!")
+    }
+    return await this.voucherRepository.deleteOneById(voucherCode._id)
   }
 }
