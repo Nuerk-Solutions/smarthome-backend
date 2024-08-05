@@ -65,9 +65,9 @@ export class InvoiceService {
         startDate: lastInvoiceDate,
         endDate: newInvoiceDate,
       },
-      invoiceStats[1].totalCost, // works because of the prev sort | Thomas
-      invoiceStats[0].totalCost, // Andrea
-      invoiceStats[0].totalCost + invoiceStats[1].totalCost,
+      invoiceStats[1]?.totalCost ?? 0.0, // works because of the prev sort | Thomas
+      invoiceStats[0]?.totalCost ?? 0.0, // Andrea
+      invoiceStats[0]?.totalCost ?? 0.0 + invoiceStats[1]?.totalCost ?? 0.0,
     );
 
     await this.sendInvoiceSummary(
@@ -77,9 +77,9 @@ export class InvoiceService {
         startDate: lastInvoiceDate,
         endDate: newInvoiceDate,
       },
-      invoiceStats[1].totalCost, // works because of the prev sort | Thomas
-      invoiceStats[0].totalCost, // Andrea
-      invoiceStats[0].totalCost + invoiceStats[1].totalCost,
+      invoiceStats[1]?.totalCost ?? 0.0, // works because of the prev sort | Thomas
+      invoiceStats[0]?.totalCost ?? 0.0, // Andrea
+      invoiceStats[0]?.totalCost ?? 0.0 + invoiceStats[1]?.totalCost ?? 0.0,
     );
 
     await this.logbooksInvoiceRepository.create({ date: newInvoiceDate });
