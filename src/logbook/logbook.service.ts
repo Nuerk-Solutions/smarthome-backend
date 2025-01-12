@@ -120,6 +120,7 @@ export class LogbookService {
 
         const data = logbooks.map((logbook) => {
             return {
+                Record_Id: logbook.id,
                 Fahrer: logbook.driver,
                 Fahrzeug: logbook.vehicle,
                 'Aktueller Kilometerstand': logbook.mileAge.current,
@@ -129,6 +130,15 @@ export class LogbookService {
                 Kosten: logbook.mileAge.cost,
                 Datum: logbook.date,
                 Reiseziel: logbook.reason,
+                Getankt: logbook.refuel == null ? "Nein" : "Ja",
+                Getankt_Liter: logbook.refuel == null ? null : logbook.refuel.liters,
+                Getankt_Preis: logbook.refuel == null ? null : logbook.refuel.price,
+                Getankt_Verbrauch: logbook.refuel == null ? null : logbook.refuel.consumption,
+                Getankt_Keine_Volltankung: logbook.refuel ? "Ja" : "Nein",
+                Getankt_Entfernung: logbook.refuel == null ? null : logbook.refuel.distanceDifference,
+                Getankt_Prev_Record_Id: logbook.refuel == null ? null : logbook.refuel.previousRecordId,
+                Gewartet_Preis: logbook.service == null ? null : logbook.service.price,
+                Gewartet_Nachricht: logbook.service == null ? null : logbook.service.message,
             };
         });
 
