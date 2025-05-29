@@ -75,8 +75,6 @@ export class LogbookService {
 
                     // Addiere die aktuellen Liter zu den bereits summierten Litern
                     const totalLiters = refuelData[0].totalLitersSinceLast + createLogbookDto.refuel.liters;
-                    console.log(refuelData)
-                    console.log(totalLiters, refuelData[0].totalLitersSinceLast, createLogbookDto.refuel.liters);
 
                     if (distanceDifference > 0) {
                         consumption = Math.round(totalLiters / distanceDifference * 100 * 100) / 100;
