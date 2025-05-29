@@ -100,6 +100,6 @@ export class VoucherService {
     if (voucherCode.redeemed) {
       throw new BadRequestException("Voucher code is redeemed and cannot be deleted!")
     }
-    return await this.voucherRepository.deleteOneById(voucherCode._id)
+    return await this.voucherRepository.deleteOneById(voucherCode._id.toString())
   }
 }

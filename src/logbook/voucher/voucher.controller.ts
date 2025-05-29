@@ -16,7 +16,7 @@ export class VoucherController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('/create')
-  async create(@Body() voucher: VoucherCreateDto) {
+  async create(@Body() voucher: VoucherCreateDto){
     return await this._voucherService.create(voucher);
   }
 
