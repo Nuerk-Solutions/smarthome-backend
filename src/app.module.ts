@@ -4,7 +4,6 @@ import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { LogbookModule } from './logbook/logbook.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { MailModule } from './core/mail/mail.module';
-import { AppController } from './app.controller';
 import { RouterModule } from '@nestjs/core';
 import { StatsModule } from './logbook/stats/stats.module';
 import { InvoiceModule } from './logbook/invoice/invoice.module';
@@ -44,7 +43,6 @@ import { VoucherModule } from './logbook/voucher/voucher.module';
     AuthenticationModule,
     MailModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

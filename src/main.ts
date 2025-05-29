@@ -13,7 +13,19 @@ async function bootstrap() {
     // const reflector = app.get(Reflector);
     const port = +configService.get<number>('WEB_PORT');
 
-    app.use(helmet());
+    app.use(helmet({
+      contentSecurityPolicy: false,
+      frameguard: {
+        action: 'deny',
+      },
+      referrerPolicy: {
+        policy: 'no-referrer',
+      }
+    }));
+
+    app.use(helmet.hidePoweredBy());
+
+
     app.use(bodyParser.json({limit: '1mb'}));
     app.use(bodyParser.urlencoded({extended: true}));
     app.enableCors();
