@@ -44,7 +44,6 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
   async findRefuelDataForConsumption(vehicle: Vehicle, newMileAge: number): Promise<{
     lastFullRefuel?: T, totalLitersSinceLast: number, distanceDifference: number
   }[]> {
-      console.log(newMileAge);
     return this.entityModel
       .aggregate([
         // Schritt 1: Alle Tankungen vor dem aktuellen Eintrag finden

@@ -42,7 +42,6 @@ describe('Basic LogbookController Integration Test', () => {
     describe('findLatest', () => {
         it('should return an array of newlogbooks', async () => {
             await dbConnection.collection('newlogbooks').insertOne(basicLogbookStub());
-            console.log("Test")
             const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
             console.log(response.body.data);
             console.log(response.status)
