@@ -62,27 +62,39 @@ export class LogbookService {
         }
 
         if (createLogbookDto.refuel) {
-            const lastRefuel = await this.logbooksRepository.findLastRefuel(createLogbookDto.vehicle);
-            let distanceDifference = 0;
             let consumption = 0;
-            if (lastRefuel.length != 0) {
-                distanceDifference = createLogbookDto.mileAge.new - lastRefuel[0].mileAge.new;
+            let distanceDifference = 0;
+            let previousRecordId = null;
+
+            const refuelData = await this.logbooksRepository.findRefuelDataForConsumption(createLogbookDto.vehicle, createLogbookDto.mileAge.new);
+            if (!createLogbookDto.refuel.isSpecial) {
+
+                if (refuelData.length > 0 && refuelData[0].lastFullRefuel) {
+                    distanceDifference = refuelData[0].distanceDifference;
+                    previousRecordId = refuelData[0].lastFullRefuel._id;
+
+                    // Addiere die aktuellen Liter zu den bereits summierten Litern
+                    const totalLiters = refuelData[0].totalLitersSinceLast + createLogbookDto.refuel.liters;
+                    console.log(refuelData)
+                    console.log(totalLiters, refuelData[0].totalLitersSinceLast, createLogbookDto.refuel.liters);
+
+                    if (distanceDifference > 0) {
+                        consumption = Math.round(totalLiters / distanceDifference * 100 * 100) / 100;
+                    }
+                }
             }
-            if (!createLogbookDto.refuel.isSpecial && distanceDifference != 0) {
-                consumption = Math.round(createLogbookDto.refuel.liters / distanceDifference * 100 * 100) / 100;
-            }
+
             submitLogbook = {
                 ...submitLogbook,
                 refuel: {
                     ...createLogbookDto.refuel,
                     distanceDifference,
                     consumption,
-                    ...(lastRefuel.length != 0 && {
-                        previousRecordId: lastRefuel[0]._id,
-                    }),
+                    ...(previousRecordId && { previousRecordId }),
                 }
             };
         }
+
 
         return await this.logbooksRepository.create(submitLogbook);
     }

@@ -240,12 +240,91 @@ export const complexLogbookStub_VW_10_0_T = (): NewLogbook => {
         refuel: {
             liters: 0, // Update with actual refuel data
             price: 0, // Update with actual refuel data
-            distanceDifference: 25, // Update with actual refuel data
+            distanceDifference: 0, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
             isSpecial: true,
         },
     };
 };
+
+export const complexLogbookStub_VW_10_1_T = (): NewLogbook => {
+    return {
+        driver: Driver.OLIVER,
+        vehicle: Vehicle.VW,
+        date: new Date(1666192177411),
+        reason: 'complexLogbookStub_VW_10_1_T',
+        mileAge: {
+            current: 50,
+            new: 213961,
+            unit: Unit.KM,
+            difference: 213911,
+            cost: 42782.2,
+        },
+        details: {
+            covered: false,
+        },
+        refuel: {
+            liters: 47.73, // Update with actual refuel data
+            price: 72.5, // Update with actual refuel data
+            distanceDifference: 213936, // Update with actual refuel data
+            consumption: 0.02, // Update with actual refuel data
+            isSpecial: false,
+        },
+    };
+};
+
+export const complexLogbookStub_VW_10_2_T = (): NewLogbook => {
+    return {
+        driver: Driver.OLIVER,
+        vehicle: Vehicle.VW,
+        date: new Date(1666192177412),
+        reason: 'complexLogbookStub_VW_10_2_T',
+        mileAge: {
+            current: 213961,
+            new: 214824,
+            unit: Unit.KM,
+            difference: 863,
+            cost: 172.6,
+        },
+        details: {
+            covered: false,
+        },
+        refuel: {
+            liters: 15, // Update with actual refuel data
+            price: 22.64, // Update with actual refuel data
+            distanceDifference: 0, // Update with actual refuel data
+            consumption: 0, // Update with actual refuel data
+            isSpecial: true,
+        },
+    };
+};
+
+export const complexLogbookStub_VW_10_3_T = (): NewLogbook => {
+    return {
+        driver: Driver.ANDREA,
+        vehicle: Vehicle.VW,
+        date: new Date(1666192177413),
+        reason: 'complexLogbookStub_VW_10_3_T',
+        mileAge: {
+            current: 214824,
+            new: 215128,
+            unit: Unit.KM,
+            difference: 304,
+            cost: 60.8,
+        },
+        details: {
+            covered: false,
+        },
+        refuel: {
+            liters: 55.07, // Update with actual refuel data
+            price: 82, // Update with actual refuel data
+            distanceDifference: 1167, // Update with actual refuel data
+            consumption: 6, // Update with actual refuel data
+            isSpecial: false,
+        },
+    };
+};
+
 /**
  * FERRARI
  */
@@ -351,7 +430,7 @@ export const complexLogbookStub_Ferrari_4_0_T = (): NewLogbook => {
         refuel: {
             liters: 0, // Update with actual refuel data
             price: 0, // Update with actual refuel data
-            distanceDifference: 5, // Update with actual refuel data
+            distanceDifference: 0, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
             isSpecial: true,
         },
@@ -396,8 +475,34 @@ export const complexLogbookStub_Ferrari_6_1_F = (): NewLogbook => {
         refuel: {
             liters: 43.1, // Update with actual refuel data
             price: 62.9, // Update with actual refuel data
-            distanceDifference: 9, // Update with actual refuel data
-            consumption: 478.89, // Update with actual refuel data
+            distanceDifference: 0, // Update with actual refuel data
+            consumption: 0, // Update with actual refuel data
+            isSpecial: false,
+        },
+    };
+};
+
+export const complexLogbookStub_Ferrari_6_2_F = (): NewLogbook => {
+    return {
+        driver: Driver.CLAUDIA,
+        vehicle: Vehicle.FERRARI,
+        date: new Date(1666192177406),
+        reason: 'complexLogbookStub_Ferrari_6_1_F',
+        mileAge: {
+            current: 25,
+            new: 27,
+            unit: Unit.KM,
+            difference: 2,
+            cost: 0.40,
+        },
+        details: {
+            covered: false,
+        },
+        refuel: {
+            liters: 43.1, // Update with actual refuel data
+            price: 62.9, // Update with actual refuel data
+            distanceDifference: 2, // Update with actual refuel data
+            consumption: 2155, // Update with actual refuel data
             isSpecial: false,
         },
     };
@@ -410,11 +515,11 @@ export const complexLogbookStub_Ferrari_7_0_F = (): NewLogbook => {
         date: new Date(1666192177407),
         reason: 'complexLogbookStub_Ferrari_7_0_F',
         mileAge: {
-            current: 25,
+            current: 27,
             new: 30,
             unit: Unit.KM,
-            difference: 5,
-            cost: 1.00,
+            difference: 3,
+            cost: 0.60,
         },
         details: {
             covered: false,
@@ -483,7 +588,7 @@ export const complexLogbookStub_Ferrari_10_0_T = (): NewLogbook => {
         refuel: {
             liters: 0, // Update with actual refuel data
             price: 0, // Update with actual refuel data
-            distanceDifference: 25, // Update with actual refuel data
+            distanceDifference: 0, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
             isSpecial: true,
         },
@@ -594,7 +699,7 @@ export const complexLogbookStub_Porsche_4_0_T = (): NewLogbook => {
         refuel: {
             liters: 0, // Update with actual refuel data
             price: 0, // Update with actual refuel data
-            distanceDifference: 5, // Update with actual refuel data
+            distanceDifference: 0, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
             isSpecial: true,
         },
@@ -639,8 +744,8 @@ export const complexLogbookStub_Porsche_6_1_F = (): NewLogbook => {
         refuel: {
             liters: 43.1, // Update with actual refuel data
             price: 62.9, // Update with actual refuel data
-            distanceDifference: 9, // Update with actual refuel data
-            consumption: 478.89, // Update with actual refuel data
+            distanceDifference: 0, // Update with actual refuel data
+            consumption: 0, // Update with actual refuel data
             isSpecial: false,
         },
     };
@@ -728,7 +833,7 @@ export const complexLogbookStub_Porsche_10_0_T = (): NewLogbook => {
             price: 0, // Update with actual refuel data
             distanceDifference: 25, // Update with actual refuel data
             consumption: 0, // Update with actual refuel data
-            isSpecial: true,
+            isSpecial: false,
         },
     };
 };

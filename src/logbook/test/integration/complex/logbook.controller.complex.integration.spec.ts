@@ -39,7 +39,7 @@ describe('Complex LogbookController Integration Test', () => {
   });
 
   afterAll(async () => {
-    await dbConnection.collection('newlogbooks').deleteMany();
+    // await dbConnection.collection('newlogbooks').deleteMany();
     await app.close();
   });
 
@@ -285,17 +285,79 @@ describe('Complex LogbookController Integration Test', () => {
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
+    it('complexLogbookStub_VW_10_1_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_VW_10_1_T());
+
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_10_1_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST * 100) / 100);
+
+      const updatedLogbook = await dbConnection
+        .collection('newlogbooks')
+        .findOne({ _id: new Types.ObjectId(response.body._id) });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
+    });
+    it('complexLogbookStub_VW_10_2_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_VW_10_2_T());
+
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_10_2_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST * 100) / 100);
+
+      const updatedLogbook = await dbConnection
+        .collection('newlogbooks')
+        .findOne({ _id: new Types.ObjectId(response.body._id) });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
+    });
+    it('complexLogbookStub_VW_10_3_T', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_VW_10_3_T());
+
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_VW_10_3_T();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST * 100) / 100);
+
+      const updatedLogbook = await dbConnection
+        .collection('newlogbooks')
+        .findOne({ _id: new Types.ObjectId(response.body._id) });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
+    });
   });
+
+
 
   describe('find latest_1', () => {
     it('should return an array of newlogbooks', async () => {
       const response = await request(httpServer).get('/logbook/find/latest').set('Authorization', apiKey);
 
-      console.log(convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id, response.body.data.date))
-      
+      console.log(convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_3_T(), response.body._id, response.body.data.date))
+
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body.data).toMatchObject([
-        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id, response.body.data.date),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_3_T(), response.body._id, response.body.data.date),
       ]);
     });
   });
@@ -431,6 +493,7 @@ describe('Complex LogbookController Integration Test', () => {
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
+
     it('complexLogbookStub_Ferrari_6_1_F', async () => {
       const response = await request(httpServer)
         .post('/logbook')
@@ -451,6 +514,28 @@ describe('Complex LogbookController Integration Test', () => {
         .findOne({ _id: new Types.ObjectId(response.body._id) });
       expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
     });
+
+    it('complexLogbookStub_Ferrari_6_2_F', async () => {
+      const response = await request(httpServer)
+        .post('/logbook')
+        .set('Authorization', apiKey)
+        .send(stubs.complexLogbookStub_Ferrari_6_2_F());
+
+      const newLogbook: NewLogbook = stubs.complexLogbookStub_Ferrari_6_2_F();
+
+      expect(response.body).toMatchObject({
+        ...newLogbook,
+        date: newLogbook.date.toISOString(),
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body.mileAge.cost).toEqual(Math.round(response.body.mileAge.difference * DISTANCE_COST  * 100) / 100);
+
+      const updatedLogbook = await dbConnection
+        .collection('newlogbooks')
+        .findOne({ _id: new Types.ObjectId(response.body._id) });
+      expect(updatedLogbook).toMatchObject(convertComplexLogbookStubToNoId(newLogbook));
+    });
+
     it('complexLogbookStub_Ferrari_7_0_F', async () => {
       const response = await request(httpServer)
         .post('/logbook')
@@ -541,7 +626,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body.data).toMatchObject([
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T(), response.body._id),
-        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_3_T(), response.body._id),
       ]);
     });
   });
@@ -787,7 +872,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.data).toMatchObject([
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_10_0_T(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
-        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_3_T(), response.body._id),
       ]);
     });
   });
@@ -893,7 +978,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.data).toMatchObject([
         updatedLogbook,
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
-        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_3_T(), response.body._id),
       ]);
     });
   });
@@ -921,7 +1006,7 @@ describe('Complex LogbookController Integration Test', () => {
       expect(response.body.data).toMatchObject([
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Ferrari_9_2_F(), response.body._id),
         convertComplexLogbookStubToNoType(stubs.complexLogbookStub_Porsche_10_0_T(), response.body._id),
-        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_0_T(), response.body._id),
+        convertComplexLogbookStubToNoType(stubs.complexLogbookStub_VW_10_3_T(), response.body._id),
       ]);
     });
   });

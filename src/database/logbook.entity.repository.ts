@@ -41,31 +41,86 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
             .exec();
     }
 
-    async findLastRefuel(
-        vehicle: Vehicle
-    ): Promise<T[]> {
-        return this.entityModel
-            .aggregate([
+  async findRefuelDataForConsumption(vehicle: Vehicle, newMileAge: number): Promise<{
+    lastFullRefuel?: T, totalLitersSinceLast: number, distanceDifference: number
+  }[]> {
+      console.log(newMileAge);
+    return this.entityModel
+      .aggregate([
+        // Schritt 1: Alle Tankungen vor dem aktuellen Eintrag finden
+        {
+          $match: {
+            vehicle: vehicle,
+            refuel: { $exists: true },
+            "mileAge.new": { $lt: newMileAge }
+          }
+        },
+        // Nach Kilometerstand sortieren (neueste zuerst)
+        {
+          $sort: { "mileAge.new": -1 }
+        },
+        // Schritt 2: Den letzten Volltank finden
+        {
+          $group: {
+            _id: null,
+            allRefuels: { $push: "$$ROOT" }
+          }
+        },
+        {
+          $project: {
+            lastFullRefuel: {
+              $arrayElemAt: [
                 {
-                    $match: {
-                        vehicle: vehicle,
-                        refuel: {
-                            $exists: true,
-                        },
-                    },
+                  $filter: {
+                    input: "$allRefuels",
+                    cond: { $eq: ["$$this.refuel.isSpecial", false] }
+                  }
                 },
-                {
-                    $sort: {
-                        "mileAge.new": -1,
-                    },
+                0
+              ]
+            },
+            allRefuels: 1
+          }
+        },
+        // Schritt 3: Alle Liter seit dem letzten Volltank summieren
+        {
+          $project: {
+            lastFullRefuel: 1,
+            distanceDifference: {
+              $cond: {
+                if: { $ne: ["$lastFullRefuel", null] },
+                then: { $subtract: [newMileAge, "$lastFullRefuel.mileAge.new"] },
+                else: 0
+              }
+            },
+            totalLitersSinceLast: {
+              $cond: {
+                if: { $ne: ["$lastFullRefuel", null] },
+                then: {
+                  $sum: {
+                    $map: {
+                      input: {
+                        $filter: {
+                          input: "$allRefuels",
+                          cond: {
+                            $gt: ["$$this.mileAge.new", "$lastFullRefuel.mileAge.new"]
+                          }
+                        }
+                      },
+                      as: "refuel",
+                      in: { $toDouble: "$$refuel.refuel.liters" }
+                    }
+                  }
                 },
-                {
-                    $limit: 1,
-                },
-            ])
-            .collation({ locale: 'de', numericOrdering: true })
-            .exec();
-    }
+                else: 0
+              }
+            }
+          }
+        }
+      ])
+      .collation({ locale: 'de', numericOrdering: true })
+      .exec();
+  }
 
     /*
     Used for statistics page in the app
@@ -78,6 +133,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
                             'refuel': {
                                 $exists: true,
                             },
+                          "refuel.isSpecial": false,
                         },
                     },
                     {
