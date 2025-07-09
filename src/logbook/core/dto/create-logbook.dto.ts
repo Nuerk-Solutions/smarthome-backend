@@ -66,6 +66,10 @@ class Details {
     @ValidateNested()
     readonly voucher?: Voucher;
 
+    @IsOptional()
+    @IsBoolean()
+    readonly businessTrip?: boolean;
+
     @IsString()
     @IsOptional()
     @IsNotEmpty()

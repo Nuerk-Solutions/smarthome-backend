@@ -84,6 +84,9 @@ export class Details {
     @Prop({type: VoucherSchema, required: false})
     voucher?: Voucher;
 
+    @Prop({type: Boolean, required: false, default: false})
+    businessTrip?: boolean;
+
     @Prop({type: String, required: false})
     notes?: string;
 }
