@@ -36,8 +36,8 @@ export class InvoiceService {
     // Hard coded email addresses
     const driverMailMap: Map<Driver, string> = new Map([
       [Driver.ANDREA, 'andrea@nuerkler.de'],
-      [Driver.CLAUDIA, 'claudia_dresden@icloud.com'],
-      [Driver.THOMAS, 'thomas@nuerkler.de'],
+      //[Driver.CLAUDIA, 'claudia_dresden@icloud.com'],
+      [Driver.THOMAS, 'nurkthomas@gmail.com'],
     ]);
 
     invoiceStats.forEach(item => {
@@ -67,7 +67,7 @@ export class InvoiceService {
       },
       invoiceStats[1]?.totalCost ?? 0.0, // works because of the prev sort | Thomas
       invoiceStats[0]?.totalCost ?? 0.0, // Andrea
-      invoiceStats[0]?.totalCost ?? 0.0 + invoiceStats[1]?.totalCost ?? 0.0,
+      invoiceStats[0]?.totalCost ?? 0.0 + invoiceStats[1]?.totalCost,
     );
 
     await this.sendInvoiceSummary(
@@ -79,8 +79,10 @@ export class InvoiceService {
       },
       invoiceStats[1]?.totalCost ?? 0.0, // works because of the prev sort | Thomas
       invoiceStats[0]?.totalCost ?? 0.0, // Andrea
-      invoiceStats[0]?.totalCost ?? 0.0 + invoiceStats[1]?.totalCost ?? 0.0,
+      invoiceStats[0]?.totalCost ?? 0.0 + invoiceStats[1]?.totalCost,
     );
+
+
 
     await this.logbooksInvoiceRepository.create({ date: newInvoiceDate });
 
