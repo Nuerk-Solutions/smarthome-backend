@@ -12,7 +12,6 @@ export class ApiKeyStrategy extends PassportStrategy(HeaderAPIKeyStrategy, 'api-
         prefix: 'Api-Key ',
       },
       true,
-      async (apiKey, done) => this.validate(apiKey, done),
     );
   }
 

@@ -1,10 +1,10 @@
-import { Document, FilterQuery, Model, SortOrder, Types, UpdateQuery } from 'mongoose';
+import { Document, QueryFilter, Model, SortOrder, Types, UpdateQuery } from 'mongoose';
 
 export abstract class EntityRepository<T extends Document> {
   constructor(protected readonly entityModel: Model<T>) {}
 
   async findOne(
-    entityFilterQuery: FilterQuery<T>,
+    entityFilterQuery: QueryFilter<T>,
     options: {
       sort?: string | { [key: string]: SortOrder | { $meta: 'textScore' } } | [string, SortOrder][] | undefined | null;
       limit?: number;
@@ -26,7 +26,7 @@ export abstract class EntityRepository<T extends Document> {
   }
 
   async find(
-    entityFilterQuery: FilterQuery<T>,
+    entityFilterQuery: QueryFilter<T>,
     sort?: string | { [key: string]: SortOrder | { $meta: 'textScore' } } | [string, SortOrder][] | undefined | null,
   ): Promise<T[] | null> {
     return this.entityModel.find(entityFilterQuery).sort(sort);
@@ -42,13 +42,13 @@ export abstract class EntityRepository<T extends Document> {
     return await this.entityModel.create(createEntityData); // use create to generate _id
   }
 
-  async findOneAndUpdate(entityFilterQuery: FilterQuery<T>, updateEntityData: UpdateQuery<unknown>): Promise<T | null> {
+  async findOneAndUpdate(entityFilterQuery: QueryFilter<T>, updateEntityData: UpdateQuery<unknown>): Promise<T | null> {
     return this.entityModel.findOneAndUpdate(entityFilterQuery, updateEntityData, {
       new: true,
     });
   }
 
-  async deleteMany(entityFilterQuery: FilterQuery<T>): Promise<boolean> {
+  async deleteMany(entityFilterQuery: QueryFilter<T>): Promise<boolean> {
     const deleteResult = await this.entityModel.deleteMany(entityFilterQuery);
     return deleteResult.deletedCount >= 1;
   }
