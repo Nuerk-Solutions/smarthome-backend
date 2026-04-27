@@ -9,7 +9,7 @@ export class VoucherController {
   constructor(private readonly _voucherService: VoucherService) {
   }
   @HttpCode(HttpStatus.OK)
-  @Get('/list/:redeemer?')
+  @Get('/list/:redeemer')
   async list(@Param('redeemer') redeemer?: Driver): Promise<Voucher[]> {
     return await this._voucherService.list(redeemer);
   }

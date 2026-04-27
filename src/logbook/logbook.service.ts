@@ -130,7 +130,7 @@ export class LogbookService {
 
         const data = logbooks.map((logbook) => {
             return {
-                Record_Id: logbook.id,
+                Record_Id: logbook._id,
                 Fahrer: logbook.driver,
                 Fahrzeug: logbook.vehicle,
                 'Aktueller Kilometerstand': logbook.mileAge.current,

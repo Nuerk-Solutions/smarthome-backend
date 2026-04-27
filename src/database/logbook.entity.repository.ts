@@ -1,5 +1,5 @@
 import {EntityRepository} from './entity.repository';
-import { FilterQuery, Model, Schema, SortOrder } from 'mongoose';
+import { QueryFilter, Model, Schema, SortOrder } from 'mongoose';
 import {Vehicle} from '../logbook/core/enums/vehicle-typ.enum';
 import {LogbookDocument} from "../logbook/core/schemas/logbook.schema";
 import { Driver } from '../logbook/core/enums/driver.enum';
@@ -260,7 +260,7 @@ export abstract class LogbookEntityRepository<T extends LogbookDocument> extends
     }
 
     async getPagination(
-        filterQuery: FilterQuery<T> = {},
+        filterQuery: QueryFilter<T> = {},
         page: number = 0,
         limit: number = 100_000,
         sort: string | {
