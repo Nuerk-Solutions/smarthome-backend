@@ -3,5 +3,6 @@ export enum Vehicle {
   VW = 'VW',
   PORSCHE = 'Porsche',
   MX5 = 'MX5',
-  DS = 'DS'
+  DS = 'DS',
+  VW_BLAU = 'VW-Blau'
 }
