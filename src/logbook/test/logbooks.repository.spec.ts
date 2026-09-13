@@ -3,7 +3,6 @@ import { Test } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { NewLogbook } from '../core/schemas/logbook.schema';
 import { LogbookModel } from './support/logbook.model';
-import { FilterQuery } from 'mongoose';
 import { basicLogbookStub } from './stubs/basic.logbook.stub';
 
 describe('LogbooksRepository', () => {
@@ -11,7 +10,7 @@ describe('LogbooksRepository', () => {
 
   describe('findOperations', () => {
     let logbookModel: LogbookModel;
-    let logbookFilterQuery: FilterQuery<NewLogbook>;
+    let logbookQueryFilter: Parameters<LogbooksRepository['findOne']>[0];
 
     beforeEach(async () => {
       const moduleRef = await Test.createTestingModule({
@@ -26,7 +25,7 @@ describe('LogbooksRepository', () => {
 
       logbookRepository = moduleRef.get<LogbooksRepository>(LogbooksRepository);
       logbookModel = moduleRef.get<LogbookModel>(getModelToken(NewLogbook.name, 'logbook'));
-      logbookFilterQuery = { _id: basicLogbookStub()._id };
+      logbookQueryFilter = { _id: basicLogbookStub()._id };
       jest.clearAllMocks();
     });
 
@@ -36,12 +35,12 @@ describe('LogbooksRepository', () => {
 
         beforeEach(async () => {
           jest.spyOn(logbookModel, 'findOne');
-          logbook = await logbookRepository.findOne(logbookFilterQuery, {}, { _id: basicLogbookStub()._id.toString() });
+          logbook = await logbookRepository.findOne(logbookQueryFilter, {}, { _id: basicLogbookStub()._id.toString() });
         });
 
         test('then it should call the logbookModel', () => {
           // { _id: basicLogbookStub()._id.toString() } => defines which fields should be returned
-          expect(logbookModel.findOne).toHaveBeenCalledWith(logbookFilterQuery, {
+          expect(logbookModel.findOne).toHaveBeenCalledWith(logbookQueryFilter, {
             _id: basicLogbookStub()._id.toString(),
           });
         });
@@ -58,12 +57,12 @@ describe('LogbooksRepository', () => {
 
         beforeEach(async () => {
           jest.spyOn(logbookModel, 'find');
-          logbooks = await logbookRepository.find(logbookFilterQuery);
+          logbooks = await logbookRepository.find(logbookQueryFilter);
         });
 
         test('then it should call the logbookModel', () => {
           // { _id: basicLogbookStub()._id.toString() } => defines which fields should be returned
-          expect(logbookModel.find).toHaveBeenCalledWith(logbookFilterQuery);
+          expect(logbookModel.find).toHaveBeenCalledWith(logbookQueryFilter);
         });
 
         test('then it should return a logbook', () => {
@@ -78,12 +77,12 @@ describe('LogbooksRepository', () => {
 
         beforeEach(async () => {
           jest.spyOn(logbookModel, 'findOneAndUpdate');
-          logbook = await logbookRepository.findOneAndUpdate(logbookFilterQuery, basicLogbookStub());
+          logbook = await logbookRepository.findOneAndUpdate(logbookQueryFilter, basicLogbookStub());
         });
 
         test('then it should call the logbookModel', () => {
           // { _id: basicLogbookStub()._id.toString() } => defines which fields should be returned
-          expect(logbookModel.findOneAndUpdate).toHaveBeenCalledWith(logbookFilterQuery, basicLogbookStub(), {
+          expect(logbookModel.findOneAndUpdate).toHaveBeenCalledWith(logbookQueryFilter, basicLogbookStub(), {
             new: true,
           });
         });

@@ -1,3 +1,4 @@
+import { ConvexSyncService } from './convex-sync/convex-sync.service';
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogbookController } from './logbook.controller';
@@ -20,7 +21,7 @@ import { VoucherModule } from './voucher/voucher.module';
     forwardRef(() => VoucherModule),
   ],
   controllers: [LogbookController],
-  providers: [LogbookService, LogbooksRepository],
+  providers: [LogbookService, LogbooksRepository, ConvexSyncService],
   exports: [LogbookService, LogbooksRepository],
 })
 export class LogbookModule {}

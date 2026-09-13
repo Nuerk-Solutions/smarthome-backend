@@ -35,7 +35,7 @@ describe('LogbookController', () => {
             });
 
             test('then it should call logbookService', () => {
-                expect(logbookService.findOne).toBeCalledWith(basicLogbookStub()._id.toString());
+                expect(logbookService.findOne).toHaveBeenCalledWith(basicLogbookStub()._id.toString());
             });
 
             test('then it should return a logbook', () => {
@@ -52,7 +52,7 @@ describe('LogbookController', () => {
             });
 
             test('then it should call logbookService', () => {
-                expect(logbookService.findLatest).toBeCalled();
+                expect(logbookService.findLatest).toHaveBeenCalled();
             });
 
             test('then it should return all latest logbooks', () => {

@@ -14,7 +14,7 @@ import { VoucherModule } from './logbook/voucher/voucher.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.development', 'sendgrid.env'],
+      envFilePath: ['.env.convex-mirror', '.env.development', 'sendgrid.env'],
     }),
     LogbookModule,
     RouterModule.register([

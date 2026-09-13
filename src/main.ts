@@ -9,6 +9,7 @@ async function bootstrap() {
     console.log('Server Ready!');
 
     const app = await NestFactory.create(AppModule);
+    app.enableShutdownHooks();
     const configService = app.get(ConfigService);
     // const reflector = app.get(Reflector);
     const port = +configService.get<number>('WEB_PORT');

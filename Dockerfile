@@ -1,24 +1,19 @@
-FROM node:20 as build
-
+FROM oven/bun:1 AS bun
+FROM node:22 AS build
 WORKDIR /app
-COPY package.json .
-COPY yarn.lock .
-RUN yarn install
-COPY . .
-RUN yarn run build
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+COPY nest-cli.json tsconfig.json tsconfig.build.json ./
+COPY src ./src
+RUN bun run build
 
-FROM node:20
+FROM node:22 AS runtime
 WORKDIR /app
-COPY package.json .
-COPY logbookbackend-firebase-adminsdk-*.json .
-COPY .env.development .
-RUN yarn install --production
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --production
 COPY --from=build /app/dist ./dist
-CMD yarn run start:prod
-
-# Deploy commands
-# docker bulid -t app .
-# gcloud auth login
-# docker tag app eu.gcr.io/logbookbackend/app
-# docker push eu.gcr.io/logbookbackend/app
-# See https://www.youtube.com/watch?v=ZmfDlUAokYc
+COPY scripts/convex-mirror.cjs ./scripts/convex-mirror.cjs
+# Supply the complete runtime configuration using Docker --env-file .env.
+CMD ["node", "dist/main.js"]

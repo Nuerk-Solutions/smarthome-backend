@@ -261,3 +261,7 @@ modules.xml
 
 # Email
 sendgrid.env
+# Dedicated mirror credential, supplied at runtime
+.env.convex-mirror
+
+.local/
