@@ -18,8 +18,9 @@ export class LegacyMirrorWorker {
 
   constructor(private db: mongo.Db, private config: MirrorConfig, private log: (message: string) => void = console.log) {
     const url = new URL(config.url);
-    if (url.href !== 'https://scrupulous-elk-382.convex.site/legacy-mirror' || config.secret.length < 32 || !config.mapping.organizationId) {
-      throw new Error('Invalid test mirror configuration');
+    // Since 2026-11-02 the mirror feeds only production ARB 19; the test deployment is no longer a target.
+    if (url.href !== 'https://flexible-deer-25.eu-west-1.convex.site/legacy-mirror' || config.secret.length < 32 || !config.mapping.organizationId) {
+      throw new Error('Invalid mirror configuration');
     }
     this.source = db.collection('newlogbooks');
     // Each destination has its own acknowledgements. No source document is modified.

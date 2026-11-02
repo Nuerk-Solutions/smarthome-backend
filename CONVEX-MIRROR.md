@@ -1,8 +1,15 @@
-# ARB19: MongoDB → Convex (Test)
+# ARB 19: MongoDB → Convex (Produktion)
+
+Seit 2026-11-02 spiegelt der Worker nur noch in die **Produktions**-Organisation
+„ARB 19“ (`flexible-deer-25`). Das Testdeployment wird nicht mehr beliefert.
+Die `.env` und `.env.convex-mirror` enthalten das Prod-Ziel, den Prod-Schlüssel
+und die Prod-Zuordnung (Sicherung der alten Test-Werte: `.local/env-backup-2026-11-02/`).
+Der Erstimport nach Prod ist bereits erfolgt; der Container setzt nach dem Start
+mit einem Abgleich ohne Übertragungen fort und hört dann auf Änderungen.
 
 Der NestJS-Provider startet bei `CONVEX_MIRROR_ENABLED=true` im Hintergrund.
 Er liest ausschließlich `newlogbooks` und schreibt Fahrten, Tankfüllungen und
-Services in die Testorganisation ARB19. Thomas ist Owner, Andrea, Claudia und
+Services in die Organisation ARB 19. Thomas ist Owner, Andrea, Claudia und
 Oliver sind Administratoren. Die Fahrerzuordnung ist explizit; unbekannte
 Namen oder Fahrzeuge stoppen die Übertragung, statt den Owner einzusetzen.
 MX5 bleibt in Meilen; die fünf anderen Fahrzeuge verwenden Kilometer.
@@ -13,10 +20,10 @@ Die vorbereitete **`.env`** enthält alle bestehenden Backend-Variablen,
 den SendGrid-Schlüssel und die Convex-Synchronisierung mit den konkreten IDs.
 Sie ist git-ignoriert und wird separat zusammen mit dem aktualisierten Projekt
 auf den V-Server kopiert. Im Container setzt sie `NODE_ENV=production`;
-das Convex-Ziel bleibt das Testdeployment mit ARB19.
+das Convex-Ziel ist das Produktionsdeployment mit ARB 19.
 
 ```sh
-docker build -t smarthome-backend:arb19 .
+docker build -t smarthome-backend:arb19-prod .
 ```
 
 Anschließend den bisherigen Container wie gewohnt durch das neue Image ersetzen.
@@ -26,7 +33,7 @@ Der konfigurierte interne Port ist `3000`. Ein Beispiel für einen neuen Contain
 
 ```sh
 docker run -d --name smarthome-backend --restart unless-stopped \
-  --env-file .env -p 3000:3000 smarthome-backend:arb19
+  --env-file .env -p 3000:3000 smarthome-backend:arb19-prod
 ```
 
 Dieses Beispiel erst verwenden, nachdem der bisherige gleichnamige Container
@@ -69,7 +76,7 @@ Bei deaktiviertem Worker bleibt die bestehende App unverändert nutzbar.
   keinerlei Rückweg von Convex in die Quelldaten.
 - Änderungen an importierten Einträgen in der neuen App gehen nicht zurück.
   Beim nächsten inhaltlichen Quellupdate überschreibt MongoDB diese Felder.
-- Der HTTP-Schlüssel ist ausschließlich für dieses Testdeployment und ARB19
+- Der HTTP-Schlüssel ist ausschließlich für das Produktionsdeployment und ARB 19
   gültig; Clerk- oder Convex-Admin-Zugänge sind im Container nicht notwendig.
 
 Notizen werden übernommen. Rechnungen, Gutscheine, Rezepte und die ungenutzte
